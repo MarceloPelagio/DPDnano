@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="980" viewBox="0 0 1800 980">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .head { fill: #d9e7f2; stroke: #4b6a88; stroke-width: 2; }
+      .cell { fill: #ffffff; stroke: #7a96af; stroke-width: 1.5; }
+      .htext { font: 700 18px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .ctext { font: 500 16px 'Segoe UI', Arial, sans-serif; fill: #2f4559; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+    </style>
+  </defs>
+  <rect width="1800" height="980" fill="#ffffff"/>
+  <text x="900" y="45" text-anchor="middle" class="title">Tabela 2.1 - Comparacao entre classes de amplificadores de potencia</text>
+  <g transform="translate(40,90)">
+    <rect x="0" y="0" width="140" height="80" class="head"/><text x="70" y="46" text-anchor="middle" class="htext">Classe</text>
+    <rect x="140" y="0" width="240" height="80" class="head"/><text x="260" y="46" text-anchor="middle" class="htext">Conducao</text>
+    <rect x="380" y="0" width="200" height="80" class="head"/><text x="480" y="46" text-anchor="middle" class="htext">Eficiencia tipica</text>
+    <rect x="580" y="0" width="180" height="80" class="head"/><text x="670" y="46" text-anchor="middle" class="htext">Linearidade</text>
+    <rect x="760" y="0" width="390" height="80" class="head"/><text x="955" y="46" text-anchor="middle" class="htext">Vantagens e limitacoes</text>
+    <rect x="1150" y="0" width="570" height="80" class="head"/><text x="1435" y="46" text-anchor="middle" class="htext">Aplicacoes tipicas</text>
+    <rect x="0" y="80" width="140" height="110" class="cell"/><text x="70" y="145" text-anchor="middle" class="ctext">A</text>
+    <rect x="140" y="80" width="240" height="110" class="cell"/><text x="260" y="145" text-anchor="middle" class="ctext">360 graus</text>
+    <rect x="380" y="80" width="200" height="110" class="cell"/><text x="480" y="145" text-anchor="middle" class="ctext">25% a 50%</text>
+    <rect x="580" y="80" width="180" height="110" class="cell"/><text x="670" y="145" text-anchor="middle" class="ctext">Muito alta</text>
+    <rect x="760" y="80" width="390" height="110" class="cell"/><text x="955" y="130" text-anchor="middle" class="ctext">Elevada fidelidade,</text><text x="955" y="156" text-anchor="middle" class="ctext">baixa eficiencia</text>
+    <rect x="1150" y="80" width="570" height="110" class="cell"/><text x="1435" y="145" text-anchor="middle" class="ctext">Estagios de baixo ruido e laboratorio</text>
+    <rect x="0" y="190" width="140" height="110" class="cell"/><text x="70" y="255" text-anchor="middle" class="ctext">AB</text>
+    <rect x="140" y="190" width="240" height="110" class="cell"/><text x="260" y="255" text-anchor="middle" class="ctext">Entre 180 e 360 graus</text>
+    <rect x="380" y="190" width="200" height="110" class="cell"/><text x="480" y="255" text-anchor="middle" class="ctext">35% a 65%</text>
+    <rect x="580" y="190" width="180" height="110" class="cell"/><text x="670" y="255" text-anchor="middle" class="ctext">Alta</text>
+    <rect x="760" y="190" width="390" height="110" class="cell"/><text x="955" y="240" text-anchor="middle" class="ctext">Compromisso favoravel</text><text x="955" y="266" text-anchor="middle" class="ctext">entre linearidade e eficiencia</text>
+    <rect x="1150" y="190" width="570" height="110" class="cell"/><text x="1435" y="255" text-anchor="middle" class="ctext">Transmissores celulares e RF comercial</text>
+    <rect x="0" y="300" width="140" height="110" class="cell"/><text x="70" y="365" text-anchor="middle" class="ctext">B</text>
+    <rect x="140" y="300" width="240" height="110" class="cell"/><text x="260" y="365" text-anchor="middle" class="ctext">180 graus</text>
+    <rect x="380" y="300" width="200" height="110" class="cell"/><text x="480" y="365" text-anchor="middle" class="ctext">Ate 78,5%</text>
+    <rect x="580" y="300" width="180" height="110" class="cell"/><text x="670" y="365" text-anchor="middle" class="ctext">Media</text>
+    <rect x="760" y="300" width="390" height="110" class="cell"/><text x="955" y="350" text-anchor="middle" class="ctext">Boa eficiencia,</text><text x="955" y="376" text-anchor="middle" class="ctext">distorcao de cruzamento</text>
+    <rect x="1150" y="300" width="570" height="110" class="cell"/><text x="1435" y="365" text-anchor="middle" class="ctext">Audio e alguns estagios push-pull</text>
+    <rect x="0" y="410" width="140" height="110" class="cell"/><text x="70" y="475" text-anchor="middle" class="ctext">C</text>
+    <rect x="140" y="410" width="240" height="110" class="cell"/><text x="260" y="475" text-anchor="middle" class="ctext">Menor que 180 graus</text>
+    <rect x="380" y="410" width="200" height="110" class="cell"/><text x="480" y="475" text-anchor="middle" class="ctext">70% a 85%</text>
+    <rect x="580" y="410" width="180" height="110" class="cell"/><text x="670" y="475" text-anchor="middle" class="ctext">Baixa</text>
+    <rect x="760" y="410" width="390" height="110" class="cell"/><text x="955" y="460" text-anchor="middle" class="ctext">Alta eficiencia,</text><text x="955" y="486" text-anchor="middle" class="ctext">uso com circuitos ressonantes</text>
+    <rect x="1150" y="410" width="570" height="110" class="cell"/><text x="1435" y="475" text-anchor="middle" class="ctext">Osciladores e RF de banda estreita</text>
+    <rect x="0" y="520" width="140" height="110" class="cell"/><text x="70" y="585" text-anchor="middle" class="ctext">D</text>
+    <rect x="140" y="520" width="240" height="110" class="cell"/><text x="260" y="585" text-anchor="middle" class="ctext">Chaveado</text>
+    <rect x="380" y="520" width="200" height="110" class="cell"/><text x="480" y="585" text-anchor="middle" class="ctext">Acima de 85%</text>
+    <rect x="580" y="520" width="180" height="110" class="cell"/><text x="670" y="585" text-anchor="middle" class="ctext">Baixa</text>
+    <rect x="760" y="520" width="390" height="110" class="cell"/><text x="955" y="570" text-anchor="middle" class="ctext">Grande eficiencia,</text><text x="955" y="596" text-anchor="middle" class="ctext">forte nao linearidade</text>
+    <rect x="1150" y="520" width="570" height="110" class="cell"/><text x="1435" y="585" text-anchor="middle" class="ctext">Potencia com comutacao e audio</text>
+    <rect x="0" y="630" width="140" height="110" class="cell"/><text x="70" y="695" text-anchor="middle" class="ctext">E</text>
+    <rect x="140" y="630" width="240" height="110" class="cell"/><text x="260" y="695" text-anchor="middle" class="ctext">Chaveado ressonante</text>
+    <rect x="380" y="630" width="200" height="110" class="cell"/><text x="480" y="695" text-anchor="middle" class="ctext">80% a 90%</text>
+    <rect x="580" y="630" width="180" height="110" class="cell"/><text x="670" y="695" text-anchor="middle" class="ctext">Baixa</text>
+    <rect x="760" y="630" width="390" height="110" class="cell"/><text x="955" y="680" text-anchor="middle" class="ctext">Perdas reduzidas,</text><text x="955" y="706" text-anchor="middle" class="ctext">sensivel a banda larga</text>
+    <rect x="1150" y="630" width="570" height="110" class="cell"/><text x="1435" y="695" text-anchor="middle" class="ctext">RF eficiente em faixa estreita</text>
+    <rect x="0" y="740" width="140" height="110" class="cell"/><text x="70" y="805" text-anchor="middle" class="ctext">F</text>
+    <rect x="140" y="740" width="240" height="110" class="cell"/><text x="260" y="805" text-anchor="middle" class="ctext">Controle harmonico</text>
+    <rect x="380" y="740" width="200" height="110" class="cell"/><text x="480" y="805" text-anchor="middle" class="ctext">80% a 90%</text>
+    <rect x="580" y="740" width="180" height="110" class="cell"/><text x="670" y="805" text-anchor="middle" class="ctext">Baixa a media</text>
+    <rect x="760" y="740" width="390" height="110" class="cell"/><text x="955" y="790" text-anchor="middle" class="ctext">Otima eficiencia,</text><text x="955" y="816" text-anchor="middle" class="ctext">rede de saida mais complexa</text>
+    <rect x="1150" y="740" width="570" height="110" class="cell"/><text x="1435" y="805" text-anchor="middle" class="ctext">Estagios RF de alta eficiencia</text>
+  </g>
+  <text x="900" y="945" text-anchor="middle" class="small">Fonte: elaboracao propria, com base na classificacao tradicional de amplificadores de potencia.</text>
+</svg>

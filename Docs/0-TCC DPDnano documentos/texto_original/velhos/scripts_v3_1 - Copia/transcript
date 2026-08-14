@@ -1,0 +1,762 @@
+# do {.\compile_dpd_core.do}
+# 
+# if {[file exists work]} {
+#     vdel -lib work -all
+# }
+# 
+# vlib work
+# vmap work work
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling DPDnano-Lite RTL v3.1"
+#  Compiling DPDnano-Lite RTL v3.1
+# echo "========================================"
+# ========================================
+# 
+# RTL sources (config.vh is resolved through +incdir)
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/fixed_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:23 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/fixed_mult.v 
+# -- Compiling module fixed_mult
+# 
+# Top level modules:
+# 	fixed_mult
+# End time: 04:12:23 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/complex_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:23 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/complex_mult.v 
+# -- Compiling module complex_mult
+# 
+# Top level modules:
+# 	complex_mult
+# End time: 04:12:23 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/complex_add.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:23 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/complex_add.v 
+# -- Compiling module complex_add
+# 
+# Top level modules:
+# 	complex_add
+# End time: 04:12:23 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/iq_delay.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:23 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/iq_delay.v 
+# -- Compiling module iq_delay
+# 
+# Top level modules:
+# 	iq_delay
+# End time: 04:12:23 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/poly_kernel.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:23 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/poly_kernel.v 
+# -- Compiling module poly_kernel
+# 
+# Top level modules:
+# 	poly_kernel
+# End time: 04:12:23 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/poly_branch.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:23 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/poly_branch.v 
+# -- Compiling module poly_branch
+# 
+# Top level modules:
+# 	poly_branch
+# End time: 04:12:24 on Jul 18,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/rounding.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:24 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/rounding.v 
+# -- Compiling module rounding
+# 
+# Top level modules:
+# 	rounding
+# End time: 04:12:24 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/saturator.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:24 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/saturator.v 
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	saturator
+# End time: 04:12:24 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/dpd_core.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:24 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/dpd_core.v 
+# -- Compiling module dpd_core
+# 
+# Top level modules:
+# 	dpd_core
+# End time: 04:12:24 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling Testbench TC009_Nightmare"
+#  Compiling Testbench TC009_Nightmare
+# echo "========================================"
+# ========================================
+# 
+# vlog +incdir+../rtl_v3_1+../tb_v3_1 -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:12:24 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1+../tb_v3_1" -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v 
+# -- Compiling module tb_dpdnano_lite_TC009_Nightmare
+# 
+# Top level modules:
+# 	tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:12:24 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compile Finished"
+#  Compile Finished
+# echo "========================================"
+# ========================================
+do run_tb_dpdnano_lite_TC009_Nightmare.do
+# 
+# vsim -voptargs="+acc" work.tb_dpdnano_lite_TC009_Nightmare
+# vsim -voptargs=""+acc"" work.tb_dpdnano_lite_TC009_Nightmare 
+# Start time: 04:12:49 on Jul 18,2026
+# Loading work.tb_dpdnano_lite_TC009_Nightmare
+# 
+# quietly WaveActivateNextPane {} 0
+# 
+# add wave -divider {Clock / Reset}
+# add wave sim:/tb_dpdnano_lite_TC009_Nightmare/clk
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_dpdnano_lite_TC009_Nightmare/clk'.
+# Error in macro ./run_tb_dpdnano_lite_TC009_Nightmare.do line 8
+# ** UI-Msg: (vish-4014) No objects found matching '/tb_dpdnano_lite_TC009_Nightmare/clk'.
+#     while executing
+# "add wave sim:/tb_dpdnano_lite_TC009_Nightmare/clk"
+do {.\compile_dpd_core.do}
+# 
+# if {[file exists work]} {
+#     vdel -lib work -all
+# }
+# 
+# vlib work
+# vmap work work
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling DPDnano-Lite RTL v3.1"
+#  Compiling DPDnano-Lite RTL v3.1
+# echo "========================================"
+# ========================================
+# 
+# RTL sources (config.vh is resolved through +incdir)
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/fixed_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:01 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/fixed_mult.v 
+# -- Compiling module fixed_mult
+# 
+# Top level modules:
+# 	fixed_mult
+# End time: 04:14:01 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/complex_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:01 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/complex_mult.v 
+# -- Compiling module complex_mult
+# 
+# Top level modules:
+# 	complex_mult
+# End time: 04:14:01 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/complex_add.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:01 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/complex_add.v 
+# -- Compiling module complex_add
+# 
+# Top level modules:
+# 	complex_add
+# End time: 04:14:01 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/iq_delay.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:01 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/iq_delay.v 
+# -- Compiling module iq_delay
+# 
+# Top level modules:
+# 	iq_delay
+# End time: 04:14:01 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/poly_kernel.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:01 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/poly_kernel.v 
+# -- Compiling module poly_kernel
+# 
+# Top level modules:
+# 	poly_kernel
+# End time: 04:14:01 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/poly_branch.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:02 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/poly_branch.v 
+# -- Compiling module poly_branch
+# 
+# Top level modules:
+# 	poly_branch
+# End time: 04:14:02 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/rounding.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:02 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/rounding.v 
+# -- Compiling module rounding
+# 
+# Top level modules:
+# 	rounding
+# End time: 04:14:02 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/saturator.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:02 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/saturator.v 
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	saturator
+# End time: 04:14:02 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog +incdir+../rtl_v3_1 -work work ../rtl_v3_1/dpd_core.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:02 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1" -work work ../rtl_v3_1/dpd_core.v 
+# -- Compiling module dpd_core
+# 
+# Top level modules:
+# 	dpd_core
+# End time: 04:14:02 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling Testbench TC009_Nightmare"
+#  Compiling Testbench TC009_Nightmare
+# echo "========================================"
+# ========================================
+# 
+# vlog +incdir+../rtl_v3_1+../tb_v3_1 -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:14:02 on Jul 18,2026
+# vlog -reportprogress 300 "+incdir+../rtl_v3_1+../tb_v3_1" -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v 
+# -- Compiling module tb_dpdnano_lite_TC009_Nightmare
+# 
+# Top level modules:
+# 	tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:14:02 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compile Finished"
+#  Compile Finished
+# echo "========================================"
+# ========================================
+do run_tb_dpdnano_lite_TC009_Nightmare.do
+# vsim -voptargs=+acc work.tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:14:09 on Jul 18,2026, Elapsed time: 0:01:20
+# Errors: 0, Warnings: 0
+# vsim -voptargs="+acc" work.tb_dpdnano_lite_TC009_Nightmare 
+# Start time: 04:14:09 on Jul 18,2026
+# Loading work.tb_dpdnano_lite_TC009_Nightmare
+# add wave -r /*
+# ** UI-Msg: (vish-4014) No objects found matching '/*'.
+# Error in macro ./run_tb_dpdnano_lite_TC009_Nightmare.do line 3
+# ** UI-Msg: (vish-4014) No objects found matching '/*'.
+#     while executing
+# "add wave -r /*"
+do {.\compile_dpd_core.do}
+# 
+# if {[file exists work]} {
+#     vdel -lib work -all
+# }
+# 
+# vlib work
+# vmap work work
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling DPDnano-Lite RTL v3.1"
+#  Compiling DPDnano-Lite RTL v3.1
+# echo "========================================"
+# ========================================
+# 
+# vlog -work work ../rtl_v3_1/fixed_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:52 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/fixed_mult.v 
+# -- Compiling module fixed_mult
+# 
+# Top level modules:
+# 	fixed_mult
+# End time: 04:20:52 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/complex_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:52 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/complex_mult.v 
+# -- Compiling module complex_mult
+# 
+# Top level modules:
+# 	complex_mult
+# End time: 04:20:52 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/complex_add.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:52 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/complex_add.v 
+# -- Compiling module complex_add
+# 
+# Top level modules:
+# 	complex_add
+# End time: 04:20:52 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/iq_delay.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:52 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/iq_delay.v 
+# -- Compiling module iq_delay
+# 
+# Top level modules:
+# 	iq_delay
+# End time: 04:20:52 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/poly_kernel.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:52 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/poly_kernel.v 
+# -- Compiling module poly_kernel
+# 
+# Top level modules:
+# 	poly_kernel
+# End time: 04:20:52 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/poly_branch.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:52 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/poly_branch.v 
+# -- Compiling module poly_branch
+# 
+# Top level modules:
+# 	poly_branch
+# End time: 04:20:52 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/rounding.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:53 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/rounding.v 
+# -- Compiling module rounding
+# 
+# Top level modules:
+# 	rounding
+# End time: 04:20:53 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/saturator.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:53 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/saturator.v 
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	saturator
+# End time: 04:20:53 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/dpd_core.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:53 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/dpd_core.v 
+# -- Compiling module dpd_core
+# 
+# Top level modules:
+# 	dpd_core
+# End time: 04:20:53 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling Testbench TC009_Nightmare"
+#  Compiling Testbench TC009_Nightmare
+# echo "========================================"
+# ========================================
+# 
+# vlog -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:20:53 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v 
+# ** Error: ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v(2): Cannot open `include file "config.vh".
+# -- Compiling module tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:20:53 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# ** Error: C:/intelFPGA/20.1/modelsim_ase/win32aloem/vlog failed.
+# Error in macro ././compile_dpd_core.do line 28
+# C:/intelFPGA/20.1/modelsim_ase/win32aloem/vlog failed.
+#     while executing
+# "vlog -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v"
+do {.\compile_dpd_core.do}
+# 
+# if {[file exists work]} {
+#     vdel -lib work -all
+# }
+# 
+# vlib work
+# vmap work work
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling DPDnano-Lite RTL v3.1"
+#  Compiling DPDnano-Lite RTL v3.1
+# echo "========================================"
+# ========================================
+# 
+# vlog -work work ../rtl_v3_1/fixed_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/fixed_mult.v 
+# -- Compiling module fixed_mult
+# 
+# Top level modules:
+# 	fixed_mult
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/complex_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/complex_mult.v 
+# -- Compiling module complex_mult
+# 
+# Top level modules:
+# 	complex_mult
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/complex_add.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/complex_add.v 
+# -- Compiling module complex_add
+# 
+# Top level modules:
+# 	complex_add
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/iq_delay.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/iq_delay.v 
+# -- Compiling module iq_delay
+# 
+# Top level modules:
+# 	iq_delay
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/poly_kernel.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/poly_kernel.v 
+# -- Compiling module poly_kernel
+# 
+# Top level modules:
+# 	poly_kernel
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/poly_branch.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/poly_branch.v 
+# -- Compiling module poly_branch
+# 
+# Top level modules:
+# 	poly_branch
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/rounding.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/rounding.v 
+# -- Compiling module rounding
+# 
+# Top level modules:
+# 	rounding
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/saturator.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/saturator.v 
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	saturator
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/dpd_core.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/dpd_core.v 
+# -- Compiling module dpd_core
+# 
+# Top level modules:
+# 	dpd_core
+# End time: 04:25:51 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling Testbench TC009_Nightmare"
+#  Compiling Testbench TC009_Nightmare
+# echo "========================================"
+# ========================================
+# 
+# vlog -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:25:51 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v 
+# -- Compiling module tb_dpdnano_lite_TC009_Nightmare
+# 
+# Top level modules:
+# 	tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:25:52 on Jul 18,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compile Finished"
+#  Compile Finished
+# echo "========================================"
+# ========================================
+# 
+# 
+# 
+# /*
+# ** Error: invalid command name "/*"
+# Error in macro ././compile_dpd_core.do line 36
+# invalid command name "/*"
+#     while executing
+# "/*"
+do {.\compile_dpd_core.do}
+# 
+# if {[file exists work]} {
+#     vdel -lib work -all
+# }
+# 
+# vlib work
+# vmap work work
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying modelsim.ini
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling DPDnano-Lite RTL v3.1"
+#  Compiling DPDnano-Lite RTL v3.1
+# echo "========================================"
+# ========================================
+# 
+# vlog -work work ../rtl_v3_1/fixed_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/fixed_mult.v 
+# -- Compiling module fixed_mult
+# 
+# Top level modules:
+# 	fixed_mult
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/complex_mult.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/complex_mult.v 
+# -- Compiling module complex_mult
+# 
+# Top level modules:
+# 	complex_mult
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/complex_add.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/complex_add.v 
+# -- Compiling module complex_add
+# 
+# Top level modules:
+# 	complex_add
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/iq_delay.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/iq_delay.v 
+# -- Compiling module iq_delay
+# 
+# Top level modules:
+# 	iq_delay
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/poly_kernel.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/poly_kernel.v 
+# -- Compiling module poly_kernel
+# 
+# Top level modules:
+# 	poly_kernel
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/poly_branch.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/poly_branch.v 
+# -- Compiling module poly_branch
+# 
+# Top level modules:
+# 	poly_branch
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/rounding.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/rounding.v 
+# -- Compiling module rounding
+# 
+# Top level modules:
+# 	rounding
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/saturator.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/saturator.v 
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	saturator
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -work work ../rtl_v3_1/dpd_core.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../rtl_v3_1/dpd_core.v 
+# -- Compiling module dpd_core
+# 
+# Top level modules:
+# 	dpd_core
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compiling Testbench TC009_Nightmare"
+#  Compiling Testbench TC009_Nightmare
+# echo "========================================"
+# ========================================
+# 
+# vlog -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 04:26:44 on Jul 18,2026
+# vlog -reportprogress 300 -work work ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v 
+# -- Compiling module tb_dpdnano_lite_TC009_Nightmare
+# 
+# Top level modules:
+# 	tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:26:44 on Jul 18,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# echo "========================================"
+# ========================================
+# echo " Compile Finished"
+#  Compile Finished
+# echo "========================================"
+# ========================================
+# 
+do run_tb_dpdnano_lite_TC009_Nightmare.do
+# vsim -voptargs=+acc work.tb_dpdnano_lite_TC009_Nightmare
+# End time: 04:27:11 on Jul 18,2026, Elapsed time: 0:13:02
+# Errors: 2, Warnings: 0
+# vsim -voptargs="+acc" work.tb_dpdnano_lite_TC009_Nightmare 
+# Start time: 04:27:11 on Jul 18,2026
+# Loading work.tb_dpdnano_lite_TC009_Nightmare
+# Loading work.dpd_core
+# Loading work.complex_mult
+# Loading work.poly_kernel
+# Loading work.poly_branch
+# Loading work.rounding
+# Loading work.saturator
+# add wave -r /*
+# run -all
+# ======================================================================
+#                  DPDnano-Lite RTL Validation Suite
+# ======================================================================
+# TEST         : TC009_Nightmare
+# Description  : Maximum Saturation Stress Test
+# Samples      : 100000
+# ======================================================================
+# Execution
+#   Vectors Sent       : 100000
+#   Vectors Received   : 100000
+#   Dropped Vectors    : 0
+#   Delivery Rate      : 100.00 %
+# 
+# Pipeline
+#   Expected Latency   : 5 cycles
+#   Measured Latency   : 5 cycles
+#   Latency Check      : PASS
+#   Pipeline Flush     : PASS
+# 
+# Overflow Statistics
+#   Expected Overflow  : YES
+#   Observed Overflow  : YES
+#   Overflow Events    : 72447
+#   Overflow RE        : 55391
+#   Overflow IM        : 55453
+#   Overflow Check     : PASS
+# 
+# Simulation
+#   Simulation Cycles  : 100010
+#   Simulation Time    : 1000100 ns
+# ======================================================================
+# Overall Result   : PASS
+# ======================================================================
+# ** Note: $finish    : ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v(152)
+#    Time: 1000105 ns  Iteration: 1  Instance: /tb_dpdnano_lite_TC009_Nightmare
+# 1
+# Break in Module tb_dpdnano_lite_TC009_Nightmare at ../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v line 152
+# wave zoom full
+# 0 ps
+# 1050110250 ps

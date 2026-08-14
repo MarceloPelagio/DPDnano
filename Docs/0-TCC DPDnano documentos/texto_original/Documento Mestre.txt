@@ -1,0 +1,149 @@
+LIVRO MESTRE DO TCC
+Versão 1.0
+Projeto
+
+Título do TCC
+
+Desenvolvimento de uma Arquitetura DPDnano Baseada em Modelo Polinomial para Implementação em FPGAs com Recursos Limitados.
+
+Controle Geral
+Capítulos
+Capítulo	Status
+Pré-textuais	✔ Concluído (revisão final pendente)
+Capítulo 1	Em desenvolvimento
+Capítulo 2	Não iniciado
+Capítulo 3	Não iniciado
+Capítulo 4	Não iniciado
+Capítulo 5	Não iniciado
+Capítulo 6	Não iniciado
+Capítulo 7	Não iniciado
+Referências	Em construção
+Apêndices	Em construção
+Controle de Figuras
+
+Aguardando Figura 1.
+
+Controle de Tabelas
+
+Aguardando Tabela 1.
+
+Controle de Gráficos
+
+Aguardando Gráfico 1.
+
+Controle de Equações
+
+Aguardando Equação (1.1).
+
+Lista de Siglas
+
+A ser preenchida durante a redação.
+
+Referências Cruzadas
+
+A ser preenchida.
+
+Pendências
+Reescrever Resumo.
+Reescrever Abstract.
+Revisão final ABNT.
+Conferência de todas as referências cruzadas.
+Geração das listas automáticas.
+
+===============================
+
+Livro Mestre do TCC – Atualização
+dentro da seção 1.1 - logo antes do texto:  A adoção de FPGAs como plataforma de implementação para algoritmos de processamento digital de sinais
+
+Capítulo: 1 – Introdução
+Seção: 1.1 Contextualização
+Status: aproximadamente 70% concluída.
+Figuras previstas:
+Figura 1 – Cadeia simplificada de transmissão digital com bloco de Predistorção Digital (DPD).
+Tabelas: nenhuma até o momento.
+Equações: iniciar no Capítulo 2.
+Gráficos: nenhum nesta seção.
+
+5 =============================
+Livro Mestre – Atualização
+
+Capítulo 1 – Introdução
+Seção 1.1 – Contextualização: Concluída.
+Figura 1: Cadeia simplificada de um transmissor digital com bloco de Predistorção Digital (DPD).
+Figura 2: Comparação conceitual entre uma arquitetura DPD convencional e a arquitetura DPDnano-Lite.
+Tabelas: nenhuma.
+Gráficos: nenhum.
+Equações: iniciam no Capítulo 2.
+Próxima seção: 1.2 Motivação.
+
+========================================================
+========================================================
+
+CAPITULO 2
+
+A primeira seção (2.1 – Amplificadores de Potência) será escrita aproximadamente com esta organização:
+
+Introdução aos Amplificadores de Potência
+Papel do PA em um transmissor RF
+Princípios de funcionamento
+Classes de operação (A, AB, B, C, D, E, F)
+Linearidade × eficiência
+Principais fontes de não linearidade
+Impacto sobre sinais digitais modernos (OFDM, QAM, LTE, 5G)
+Relação direta com a necessidade da Predistorção Digital
+Conexão com a arquitetura DPDnano-Lite
+
+Além disso, essa seção deverá conter, no mínimo:
+
+Figura 2.1 – Diagrama em blocos de um transmissor RF destacando o amplificador de potência.
+Tabela 2.1 – Comparação entre as classes de amplificadores de potência (A, AB, B, C, D, E e F), indicando princípio de operação, eficiência típica, linearidade, vantagens, limitações e aplicações.
+Figura 2.2 – Curva característica de transferência de um amplificador de potência, destacando as regiões linear, compressão e saturação.
+Figura 2.3 – Exemplo ilustrativo da deformação de um sinal ao atravessar um amplificador operando próximo da saturação.
+Equações apresentando o conceito de ganho, potência de entrada, potência de saída, eficiência e ponto de compressão, quando pertinentes.
+
+Esse nível de detalhamento fará com que as seções seguintes (não linearidades, AM/AM, AM/PM, ACPR, EVM e Predistorção Digital) se conectem de forma natural e sustentem tecnicamente as decisões adotadas na DPDnano-Lite.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

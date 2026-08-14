@@ -1,0 +1,107 @@
+Estrutura Oficial Congelada do TCC
+
+Projeto: DPDnano_Lite_v3_2
+
+Data de congelamento: 01/08/2026
+
+Capítulo 1 – Introdução
+
+-   Contextualização
+-   Motivação
+-   Objetivos
+-   Metodologia
+-   Organização do trabalho
+
+Capítulo 2 – Fundamentação Teórica
+
+-   Amplificadores de Potência
+-   Não Linearidades
+-   Predistorção Digital
+-   FPGA
+-   Processamento Digital de Sinais
+-   Trabalhos Relacionados
+
+Capítulo 3 – Predistorção Digital
+
+-   Evolução Histórica
+-   Modelos Matemáticos
+-   Memory Polynomial
+-   Formulação Matemática
+-   Considerações Teóricas
+
+Capítulo 4 – Arquitetura DPDnano-Lite
+
+-   Requisitos de Projeto
+-   Arquitetura Proposta
+-   Fluxo de Processamento
+-   Organização Modular
+-   Pipeline
+-   Interfaces
+-   Representação em Ponto Fixo
+-   Decisões de Engenharia
+
+Capítulo 5 – Implementação RTL em Verilog
+
+-   Organização dos Arquivos
+-   Descrição dos Módulos RTL
+-   Aspectos Numéricos
+-   Implementação do dpd_core
+-   Top Level RTL
+
+Capítulo 6 – Verificação Funcional
+
+-   Ambiente de Simulação
+-   ModelSim
+-   Testbenches
+-   TC
+-   TMC
+-   TMQ
+-   Resultados de Simulação
+
+Capítulo 7 – Implementação Experimental em FPGA
+
+-   Plataforma Tang Nano 4K
+-   Gowin IDE
+-   Fluxo de Síntese
+-   Place & Route
+-   Geração do Bitstream
+-   Arquivos .gprj
+-   Arquivos .cst
+-   Arquivos .sdc
+-   Configuração do PLL
+-   Interface de Diagnóstico
+-   Testes de Bring-up
+-   Interface UART
+-   Integração Hardware × Software
+-   Validação Experimental em FPGA
+
+Capítulo 8 – Resultados Experimentais e Discussão
+
+-   Resultados obtidos na FPGA
+-   Comparação FPGA × ModelSim
+-   Utilização de Recursos
+-   Frequência Máxima
+-   Throughput
+-   Latência
+-   Faixa Dinâmica
+-   Discussão Técnica
+-   Limitações
+-   Trabalhos Futuros
+
+Capítulo 9 – Conclusões
+
+-   Conclusões Gerais
+-   Contribuições do Trabalho
+-   Atendimento aos Objetivos
+-   Continuidade da Pesquisa
+
+Observações
+
+Esta estrutura está oficialmente congelada.
+
+Todos os novos textos deverão ser inseridos diretamente nos capítulos
+correspondentes.
+
+O Capítulo 7 será desenvolvido incrementalmente através do arquivo
+Capitulo_7_patch.txt, reunindo toda a documentação da implementação e
+validação em FPGA.

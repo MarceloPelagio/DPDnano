@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .label { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+      .axis { stroke: #2e4a62; stroke-width: 3; }
+      .inwave { stroke: #4b6a88; stroke-width: 4; fill: none; }
+      .out1 { stroke: #2e8b57; stroke-width: 5; fill: none; }
+      .out2 { stroke: #d17b00; stroke-width: 5; fill: none; }
+      .clip { stroke: #b43c2f; stroke-width: 3; stroke-dasharray: 8 6; }
+    </style>
+  </defs>
+  <rect width="1400" height="760" fill="#ffffff"/>
+  <text x="700" y="50" text-anchor="middle" class="title">Figura 2.3 - Comparacao conceitual entre operacao linear e operacao proxima da saturacao</text>
+  <text x="350" y="110" text-anchor="middle" class="label">Operacao linear</text>
+  <text x="1050" y="110" text-anchor="middle" class="label">Operacao proxima da saturacao</text>
+  <line x1="90" y1="330" x2="610" y2="330" class="axis"/>
+  <line x1="90" y1="520" x2="610" y2="520" class="axis"/>
+  <line x1="790" y1="330" x2="1310" y2="330" class="axis"/>
+  <line x1="790" y1="520" x2="1310" y2="520" class="axis"/>
+  <path d="M100 330 C150 180, 220 180, 270 330 C320 480, 390 480, 440 330 C490 180, 560 180, 610 330" class="inwave"/>
+  <path d="M100 520 C150 320, 220 320, 270 520 C320 720, 390 720, 440 520 C490 320, 560 320, 610 520" class="out1"/>
+  <path d="M800 330 C850 180, 920 180, 970 330 C1020 480, 1090 480, 1140 330 C1190 180, 1260 180, 1310 330" class="inwave"/>
+  <path d="M800 520 C850 390, 920 390, 970 520 C1020 650, 1090 650, 1140 520 C1190 390, 1260 390, 1310 520" class="out2"/>
+  <line x1="820" y1="405" x2="1290" y2="405" class="clip"/>
+  <line x1="820" y1="635" x2="1290" y2="635" class="clip"/>
+  <text x="350" y="585" text-anchor="middle" class="small">Saida proporcional, baixa distorcao</text>
+  <text x="1050" y="685" text-anchor="middle" class="small">Compressao dos picos e crescimento espectral</text>
+  <text x="700" y="730" text-anchor="middle" class="small">Fonte: elaboracao propria.</text>
+</svg>

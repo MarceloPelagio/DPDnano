@@ -1,0 +1,16 @@
+coeff_bank.v
+coeff_pkg.vh
+complex_add.v
+complex_mult.v
+config.vh
+dpd_core.v
+fixed_mult.v
+iq_delay.v
+mult_generic.v
+poly_branch.v
+poly_kernel.v
+rounding.v
+saturator.v
+
+
+Não sei dizer se o arquivo mult_generic.v realmente faz parte do projeto ou ficou como um arquivo solto no projeto, que esquecemos de retirar.

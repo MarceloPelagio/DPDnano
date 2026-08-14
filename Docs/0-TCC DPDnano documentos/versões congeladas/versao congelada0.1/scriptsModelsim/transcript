@@ -1,0 +1,35 @@
+# do {.\compile_saturator.do}
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 13:12:43 on Jul 16,2026
+# vlog -reportprogress 300 "+incdir+../rtl" ../rtl/saturator.v 
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	saturator
+# End time: 13:12:43 on Jul 16,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 13:12:43 on Jul 16,2026
+# vlog -reportprogress 300 "+incdir+../rtl" ../sim/tb_saturator.v 
+# -- Compiling module tb_saturator
+# 
+# Top level modules:
+# 	tb_saturator
+# End time: 13:12:43 on Jul 16,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+do run_saturator.do
+# vsim work.tb_saturator 
+# Start time: 13:12:55 on Jul 16,2026
+# Loading work.tb_saturator
+# Loading work.saturator
+# [PASS] TC1
+# [PASS] TC2
+# [PASS] TC3
+# ----------------------------------------
+# PASS = 3
+# FAIL = 0
+# ** Note: $stop    : ../sim/tb_saturator.v(95)
+#    Time: 135 ns  Iteration: 1  Instance: /tb_saturator
+# Break in Module tb_saturator at ../sim/tb_saturator.v line 95
+# End time: 13:13:29 on Jul 16,2026, Elapsed time: 0:00:34
+# Errors: 0, Warnings: 0

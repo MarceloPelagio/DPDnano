@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns='http://www.w3.org/2000/svg' width='1022' height='510' viewBox='0 0 1022 510'>
+  <rect width='100%' height='100%' fill='#ffffff'/>
+  <text x='36' y='36' font-family='Cambria, Georgia, serif' font-size='24' font-weight='700' fill='#1f2937'>Tabela 3.1 - Comparacao entre arquiteturas de Predistorcao Digital</text>
+  <rect x='36' y='70' width='240' height='48' fill='#dbeafe' stroke='#4b5563' stroke-width='1.2'/>
+  <text x='46' y='99' font-family='Calibri, Arial, sans-serif' font-size='16' font-weight='700' fill='#111827'>Arquitetura</text>
+  <rect x='276' y='70' width='170' height='48' fill='#dbeafe' stroke='#4b5563' stroke-width='1.2'/>
+  <text x='286' y='99' font-family='Calibri, Arial, sans-serif' font-size='16' font-weight='700' fill='#111827'>Memoria</text>
+  <rect x='446' y='70' width='150' height='48' fill='#dbeafe' stroke='#4b5563' stroke-width='1.2'/>
+  <text x='456' y='99' font-family='Calibri, Arial, sans-serif' font-size='16' font-weight='700' fill='#111827'>Fidelidade</text>
+  <rect x='596' y='70' width='150' height='48' fill='#dbeafe' stroke='#4b5563' stroke-width='1.2'/>
+  <text x='606' y='99' font-family='Calibri, Arial, sans-serif' font-size='16' font-weight='700' fill='#111827'>Complexidade</text>
+  <rect x='746' y='70' width='240' height='48' fill='#dbeafe' stroke='#4b5563' stroke-width='1.2'/>
+  <text x='756' y='99' font-family='Calibri, Arial, sans-serif' font-size='16' font-weight='700' fill='#111827'>Adequacao a FPGA compacta</text>
+  <rect x='36' y='118' width='240' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='44' y='140' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='700' fill='#111827'>
+    <tspan x='44' dy='0'>LUT</tspan>
+  </text>
+  <rect x='276' y='118' width='170' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='284' y='140' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='284' dy='0'>Baixa</tspan>
+  </text>
+  <rect x='446' y='118' width='150' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='454' y='140' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='454' dy='0'>Baixa a media</tspan>
+  </text>
+  <rect x='596' y='118' width='150' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='604' y='140' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='604' dy='0'>Baixa</tspan>
+  </text>
+  <rect x='746' y='118' width='240' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='754' y='140' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='754' dy='0'>Alta</tspan>
+  </text>
+  <rect x='36' y='172' width='240' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='44' y='194' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='700' fill='#111827'>
+    <tspan x='44' dy='0'>Polinomial</tspan>
+  </text>
+  <rect x='276' y='172' width='170' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='284' y='194' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='284' dy='0'>Nao explicita</tspan>
+  </text>
+  <rect x='446' y='172' width='150' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='454' y='194' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='454' dy='0'>Media</tspan>
+  </text>
+  <rect x='596' y='172' width='150' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='604' y='194' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='604' dy='0'>Baixa a media</tspan>
+  </text>
+  <rect x='746' y='172' width='240' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='754' y='194' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='754' dy='0'>Alta</tspan>
+  </text>
+  <rect x='36' y='226' width='240' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='44' y='248' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='700' fill='#111827'>
+    <tspan x='44' dy='0'>Serie de Volterra</tspan>
+  </text>
+  <rect x='276' y='226' width='170' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='284' y='248' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='284' dy='0'>Alta</tspan>
+  </text>
+  <rect x='446' y='226' width='150' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='454' y='248' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='454' dy='0'>Muito alta</tspan>
+  </text>
+  <rect x='596' y='226' width='150' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='604' y='248' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='604' dy='0'>Muito alta</tspan>
+  </text>
+  <rect x='746' y='226' width='240' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='754' y='248' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='754' dy='0'>Baixa</tspan>
+  </text>
+  <rect x='36' y='280' width='240' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='44' y='302' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='700' fill='#111827'>
+    <tspan x='44' dy='0'>Memory Polynomial</tspan>
+  </text>
+  <rect x='276' y='280' width='170' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='284' y='302' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='284' dy='0'>Explicita</tspan>
+  </text>
+  <rect x='446' y='280' width='150' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='454' y='302' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='454' dy='0'>Alta</tspan>
+  </text>
+  <rect x='596' y='280' width='150' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='604' y='302' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='604' dy='0'>Media</tspan>
+  </text>
+  <rect x='746' y='280' width='240' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='754' y='302' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='754' dy='0'>Muito alta</tspan>
+  </text>
+  <rect x='36' y='334' width='240' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='44' y='356' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='700' fill='#111827'>
+    <tspan x='44' dy='0'>GMP</tspan>
+  </text>
+  <rect x='276' y='334' width='170' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='284' y='356' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='284' dy='0'>Explicita com</tspan>
+    <tspan x='284' dy='16'>termos cruzados</tspan>
+  </text>
+  <rect x='446' y='334' width='150' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='454' y='356' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='454' dy='0'>Muito alta</tspan>
+  </text>
+  <rect x='596' y='334' width='150' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='604' y='356' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='604' dy='0'>Alta</tspan>
+  </text>
+  <rect x='746' y='334' width='240' height='54' fill='#f8fafc' stroke='#6b7280' stroke-width='1'/>
+  <text x='754' y='356' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='754' dy='0'>Media</tspan>
+  </text>
+  <rect x='36' y='388' width='240' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='44' y='410' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='700' fill='#111827'>
+    <tspan x='44' dy='0'>ANN</tspan>
+  </text>
+  <rect x='276' y='388' width='170' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='284' y='410' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='284' dy='0'>Dependente da</tspan>
+    <tspan x='284' dy='16'>topologia</tspan>
+  </text>
+  <rect x='446' y='388' width='150' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='454' y='410' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='454' dy='0'>Alta a</tspan>
+    <tspan x='454' dy='16'>muito alta</tspan>
+  </text>
+  <rect x='596' y='388' width='150' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='604' y='410' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='604' dy='0'>Alta a</tspan>
+    <tspan x='604' dy='16'>muito alta</tspan>
+  </text>
+  <rect x='746' y='388' width='240' height='54' fill='#eef2ff' stroke='#6b7280' stroke-width='1'/>
+  <text x='754' y='410' font-family='Calibri, Arial, sans-serif' font-size='15' font-weight='400' fill='#111827'>
+    <tspan x='754' dy='0'>Baixa a media</tspan>
+  </text>
+</svg>

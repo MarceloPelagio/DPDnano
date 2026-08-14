@@ -1,0 +1,124 @@
+
+
+
+=================================================================================
+=================================================================================
+
+
+Continuação do projeto DPDnano-Lite RTL v3.0
+
+Estamos continuando o desenvolvimento do projeto DPDnano-Lite.
+
+Situação atual (CONGELADA)
+
+A arquitetura RTL v3.0 Baseline está congelada.
+
+Todos estes módulos compilam e simulam corretamente:
+
+config.vh
+coeff_bank.v
+complex_add.v
+complex_mult.v
+fixed_mult.v
+iq_delay.v
+mult_generic.v
+poly_kernel.v
+poly_branch.v
+rounding.v
+saturator.v
+dpd_core.v
+
+Todos os testbenches passaram.
+
+O dpd_core também compilou e simulou com PASS.
+
+A partir deste ponto não devemos modificar esta baseline. Qualquer melhoria será feita em uma nova revisão.
+
+===================================================================================================================
+
+Objetivo da próxima etapa
+=========================
+
+Não desenvolver mais RTL.
+
+Seguir exatamente esta sequência:
+
+Construir um tb_dpd_core profissional, cobrindo:
+
+reset
+ganho unitário
+coeficientes nulos
+saturação positiva
+saturação negativa
+entrada IQ complexa
+sequência contínua de amostras
+medição da latência
+medição do throughput
+Congelar a suíte completa de verificação.
+Sintetizar para a Tang Nano 4K.
+Levantar:
+LUTs
+Flip-Flops
+DSPs
+BRAM
+Fmax
+Gerar tabelas e figuras para o TCC.
+Escrever os capítulos finais de implementação e resultados.
+Forma de trabalho
+
+Gerar mais código e menos explicações.
+
+Entregar sempre arquivos completos para download.
+
+Fluxo:
+
+gerar código
+↓
+
+compilar
+
+↓
+
+corrigir
+
+↓
+
+PASS
+
+↓
+
+congelar
+
+Nunca mais alterar a arquitetura congelada da RTL v3.0.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

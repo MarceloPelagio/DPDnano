@@ -1,0 +1,94 @@
+Capítulo 6 – Plano de Figuras e Tabelas
+
+Este arquivo organiza os elementos visuais e tabulares previstos para o Capítulo 6, com a finalidade de facilitar a consolidação posterior no documento Word final do TCC. Para cada item, registra-se a função no texto, a legenda recomendada e o arquivo-fonte correspondente, quando existente.
+
+1. Tabelas
+
+Tabela 6.1 – Estrutura geral do plano de verificação do DPDnano-Lite
+Função no texto:
+Apresentar, de forma sintética, a arquitetura metodológica da campanha experimental, distinguindo os testes funcionais TCxxx dos ensaios qualitativos TMQxxx.
+Posição sugerida:
+Seção 6.2, imediatamente após a descrição do plano de verificação.
+Origem:
+Já incorporada textualmente em [Capítulo 6 – Simulações e Resultados.txt](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-TCC DPDnano documentos/texto_original/Capítulo 6 – Simulações e Resultados.txt>).
+
+Tabela 6.2 – Resumo das principais métricas temporais e de vazão
+Função no texto:
+Reunir em um único quadro os resultados temporais mais relevantes de TC009, TC010 e TMQ006.
+Posição sugerida:
+Seção 6.4.6, após a discussão da caracterização temporal do pipeline.
+Origem:
+Já incorporada textualmente em [Capítulo 6 – Simulações e Resultados.txt](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-TCC DPDnano documentos/texto_original/Capítulo 6 – Simulações e Resultados.txt>).
+
+Tabela 6.3 – Mapeamento dos elementos visuais do Capítulo 6
+Função no texto:
+Relacionar cada figura à métrica analisada e ao arquivo-fonte gerado pela campanha experimental.
+Posição sugerida:
+Seção 6.2.1, ao final do planejamento visual do capítulo.
+Origem:
+Já incorporada textualmente em [Capítulo 6 – Simulações e Resultados.txt](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-TCC DPDnano documentos/texto_original/Capítulo 6 – Simulações e Resultados.txt>).
+
+2. Figuras principais
+
+Figura 6.1 – Ganho medido em função da amplitude de entrada no ensaio TMQ002, evidenciando preservação do regime linear com ganho constante.
+Função no texto:
+Dar suporte visual à afirmação de que o regime linear foi preservado com ganho constante e desvio nulo no ensaio TMQ002.
+Posição sugerida:
+Ao final da subseção TMQ002 – Linearidade de ganho.
+Arquivo-fonte:
+[tmq002_gain_vs_input.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ002/tmq002_gain_vs_input.svg>)
+
+Figura 6.2 – Separação entre contribuição linear, contribuição cúbica e saída total no ensaio TMQ003, evidenciando a ação do ramo polinomial ao longo da variação de amplitude.
+Função no texto:
+Mostrar explicitamente o papel relativo do termo cúbico e da resposta total.
+Posição sugerida:
+Ao final da subseção TMQ003 – Resposta polinomial.
+Arquivo-fonte:
+[tmq003_polynomial_response.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ003/tmq003_polynomial_response.svg>)
+
+Figura 6.3 – Histograma do erro de quantização em LSB no ensaio TMQ004, mostrando a concentração estatística do erro em torno do centro da distribuição.
+Função no texto:
+Sustentar visualmente a interpretação de que o erro máximo permanece abaixo de 0,5 LSB e que a distribuição do erro é centrada.
+Posição sugerida:
+Ao final da subseção TMQ004 – Erro de quantização.
+Arquivo-fonte:
+[tmq004_quantization_histogram.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ004/tmq004_quantization_histogram.svg>)
+
+Figura 6.4 – Dashboard do ensaio TMQ010, reunindo repetibilidade, ocorrência de saturação e estatísticas de overflow sob estresse repetitivo.
+Função no texto:
+Mostrar que a arquitetura permanece determinística mesmo sob regime severo de saturação.
+Posição sugerida:
+Ao final da subseção TMQ010 – Repetibilidade sob saturação e estresse.
+Arquivo-fonte:
+[tmq010_repeatability_dashboard.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ010/tmq010_repeatability_dashboard.svg>)
+
+Figura 6.5 – Região observada de coeficientes reais sem saturação no ensaio TMQ011, para entrada real em varredura completa na faixa Q1.15.
+Função no texto:
+Explicitar visualmente a fronteira entre combinações seguras e inseguras de coeficientes reais.
+Posição sugerida:
+Ao final da subseção TMQ011 – Sensibilidade aos coeficientes reais.
+Arquivo-fonte:
+[tmq011_safe_region.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ011/tmq011_safe_region.svg>)
+
+Figura 6.6 – Região observada de coeficientes complexos sem saturação no ensaio TMQ012, considerando varredura geométrica de magnitudes e fases.
+Função no texto:
+Evidenciar a redução da margem operacional quando a análise passa do caso real para o caso complexo.
+Posição sugerida:
+Ao final da subseção TMQ012 – Sensibilidade a coeficientes complexos.
+Arquivo-fonte:
+[tmq012_complex_safe_region.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ012/tmq012_complex_safe_region.svg>)
+
+Figura 6.7 – Dashboard do ensaio TMQ013, destacando o pior nível seguro, a primeira saturação e o início da saturação persistente.
+Função no texto:
+Apresentar de forma gráfica o limite operacional progressivo da arquitetura sob aumento de amplitude.
+Posição sugerida:
+Ao final da subseção TMQ013 – Estresse de limite operacional.
+Arquivo-fonte:
+[tmq013_operational_limit_dashboard.svg](</C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/tb_v3_2/results/TMQ013/tmq013_operational_limit_dashboard.svg>)
+
+3. Observações para a consolidação em Word
+
+- Sempre que possível, manter os SVGs em boa escala horizontal, evitando redução excessiva que prejudique a leitura de eixos, anotações e pequenas legendas internas.
+- Nos casos das Figuras 6.5, 6.6 e 6.7, convém privilegiar largura maior de inserção, pois esses gráficos comunicam fronteiras operacionais e tendem a perder impacto visual quando reduzidos em excesso.
+- Caso algum SVG apresente desalinhamento, margens indevidas ou artefatos de renderização no Word, recomenda-se gerar uma versão alternativa em PNG de alta resolução apenas para inserção final, preservando o SVG original como artefato técnico do projeto.
+- A ordem de inserção das figuras deve seguir exatamente a ordem em que são citadas no texto, preservando coerência com a futura lista de figuras.

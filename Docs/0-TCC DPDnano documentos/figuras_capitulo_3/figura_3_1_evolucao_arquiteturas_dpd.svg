@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="40" y="42" font-family="Cambria, Georgia, serif" font-size="26" font-weight="700" fill="#1f2937">Figura 3.1 - EvoluÃ§Ã£o conceitual das arquiteturas de PredistorÃ§Ã£o Digital</text>
+  <line x1="90" y1="220" x2="1190" y2="220" stroke="#334155" stroke-width="4"/>
+  <polygon points="1190,220 1168,208 1168,232" fill="#334155"/>
+
+  <g>
+    <circle cx="140" cy="220" r="16" fill="#1d4ed8"/>
+    <rect x="75" y="112" rx="16" ry="16" width="130" height="76" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+    <text x="140" y="142" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">AnalÃ³gico</text>
+    <text x="140" y="165" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">compensaÃ§Ã£o fixa</text>
+    <text x="140" y="260" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">baixa flexibilidade</text>
+  </g>
+
+  <g>
+    <circle cx="330" cy="220" r="16" fill="#2563eb"/>
+    <rect x="260" y="112" rx="16" ry="16" width="140" height="76" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="330" y="142" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">LUT</text>
+    <text x="330" y="165" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">discretizaÃ§Ã£o</text>
+    <text x="330" y="260" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">simples e estÃ¡tica</text>
+  </g>
+
+  <g>
+    <circle cx="520" cy="220" r="16" fill="#0f766e"/>
+    <rect x="430" y="112" rx="16" ry="16" width="180" height="76" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text x="520" y="142" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">Polinomial</text>
+    <text x="520" y="165" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">estrutura analÃ­tica</text>
+    <text x="520" y="260" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">sem memÃ³ria explÃ­cita</text>
+  </g>
+
+  <g>
+    <circle cx="720" cy="220" r="16" fill="#7c3aed"/>
+    <rect x="635" y="112" rx="16" ry="16" width="170" height="76" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="720" y="142" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">Volterra</text>
+    <text x="720" y="165" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">mÃ¡xima generalidade</text>
+    <text x="720" y="260" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">alta complexidade</text>
+  </g>
+
+  <g>
+    <circle cx="930" cy="220" r="18" fill="#b91c1c"/>
+    <rect x="825" y="102" rx="18" ry="18" width="210" height="92" fill="#fee2e2" stroke="#b91c1c" stroke-width="2.4"/>
+    <text x="930" y="136" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="20" font-weight="700" fill="#111827">Memory Polynomial</text>
+    <text x="930" y="160" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">nÃ£o linearidade + memÃ³ria</text>
+    <text x="930" y="180" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">equilÃ­brio entre fidelidade</text>
+    <text x="930" y="200" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">e custo computacional</text>
+    <text x="930" y="265" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" font-weight="700" fill="#991b1b">escolha do DPDnano-Lite</text>
+  </g>
+
+  <g>
+    <circle cx="1110" cy="220" r="16" fill="#be185d"/>
+    <rect x="1035" y="112" rx="16" ry="16" width="150" height="76" fill="#fce7f3" stroke="#be185d" stroke-width="2"/>
+    <text x="1110" y="142" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">GMP / ANN</text>
+    <text x="1110" y="165" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">maior fidelidade</text>
+    <text x="1110" y="260" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#334155">maior custo</text>
+  </g>
+</svg>

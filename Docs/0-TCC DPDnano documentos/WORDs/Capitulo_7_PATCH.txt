@@ -1,0 +1,47 @@
+4.X Interface de Diagnóstico e Depuração
+
+Durante o desenvolvimento do DPDnano-Lite foi incorporada uma interface de diagnóstico em hardware com o objetivo de facilitar a validação experimental da arquitetura diretamente na FPGA. Essa interface é composta por sinais de monitoramento disponibilizados em LEDs de estado, permitindo ao desenvolvedor verificar, de forma imediata, as principais condições operacionais do sistema sem a necessidade de instrumentos externos, como analisadores lógicos ou depuradores.
+
+Embora a utilização de LEDs de diagnóstico não faça parte do algoritmo de Predistorção Digital propriamente dito, sua inclusão representa uma prática amplamente empregada no desenvolvimento de sistemas embarcados e projetos baseados em FPGA, reduzindo significativamente o tempo necessário para identificação de falhas durante as etapas de integração entre hardware e software.
+
+Os sinais disponibilizados refletem o estado interno da arquitetura, permitindo acompanhar desde a inicialização do sistema até a conclusão do processamento dos dados.
+
+PLL LOCK
+
+O sinal PLL LOCK indica que a malha de travamento de fase (Phase Locked Loop – PLL) atingiu estabilidade de operação. Durante a inicialização do sistema, o PLL utiliza o oscilador externo de 27 MHz como referência para gerar o clock interno de aproximadamente 101,25 MHz utilizado pelo DPDnano-Lite.
+
+Enquanto o PLL ainda está sincronizando sua frequência e fase com o sinal de referência, o sinal LOCK permanece desativado. Somente após a estabilização completa da malha esse sinal assume nível lógico alto, indicando que o clock interno passou a apresentar frequência, fase e jitter compatíveis com a operação segura do circuito digital.
+
+Durante os testes experimentais, esse sinal é conectado diretamente a um LED da placa Tang Nano 4K, permitindo confirmar visualmente que o sistema encontra-se apto para iniciar o processamento dos dados.
+
+BUSY
+
+O sinal BUSY indica que a arquitetura encontra-se executando alguma atividade de processamento. Esse estado pode corresponder ao recebimento de amostras pela interface UART, à transferência de dados para as memórias internas, ao processamento do pipeline do predistorcedor digital ou à transmissão dos resultados ao computador.
+
+Enquanto BUSY permanece ativo, novas operações que dependam da conclusão do processamento corrente podem ser bloqueadas, evitando conflitos entre comandos sucessivos enviados pelo computador hospedeiro.
+
+DONE
+
+O sinal DONE indica que a operação solicitada foi concluída com sucesso. Após o término do processamento de um conjunto de amostras, esse sinal é ativado durante um curto intervalo de tempo, informando ao controlador externo que os resultados encontram-se disponíveis para leitura.
+
+Durante os experimentos realizados neste trabalho, o sinal DONE é utilizado como confirmação visual da conclusão de cada operação executada pela arquitetura.
+
+ERROR
+
+O sinal ERROR indica a ocorrência de alguma condição excepcional detectada pela lógica de controle. Entre as situações previstas encontram-se comandos inválidos, erros de protocolo, inconsistências de comunicação, detecção de overflow, falhas de sincronismo ou qualquer outra condição considerada incompatível com a operação normal do sistema.
+
+A utilização desse sinal permite identificar rapidamente situações anormais durante os ensaios experimentais, reduzindo o tempo necessário para localização de problemas de integração entre o computador e a FPGA.
+
+Benefícios da Interface de Diagnóstico
+
+A utilização desses sinais proporciona diversas vantagens durante o desenvolvimento e a validação da arquitetura, destacando-se:
+
+confirmação imediata da inicialização correta do sistema;
+verificação visual do travamento do PLL;
+acompanhamento do estado de processamento da arquitetura;
+indicação da conclusão das operações executadas;
+rápida identificação de condições de erro durante os ensaios experimentais;
+redução do tempo de depuração em laboratório;
+maior confiabilidade durante a integração entre hardware e software.
+
+A adoção dessa interface de diagnóstico mostrou-se particularmente útil durante a fase de validação em FPGA, permitindo confirmar o correto funcionamento da infraestrutura de hardware antes mesmo da implementação completa do protocolo de comunicação e dos testes funcionais do predistorcedor digital.

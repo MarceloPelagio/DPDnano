@@ -1,0 +1,120 @@
+REFERENCIAS BIBLIOGRAFICAS POR CAPITULO - TCC DPDnano-Lite
+
+Orientacao geral
+- Registrar aqui as referencias efetivamente utilizadas em cada capitulo.
+- Manter os dados completos de cada obra para posterior formatacao final em ABNT.
+- Sempre que uma referencia for citada no texto, incluir tambem a secao ou subseção em que foi utilizada.
+- Ao final do trabalho, consolidar as referencias sem duplicatas na secao unica "Referencias".
+
+Modelo de preenchimento sugerido
+- AUTOR(ES). Titulo: subtitulo. Edicao. Local: Editora, ano.
+- AUTOR(ES). Titulo do artigo. Nome do periodico, local, volume, numero, paginas, ano.
+- AUTOR(ES). Titulo do trabalho. Evento, local, ano.
+- AUTOR(ES). Titulo. Disponivel em: <URL>. Acesso em: dia mes abreviado. ano.
+
+CAPITULO 1 - INTRODUCAO
+- Referencias principais para contextualizacao de sistemas de comunicacao sem fio, amplificadores de potencia, nao linearidades e Predistorcao Digital.
+- Referencias previstas para FPGA Tang Nano 4K, quando efetivamente citada no texto.
+- Observacao: inserir aqui apenas as obras realmente mencionadas no Capitulo 1.
+
+Referencias selecionadas para uso no Capitulo 1
+- GILABERT, Pere L.; DING, Lei. Digital predistortion for power amplifiers. In: CHANG, Kai (ed.). Encyclopedia of RF and Microwave Engineering. Hoboken: Wiley, 2024. DOI: 10.1002/0471654507.erfme422.
+Uso sugerido: contextualizacao geral de DPD, relacao entre linearidade e eficiencia, importancia da predistorcao em transmissores modernos.
+
+- ZHU, Anding. Behavioral modeling for digital predistortion of RF power amplifiers: from Volterra series to CPWL functions. In: IEEE Topical Conference on Power Amplifiers for Wireless and Radio Applications (PAWR). Austin: IEEE, 2016. DOI: 10.1109/PAWR.2016.7440126.
+Uso sugerido: contextualizacao dos modelos comportamentais e justificativa do uso de modelos simplificados em DPD.
+
+- DING, Lei; ZHOU, Guo Tong; MORGAN, Dennis R.; MA, Zhengxiang; KENNEY, John S.; KIM, Jaehyeong; GIARDINA, Charles R. A robust digital baseband predistorter constructed using memory polynomials. IEEE Transactions on Communications, v. 52, n. 1, p. 159-165, 2004. DOI: 10.1109/TCOMM.2003.822188.
+Uso sugerido: referencia classica para fundamentar a relevancia dos modelos polinomiais com memoria na literatura de DPD.
+
+- LI, Wantao; MONTORO, Gabriel; GILABERT, Pere L. GPU versus FPGA implementation of a digital predistortion linearizer for wideband radiofrequency power amplifiers. AEU - International Journal of Electronics and Communications, v. 174, 155040, 2024. DOI: 10.1016/j.aeue.2023.155040.
+Uso sugerido: sustentacao atual para a discussao sobre implementacao de DPD em hardware e trade-off entre desempenho e recursos computacionais.
+
+- MANURKAR, Paritosh; SILVA, Christopher; KAST, Joshua; HORANSKY, Rob; WILLIAMS, Dylan; REMLEY, Kate. Reference measurements of error vector magnitude. In: IEEE/MTT-S International Microwave Symposium (IMS). Denver: IEEE, 2022. DOI: 10.1109/IMS37962.2022.9865278.
+Uso sugerido: apoio a mencao da EVM como metrica relevante na avaliacao de qualidade de sinais modulados.
+
+- SIPEED. Tang Nano 4K. Sipeed Wiki, atualizacao em 15 abr. 2026. Disponivel em: <https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-4K/Nano-4K.html>. Acesso em: 29 jul. 2026.
+Uso sugerido: referencia tecnica da plataforma FPGA adotada no trabalho, especialmente quando a Tang Nano 4K for mencionada no texto introdutorio.
+
+CAPITULO 2 - FUNDAMENTACAO TEORICA
+- Referencias sobre amplificadores de potencia.
+- Referencias sobre linearidade, eficiencia, compressao, saturacao, ACPR e EVM.
+- Referencias sobre tecnicas de linearizacao.
+
+Referencias selecionadas para uso no Capitulo 2
+- CRIPPS, Steve C. RF power amplifiers for wireless communications. 2. ed. Norwood: Artech House, 2006.
+Uso sugerido: fundamentos de amplificadores de potencia, classes de operacao, compressao, saturacao e eficiencia em RF.
+
+- RAAB, Frederick H.; ASBECK, Peter; CRIPPS, Steve; KAHN, David; POPP, Jeffrey B.; POTHECARY, Neil; SEVICK, Jerry F.; SOKAL, Nathan O. Power amplifiers and transmitters for RF and microwave. IEEE Transactions on Microwave Theory and Techniques, v. 50, n. 3, p. 814-826, 2002.
+Uso sugerido: panorama tecnico de arquiteturas de amplificadores, compromisso entre linearidade e eficiencia e contexto de transmissores RF.
+
+- GILABERT, Pere L.; DING, Lei. Digital predistortion for power amplifiers. In: CHANG, Kai (ed.). Encyclopedia of RF and Microwave Engineering. Hoboken: Wiley, 2024. DOI: 10.1002/0471654507.erfme422.
+Uso sugerido: fundamentacao geral de DPD, tecnicas de linearizacao e relacao entre nao linearidade do PA e predistorcao digital.
+
+- ZHU, Anding. Behavioral modeling for digital predistortion of RF power amplifiers: from Volterra series to CPWL functions. In: IEEE Topical Conference on Power Amplifiers for Wireless and Radio Applications (PAWR). Austin: IEEE, 2016. DOI: 10.1109/PAWR.2016.7440126.
+Uso sugerido: discussao sobre modelos comportamentais, nao linearidades com memoria e justificativa da adocao de modelos simplificados.
+
+- DING, Lei; ZHOU, Guo Tong; MORGAN, Dennis R.; MA, Zhengxiang; KENNEY, John S.; KIM, Jaehyeong; GIARDINA, Charles R. A robust digital baseband predistorter constructed using memory polynomials. IEEE Transactions on Communications, v. 52, n. 1, p. 159-165, 2004. DOI: 10.1109/TCOMM.2003.822188.
+Uso sugerido: referencia principal para o modelo Memory Polynomial e sua relevancia em sistemas DPD.
+
+- MORGAN, Dennis R.; MA, Zhengxiang; KENNEY, John S.; KIM, Jaehyeong; GIARDINA, Charles R. A generalized memory polynomial model for digital predistortion of RF power amplifiers. IEEE Transactions on Signal Processing, v. 54, n. 10, p. 3852-3860, 2006. DOI: 10.1109/TSP.2006.879264.
+Uso sugerido: comparacao entre Memory Polynomial e Generalized Memory Polynomial na fundamentacao teorica.
+
+CAPITULO 3 - PREDISTORCAO DIGITAL E MODELOS COMPORTAMENTAIS
+- Referencias sobre DPD classica.
+- Referencias sobre modelos polinomiais.
+- Referencias sobre Memory Polynomial.
+- Referencias sobre Generalized Memory Polynomial.
+- Referencias sobre criterios de escolha do modelo adotado.
+
+CAPITULO 4 - ARQUITETURA DPDNANO-LITE
+- Referencias sobre implementacao em FPGA.
+- Referencias sobre ponto fixo, pipeline e arquitetura modular.
+- Referencias tecnicas de apoio ao particionamento arquitetural, se houver.
+
+CAPITULO 5 - IMPLEMENTACAO EM VERILOG
+- Referencias sobre metodologia RTL.
+- Referencias sobre boas praticas de implementacao sintetizavel.
+- Documentacao tecnica diretamente utilizada na descricao da arquitetura, se aplicavel.
+
+CAPITULO 6 - AMBIENTE DE VERIFICACAO E RESULTADOS
+- Referencias sobre verificacao funcional.
+- Referencias sobre metricas e criterios de validacao.
+- Referencias relacionadas ao ModelSim ou ao fluxo de simulacao, se efetivamente citadas.
+
+CAPITULO 7 - CONCLUSOES
+- Em geral, este capitulo tende a reutilizar referencias ja citadas anteriormente.
+- Registrar aqui apenas se houver alguma referencia nova mencionada especificamente nas conclusoes ou nas perspectivas futuras.
+
+Referencias efetivamente citadas no Capitulo 7
+- BERGERON, Janick. Writing testbenches: functional verification of HDL models. 2. ed. Boston: Kluwer Academic Publishers, 2000.
+Secoes citadas: 7.1 Introducao; 7.4 Procedimento de validacao e criterios de aprovacao.
+
+- BHASKER, J.; CHADHA, Rakesh. Static timing analysis for nanometer designs: a practical approach. New York: Springer, 2009.
+Secoes citadas: 7.1 Introducao; 7.9 Estabilidade temporal, throughput e robustez dinamica.
+
+- DING, Lei; ZHOU, Guo Tong; MORGAN, Dennis R.; MA, Zhengxiang; KENNEY, John S.; KIM, Jaehyeong; GIARDINA, Charles R. A robust digital baseband predistorter constructed using memory polynomials. IEEE Transactions on Communications, v. 52, n. 1, p. 159-165, 2004. DOI: 10.1109/TCOMM.2003.822188.
+Secoes citadas: 7.1 Introducao; 7.3 Plataforma de hardware e configuracao de execucao; 7.6 Caracterizacao AM/AM e influencia da frequencia: HW012.
+
+- MORGAN, Dennis R.; MA, Zhengxiang; KENNEY, John S.; KIM, Jaehyeong; GIARDINA, Charles R. A generalized memory polynomial model for digital predistortion of RF power amplifiers. IEEE Transactions on Signal Processing, v. 54, n. 10, p. 3852-3860, 2006. DOI: 10.1109/TSP.2006.879264.
+Secoes citadas: 7.1 Introducao; 7.3 Plataforma de hardware e configuracao de execucao; 7.6 Caracterizacao AM/AM e influencia da frequencia: HW012.
+
+- ZHU, Anding. Behavioral modeling for digital predistortion of RF power amplifiers: from Volterra series to CPWL functions. In: IEEE Topical Conference on Power Amplifiers for Wireless and Radio Applications (PAWR). Austin: IEEE, 2016. DOI: 10.1109/PAWR.2016.7440126.
+Secoes citadas: 7.7 Saturacao, overflow e rotacao complexa: HW013 a HW016; 7.8 Compressao, ganho incremental e janela operacional: HW017 a HW021.
+
+- GILABERT, Pere L.; DING, Lei. Digital predistortion for power amplifiers. In: CHANG, Kai (ed.). Encyclopedia of RF and Microwave Engineering. Hoboken: Wiley, 2024. DOI: 10.1002/0471654507.erfme422.
+Secoes citadas: 7.7 Saturacao, overflow e rotacao complexa: HW013 a HW016; 7.8 Compressao, ganho incremental e janela operacional: HW017 a HW021.
+
+- LI, Wantao; MONTORO, Gabriel; GILABERT, Pere L. GPU versus FPGA implementation of a digital predistortion linearizer for wideband radiofrequency power amplifiers. AEU - International Journal of Electronics and Communications, v. 174, 155040, 2024. DOI: 10.1016/j.aeue.2023.155040.
+Secoes citadas: 7.1 Introducao; 7.3 Plataforma de hardware e configuracao de execucao; 7.10 Discussao sobre a frequencia maxima validada.
+
+- SIPEED. Tang Nano 4K. Sipeed Wiki, atualizacao em 15 abr. 2026. Disponivel em: <https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-4K/Nano-4K.html>. Acesso em: 29 jul. 2026.
+Secoes citadas: 7.3 Plataforma de hardware e configuracao de execucao; 7.10 Discussao sobre a frequencia maxima validada.
+
+LISTA PRELIMINAR DE OBRAS CANDIDATAS
+- Inserir aqui livros, artigos, teses, notas de aplicacao e documentacoes tecnicas potencialmente relevantes antes de distribui-los por capitulo.
+
+PENDENCIAS DE NORMALIZACAO ABNT
+- Confirmar padrao final de autor-data no corpo do texto.
+- Confirmar padrao final da secao "Referencias".
+- Revisar uniformidade de maiusculas, italicos, locais, editoras, DOI, URL e data de acesso.

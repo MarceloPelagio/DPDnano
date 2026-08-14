@@ -1,0 +1,75 @@
+Capítulo 6 - Índice de Artefatos Visuais
+
+Este arquivo reúne, de forma operacional, os artefatos gráficos mais importantes já produzidos para o Capítulo 6, com o objetivo de facilitar a futura consolidação no documento Word final do TCC. O foco aqui não é reexplicar o significado científico de cada figura, mas registrar de forma direta o nome canônico, a origem e o ponto de inserção previsto no texto.
+
+1. Figuras principais do capítulo
+
+Figura 6.1
+Tema:
+Linearidade de ganho observada no ensaio TMQ002.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ002/tmq002_gain_vs_input.svg`
+Inserção sugerida:
+Subseção TMQ002, imediatamente após o parágrafo final da análise de resultados.
+
+Figura 6.2
+Tema:
+Separação entre contribuição linear, contribuição cúbica e resposta total no ensaio TMQ003.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ003/tmq003_polynomial_response.svg`
+Inserção sugerida:
+Subseção TMQ003, após a discussão quantitativa sobre `max_linear_abs`, `max_poly_abs` e `max_output_abs`.
+
+Figura 6.3
+Tema:
+Histograma do erro de quantização em LSB no ensaio TMQ004.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ004/tmq004_quantization_histogram.svg`
+Inserção sugerida:
+Subseção TMQ004, ao final da interpretação do erro máximo inferior a 0,5 LSB.
+
+Figura 6.4
+Tema:
+Dashboard de repetibilidade e saturação do ensaio TMQ010.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ010/tmq010_repeatability_dashboard.svg`
+Inserção sugerida:
+Subseção TMQ010, após a conclusão sobre determinismo sob estresse.
+
+Figura 6.5
+Tema:
+Região observada de coeficientes reais sem saturação no ensaio TMQ011.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ011/tmq011_safe_region.svg`
+Inserção sugerida:
+Subseção TMQ011, após a discussão da razão de combinações seguras.
+
+Figura 6.6
+Tema:
+Região observada de coeficientes complexos sem saturação no ensaio TMQ012.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ012/tmq012_complex_safe_region.svg`
+Inserção sugerida:
+Subseção TMQ012, imediatamente após a comparação entre os casos real e complexo.
+
+Figura 6.7
+Tema:
+Dashboard de limite operacional do ensaio TMQ013.
+Arquivo-fonte:
+`tb_v3_2/results/TMQ013/tmq013_operational_limit_dashboard.svg`
+Inserção sugerida:
+Subseção TMQ013, ao final da análise do pior nível ainda seguro, da primeira saturação e da saturação persistente.
+
+2. Observações de montagem
+
+- As Figuras 6.5, 6.6 e 6.7 devem ser inseridas com largura maior do que a utilizada em figuras simples de curva, para preservar legibilidade de eixos, regiões coloridas e anotações.
+- Caso o Word apresente renderização inadequada de algum SVG, a conversão para PNG deve ser feita apenas como etapa de publicação, preservando o SVG como artefato principal do projeto.
+- A numeração das figuras já está estabilizada no texto consolidado do capítulo e deve ser mantida para evitar retrabalho futuro na lista de figuras.
+
+3. Relação com o texto consolidado
+
+Os artefatos acima correspondem ao arquivo:
+`0-TCC DPDnano documentos/texto_original/Capítulo 6 – Simulações e Resultados.txt`
+
+O planejamento editorial completo de tabelas, figuras e legendas científicas encontra-se em:
+`0-TCC DPDnano documentos/texto_original/Capítulo 6 – Plano de Figuras e Tabelas.txt`

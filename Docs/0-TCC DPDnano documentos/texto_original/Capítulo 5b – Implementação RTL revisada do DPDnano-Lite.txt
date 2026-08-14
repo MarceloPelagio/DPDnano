@@ -1,0 +1,103 @@
+Capítulo 5b – Implementação RTL revisada do DPDnano-Lite
+
+5.1 Introdução
+Este capítulo apresenta uma versão revisada da documentação da implementação RTL do DPDnano-Lite, construída a partir da inspeção direta dos arquivos Verilog, da especificação arquitetural congelada e dos relatórios de validação disponíveis no repositório. O objetivo desta revisão é substituir descrições genéricas, referências a figuras inexistentes e ambiguidades sobre módulos ativos por uma narrativa tecnicamente fiel ao que a arquitetura realmente implementa e ao que foi efetivamente validado em simulação.
+Na versão analisada, o núcleo funcional do predistorcedor permanece deliberadamente compacto. O fluxo ativo utiliza uma entrada complexa em ponto fixo, um ramo linear por multiplicação complexa, um ramo cúbico de terceira ordem, uma etapa explícita de alinhamento temporal entre os ramos, uma acumulação registrada em largura expandida, seguida de arredondamento, conversão de escala e saturação final. Essa organização privilegia coerência temporal, previsibilidade numérica e baixo custo de implementação em FPGA de pequeno porte.
+Também ficou evidente durante a revisão que o repositório contém módulos auxiliares importantes para evolução futura do projeto, mas que não fazem parte do caminho ativo efetivamente exercitado nos testes congelados. Por esse motivo, a nova redação distingue com clareza a arquitetura funcional validada do ecossistema de apoio mantido para expansão futura.
+
+5.2 Escopo da versão congelada e organização dos módulos
+O ponto central da implementação RTL é o módulo `dpd_core`, que integra o caminho de dados do DPDnano-Lite congelado. A inspeção do arquivo `dpd_core.v` mostra que o processamento validado utiliza diretamente os módulos `complex_mult`, `poly_kernel`, `poly_branch`, `rounding` e `saturator`, além de registradores locais de alinhamento e acumulação. A soma complexa do caminho principal não é realizada por um módulo externo `complex_add`; ela é implementada localmente dentro de `dpd_core` por lógica sequencial registrada.
+Essa constatação é importante porque o texto anterior do capítulo tratava alguns blocos auxiliares como se fossem sempre parte do fluxo funcional principal. Na realidade, módulos como `fixed_mult`, `complex_add`, `iq_delay` e `coeff_bank` permanecem no repositório como infraestrutura de biblioteca, documentação evolutiva e base para variantes futuras, mas não compõem o datapath ativo que foi validado pelos testes da versão congelada.
+Figura 5.1 – Organização hierárquica da implementação RTL, destacando o caminho ativo e os módulos auxiliares do repositório.
+Tabela 5.1 – Módulos relevantes do repositório e participação no fluxo funcional validado
+| Módulo | Papel principal | Participa do fluxo validado? |
+| --- | --- | --- |
+| `dpd_core` | Integra o caminho de dados e define a interface principal do predistorcedor | Sim |
+| `complex_mult` | Implementa o ramo linear complexo com coeficiente de primeira ordem | Sim |
+| `poly_kernel` | Calcula `|x[n]|^2` e forma o termo `x[n]|x[n]|^2` | Sim |
+| `poly_branch` | Aplica o coeficiente cúbico complexo e normaliza o ramo não linear | Sim |
+| `rounding` | Executa arredondamento aritmético e conversão de escala para Q1.15 | Sim |
+| `saturator` | Faz saturação final, registro de saída e sinalização de overflow | Sim |
+| `fixed_mult` | Biblioteca aritmética reutilizável para multiplicação fixa | Não |
+| `complex_add` | Somador complexo auxiliar mantido para reutilização | Não |
+| `iq_delay` | Suporte a variantes com memória explícita | Não |
+| `coeff_bank` | Banco interno de coeficientes para variantes futuras | Não |
+
+5.3 Configuração numérica centralizada
+O arquivo `config.vh` concentra as decisões numéricas que garantem consistência entre os módulos RTL. Em vez de espalhar larguras de palavra e formatos fixos por diversos arquivos, o projeto adota um ponto único de parametrização para largura de dados, largura de coeficientes, precisões internas e limites de saturação. Essa estratégia reduz o risco de incompatibilidade entre blocos e simplifica a auditoria da arquitetura.
+Na configuração observada no repositório, tanto a entrada quanto os coeficientes utilizam formato Q1.15. As etapas intermediárias ampliam a largura dos barramentos para preservar precisão durante o cálculo da magnitude ao quadrado, da formação do termo cúbico, da ponderação polinomial e da acumulação final. Apenas depois da soma registrada o valor é reconduzido ao formato de saída, primeiro por arredondamento controlado e depois por saturação.
+Essa política numérica é coerente com a natureza do problema. Em um predistorcedor polinomial, o custo de truncar cedo demais é elevado, porque o erro de quantização passa a ser acumulado e realimentado em diferentes operações aritméticas. Ao preservar precisão nos estágios internos e postergar a redução de escala para a etapa adequada, a implementação mantém fidelidade funcional com custo compatível com a FPGA-alvo.
+Figura 5.2 – Evolução das larguras de palavra e dos formatos fixos ao longo do processamento.
+Tabela 5.2 – Parâmetros numéricos principais definidos em `config.vh`
+| Parâmetro | Valor | Interpretação |
+| --- | --- | --- |
+| `DATA_WIDTH` | 16 | Largura da entrada e da saída em Q1.15 |
+| `COEF_WIDTH` | 16 | Largura dos coeficientes complexos em Q1.15 |
+| `MAG2_WIDTH` | 33 | Precisão usada para `|x|^2` em Q3.30 |
+| `TERM_WIDTH` | 49 | Precisão do termo cúbico `x|x|^2` em Q4.45 |
+| `BRANCH_WIDTH` | 33 | Largura padronizada dos ramos linear e cúbico em Q3.30 |
+| `ACC_WIDTH` | 34 | Largura da acumulação registrada em Q4.30 |
+| `ROUND_WIDTH` | 16 | Largura após arredondamento e conversão de escala |
+| `IQ_DELAY` | 2 | Parâmetro de compatibilidade para variantes com atraso explícito |
+| `SAT_MAX` / `SAT_MIN` | `7FFF` / `8000` | Limites de saturação da interface final |
+
+5.4 Datapath ativo do `dpd_core`
+O fluxo ativo do `dpd_core` inicia-se quando uma amostra complexa válida `x[n]` é apresentada na interface de entrada juntamente com os coeficientes complexos de primeira e terceira ordem. A mesma amostra alimenta simultaneamente dois ramos. No ramo linear, `complex_mult` calcula a multiplicação complexa entre a amostra e o coeficiente de primeira ordem. No ramo não linear, `poly_kernel` calcula a magnitude ao quadrado e forma o termo cúbico complexo. Em seguida, `poly_branch` pondera esse termo pelo coeficiente de terceira ordem e o reescala para o formato comum do acumulador.
+Como o ramo cúbico possui mais etapas internas do que o ramo linear, o projeto realiza alinhamento temporal explícito do ramo linear por meio dos registradores `lin_re_d`, `lin_im_d` e `lin_valid_d`. Somente depois desse alinhamento as parcelas são somadas no acumulador registrado. Esse detalhe não é periférico: ele garante que as contribuições somadas pertencem à mesma amostra lógica, evitando erro funcional por desalinhamento de pipeline.
+Após a acumulação, o resultado segue para `rounding`, que executa o arredondamento aritmético e a conversão controlada de Q4.30 para Q1.15. Em seguida, `saturator` verifica se houve extrapolação da faixa dinâmica, limita o resultado quando necessário e produz as flags de overflow. Assim, o datapath ativo deixa claro que a arquitetura prioriza responsabilidades bem separadas: multiplicação e formação de termo em um estágio, soma registrada em outro, conversão de escala em outro e limitação final apenas no último estágio.
+Figura 5.3 – Datapath ativo do `dpd_core`, com destaque para os ramos linear e cúbico, alinhamento temporal e saída em Q1.15.
+Tabela 5.3 – Sequência funcional do pipeline ativo
+| Etapa | Operação | Saída principal |
+| --- | --- | --- |
+| Entrada | Recepção de `din_re`, `din_im` e `in_valid` | Amostra complexa Q1.15 |
+| `complex_mult` | Multiplicação complexa pelo coeficiente de primeira ordem | Ramo linear em Q3.30 |
+| `poly_kernel` | Cálculo de `|x|^2` e geração de `x|x|^2` | Magnitude e termo cúbico |
+| `poly_branch` | Aplicação do coeficiente cúbico complexo | Ramo cúbico em Q3.30 |
+| Alinhamento linear | Registro do ramo linear para sincronização | `lin_re_d`, `lin_im_d`, `lin_valid_d` |
+| Acumulação | Soma registrada dos ramos com extensão de sinal | Resultado em Q4.30 |
+| `rounding` | Arredondamento e conversão de escala | Resultado em Q1.15 |
+| `saturator` | Saturação final, registro e flags de overflow | Saída complexa final |
+
+5.5 Sincronização temporal e latência
+A organização pipeline do DPDnano-Lite não foi inserida apenas como convenção de estilo. Ela é indispensável para que a arquitetura preserve vazão elevada com caminho crítico controlado. Os testes de caracterização temporal da versão congelada mostram latência fixa de cinco ciclos entre a aceitação da amostra válida e a disponibilização da saída correspondente, sem jitter entre eventos válidos de entrada e saída.
+O relatório TMQ006 registra latência mínima, máxima e média iguais a cinco ciclos, além de intervalo unitário entre amostras válidas consecutivas na entrada e na saída. Em outras palavras, depois do enchimento inicial do pipeline, a arquitetura sustenta uma nova amostra processada por ciclo de clock. Isso confirma que a estratégia de registro por estágios não só facilita o fechamento de temporização, como também preserva a vazão necessária para um predistorcedor digital compacto.
+Esse comportamento temporal é coerente com a microarquitetura observada no código. Há registro explícito na saída de `complex_mult`, na saída de `poly_kernel`, na saída de `poly_branch`, no acumulador registrado em `dpd_core`, na saída de `rounding` e na saída final de `saturator`. O número efetivo de ciclos percebido pela interface se alinha com essa cadeia de estágios sincronizados.
+Figura 5.4 – Diagrama temporal simplificado do pipeline, evidenciando a latência fixa de cinco ciclos e a vazão de uma amostra por ciclo após o enchimento inicial.
+
+5.6 Papel dos módulos auxiliares e fronteira do capítulo
+Uma revisão honesta do capítulo precisa separar o que é implementação central do que é infraestrutura auxiliar. O repositório preserva módulos adicionais que são úteis para documentação, experimentação e futuras expansões, mas eles não devem ser apresentados como se estivessem no caminho ativo congelado. Essa distinção melhora a clareza técnica do texto e evita que o leitor associe incorretamente a arquitetura validada a uma topologia maior do que a realmente exercitada.
+O módulo `fixed_mult`, por exemplo, é uma biblioteca aritmética reutilizável coerente com a filosofia do projeto, mas o fluxo principal congelado utiliza blocos mais especializados. O módulo `complex_add` representa uma abstração válida para soma complexa, porém a soma do caminho principal foi codificada diretamente em `dpd_core`. Já `iq_delay` e `coeff_bank` são elementos relevantes para variantes com memória explícita ou bancos internos de coeficientes, mas não participam da configuração funcional que embasa os relatórios de validação observados neste trabalho.
+Essa separação também ajuda a posicionar corretamente os artefatos de infraestrutura de hardware existentes no repositório. Há uma pasta complementar para integração com UART, memórias de entrada e saída e controle de processamento em FPGA, mas ela deve ser entendida como pacote de interface ao redor do núcleo congelado, não como parte do datapath RTL mínimo descrito por `dpd_core`.
+Tabela 5.4 – Módulos auxiliares e sua função no ecossistema do projeto
+| Módulo auxiliar | Função no repositório | Papel nesta versão do capítulo |
+| --- | --- | --- |
+| `fixed_mult` | Suporte aritmético reutilizável | Documentado como biblioteca auxiliar |
+| `complex_add` | Somador complexo genérico | Mantido como referência, fora do fluxo ativo |
+| `iq_delay` | Atraso explícito I/Q para variantes com memória | Reservado para evoluções futuras |
+| `coeff_bank` | Banco interno de coeficientes | Infraestrutura opcional, não utilizada no fluxo validado |
+| `dpdnano_hw_top` | Envoltório de integração com UART, memórias e controle | Camada externa ao núcleo congelado |
+
+5.7 Evidências de validação funcional e numérica
+Uma das vantagens desta revisão é que ela pode ancorar a descrição do capítulo em evidências objetivas de simulação, em vez de apenas descrever a intenção da arquitetura. Os relatórios disponíveis confirmam que o núcleo congelado entrega taxa de entrega integral, latência estável e comportamento numérico previsível em diferentes cenários de estimulação.
+No relatório TMQ001, a arquitetura processa 131072 vetores com taxa de entrega de 100 %, latência medida de cinco ciclos e zero eventos de overflow. No relatório TMQ003, a contribuição do ramo cúbico torna-se explicitamente observável ao longo da variação do sinal de entrada, demonstrando que o bloco `poly_branch` efetivamente adiciona a componente não linear prevista. No relatório TMQ004, o erro de quantização apresenta magnitude sub-LSB, o que é compatível com a decisão de postergar a redução de escala para o estágio apropriado. No relatório TMQ005, o erro RMS de magnitude permanece inferior a 0,007 %, reforçando a adequação da estratégia numérica adotada. No relatório TMQ006, a latência permanece rigidamente fixada em cinco ciclos. Finalmente, o relatório TMQ010 demonstra repetibilidade absoluta em ensaio saturado e determinístico, com 1000 execuções, mais de um milhão de amostras comparadas e zero divergências bit a bit.
+Esses resultados são particularmente relevantes porque a arquitetura não busca apenas funcionar em casos médios. Ela precisa manter previsibilidade sob estresse, coerência temporal em fluxo contínuo e repetibilidade mesmo quando opera próxima dos limites numéricos. A convergência desses relatórios indica que a descrição revisada do capítulo passa a refletir melhor o sistema que realmente foi validado.
+Figura 5.5 – Síntese visual das evidências de validação do DPDnano-Lite, relacionando latência, precisão, vazão e repetibilidade.
+Tabela 5.5 – Resultados selecionados de validação da arquitetura
+| Relatório | Evidência principal | Resultado observado |
+| --- | --- | --- |
+| TMQ001 | Latência e entrega em grande volume | 131072 vetores, 100 % de entrega, 5 ciclos |
+| TMQ003 | Manifestação do ramo polinomial | Razão máxima ramo cúbico / linear de 0,28125 |
+| TMQ004 | Erro de quantização | Erro máximo inferior a 0,5 LSB |
+| TMQ005 | Precisão numérica global | Erro RMS de magnitude de 0,00695 % |
+| TMQ006 | Estabilidade temporal do pipeline | Latência fixa de 5 ciclos e vazão de 1 vetor/ciclo |
+| TMQ010 | Repetibilidade sob saturação e estresse | 1000 execuções, 0 divergências bit a bit |
+
+5.8 Considerações de síntese e coerência arquitetural
+Do ponto de vista de síntese, a implementação revisada confirma uma filosofia consistente: a arquitetura evita blocos desnecessários no caminho ativo, concentra o esforço computacional nas operações realmente indispensáveis e utiliza pipeline para reduzir criticidade temporal. A separação entre `rounding` e `saturator` também se mostra tecnicamente adequada, pois impede que a etapa de saturação acumule responsabilidades que pertencem à conversão de escala.
+Outro ponto importante é que o projeto mantém portabilidade razoável dentro do universo de síntese Verilog-2001. Os módulos observados utilizam construções sintetizáveis convencionais, interfaces simples e organização modular clara. Essa escolha é especialmente coerente com o objetivo do DPDnano-Lite: demonstrar uma arquitetura de predistorção digital enxuta, funcional e compatível com uma FPGA compacta, sem depender de recursos exóticos ou de descrições excessivamente acopladas a um único fluxo de ferramenta.
+A revisão do capítulo também permite corrigir um problema de foco presente na versão anterior. O valor técnico da implementação não está em listar todos os arquivos do repositório como se fossem igualmente centrais, mas em mostrar como um conjunto pequeno de módulos bem definidos viabiliza um predistorcedor complexo, numericamente disciplinado e temporalmente previsível. Esse é o verdadeiro argumento arquitetural sustentado pelo código e pelos testes.
+
+5.9 Considerações finais do capítulo
+Esta versão revisada do Capítulo 5 reposiciona a documentação da implementação RTL do DPDnano-Lite sobre três bases mais sólidas: fidelidade ao código realmente presente no repositório, distinção clara entre caminho ativo e módulos auxiliares, e suporte por evidências objetivas de validação. Com isso, o capítulo deixa de depender de figuras ausentes e de descrições genéricas para passar a representar a arquitetura que efetivamente foi analisada e testada.
+O núcleo congelado mostra-se tecnicamente coerente com a proposta do trabalho. Ele utiliza um ramo linear e um ramo cúbico claramente definidos, alinhamento temporal explícito, acumulação registrada, política numérica consistente e etapas finais de arredondamento e saturação bem separadas. Os relatórios de teste reforçam essa leitura ao demonstrar latência fixa, entrega integral, boa precisão numérica e repetibilidade bit a bit sob estresse.
+Assim, o capítulo revisado não apenas corrige problemas documentais da versão anterior, mas também melhora a apresentação da ideia central do projeto: um predistorcedor digital compacto, modular e funcional, implementado em RTL de forma compatível com uma FPGA de recursos limitados e validado por um conjunto consistente de ensaios temporais, numéricos e comportamentais.

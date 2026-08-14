@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="760" viewBox="0 0 1700 760">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .head { fill: #d9e7f2; stroke: #4b6a88; stroke-width: 2; }
+      .cell { fill: #ffffff; stroke: #7a96af; stroke-width: 1.5; }
+      .htext { font: 700 18px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .ctext { font: 500 16px 'Segoe UI', Arial, sans-serif; fill: #2f4559; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+    </style>
+  </defs>
+  <rect width="1700" height="760" fill="#ffffff"/>
+  <text x="850" y="45" text-anchor="middle" class="title">Tabela 2.2 - Comparacao entre modelos comportamentais para DPD</text>
+  <g transform="translate(40,90)">
+    <rect x="0" y="0" width="250" height="80" class="head"/><text x="125" y="46" text-anchor="middle" class="htext">Modelo</text>
+    <rect x="250" y="0" width="340" height="80" class="head"/><text x="420" y="46" text-anchor="middle" class="htext">Capacidade de modelagem</text>
+    <rect x="590" y="0" width="260" height="80" class="head"/><text x="720" y="46" text-anchor="middle" class="htext">Complexidade</text>
+    <rect x="850" y="0" width="340" height="80" class="head"/><text x="1020" y="46" text-anchor="middle" class="htext">Vantagens</text>
+    <rect x="1190" y="0" width="430" height="80" class="head"/><text x="1405" y="46" text-anchor="middle" class="htext">Limitacoes</text>
+    <rect x="0" y="80" width="250" height="110" class="cell"/><text x="125" y="145" text-anchor="middle" class="ctext">LUT</text>
+    <rect x="250" y="80" width="340" height="110" class="cell"/><text x="420" y="145" text-anchor="middle" class="ctext">Boa para memoria reduzida</text>
+    <rect x="590" y="80" width="260" height="110" class="cell"/><text x="720" y="145" text-anchor="middle" class="ctext">Baixa</text>
+    <rect x="850" y="80" width="340" height="110" class="cell"/><text x="1020" y="130" text-anchor="middle" class="ctext">Implementacao simples</text><text x="1020" y="156" text-anchor="middle" class="ctext">e acesso direto</text>
+    <rect x="1190" y="80" width="430" height="110" class="cell"/><text x="1405" y="130" text-anchor="middle" class="ctext">Escalabilidade ruim</text><text x="1405" y="156" text-anchor="middle" class="ctext">para banda larga e memoria</text>
+    <rect x="0" y="190" width="250" height="110" class="cell"/><text x="125" y="255" text-anchor="middle" class="ctext">Volterra</text>
+    <rect x="250" y="190" width="340" height="110" class="cell"/><text x="420" y="255" text-anchor="middle" class="ctext">Muito alta</text>
+    <rect x="590" y="190" width="260" height="110" class="cell"/><text x="720" y="255" text-anchor="middle" class="ctext">Muito alta</text>
+    <rect x="850" y="190" width="340" height="110" class="cell"/><text x="1020" y="240" text-anchor="middle" class="ctext">Representacao mais geral</text><text x="1020" y="266" text-anchor="middle" class="ctext">de nao linearidade com memoria</text>
+    <rect x="1190" y="190" width="430" height="110" class="cell"/><text x="1405" y="240" text-anchor="middle" class="ctext">Grande numero de coeficientes</text><text x="1405" y="266" text-anchor="middle" class="ctext">e inviabilidade em FPGA compacta</text>
+    <rect x="0" y="300" width="250" height="110" class="cell"/><text x="125" y="365" text-anchor="middle" class="ctext">Memory Polynomial</text>
+    <rect x="250" y="300" width="340" height="110" class="cell"/><text x="420" y="365" text-anchor="middle" class="ctext">Alta</text>
+    <rect x="590" y="300" width="260" height="110" class="cell"/><text x="720" y="365" text-anchor="middle" class="ctext">Media</text>
+    <rect x="850" y="300" width="340" height="110" class="cell"/><text x="1020" y="350" text-anchor="middle" class="ctext">Equilibrio entre fidelidade</text><text x="1020" y="376" text-anchor="middle" class="ctext">e custo computacional</text>
+    <rect x="1190" y="300" width="430" height="110" class="cell"/><text x="1405" y="350" text-anchor="middle" class="ctext">Nao captura todos os</text><text x="1405" y="376" text-anchor="middle" class="ctext">termos cruzados</text>
+    <rect x="0" y="410" width="250" height="110" class="cell"/><text x="125" y="475" text-anchor="middle" class="ctext">GMP</text>
+    <rect x="250" y="410" width="340" height="110" class="cell"/><text x="420" y="475" text-anchor="middle" class="ctext">Muito alta</text>
+    <rect x="590" y="410" width="260" height="110" class="cell"/><text x="720" y="475" text-anchor="middle" class="ctext">Alta</text>
+    <rect x="850" y="410" width="340" height="110" class="cell"/><text x="1020" y="460" text-anchor="middle" class="ctext">Melhor modelagem para</text><text x="1020" y="486" text-anchor="middle" class="ctext">memoria forte</text>
+    <rect x="1190" y="410" width="430" height="110" class="cell"/><text x="1405" y="460" text-anchor="middle" class="ctext">Mais coeficientes e maior</text><text x="1405" y="486" text-anchor="middle" class="ctext">uso de DSPs</text>
+    <rect x="0" y="520" width="250" height="110" class="cell"/><text x="125" y="585" text-anchor="middle" class="ctext">Redes neurais</text>
+    <rect x="250" y="520" width="340" height="110" class="cell"/><text x="420" y="585" text-anchor="middle" class="ctext">Muito alta</text>
+    <rect x="590" y="520" width="260" height="110" class="cell"/><text x="720" y="585" text-anchor="middle" class="ctext">Alta a muito alta</text>
+    <rect x="850" y="520" width="340" height="110" class="cell"/><text x="1020" y="570" text-anchor="middle" class="ctext">Elevada flexibilidade</text><text x="1020" y="596" text-anchor="middle" class="ctext">de aproximacao</text>
+    <rect x="1190" y="520" width="430" height="110" class="cell"/><text x="1405" y="570" text-anchor="middle" class="ctext">Treinamento complexo e</text><text x="1405" y="596" text-anchor="middle" class="ctext">implementacao pesada</text>
+  </g>
+  <text x="850" y="725" text-anchor="middle" class="small">Fonte: elaboracao propria.</text>
+</svg>

@@ -1,0 +1,98 @@
+Capítulo 6 - Pacote de Consolidação para WORDs
+
+Este arquivo serve como guia operacional para a consolidação do Capítulo 6 no documento Word final do TCC, preservando o mesmo padrão geral adotado nos capítulos anteriores. O objetivo é facilitar a transição entre o texto-base em `texto_original` e a versão diagramada em `WORDs`, sem perda de rastreabilidade entre texto, figuras, tabelas e referências bibliográficas.
+
+1. Arquivo-base principal
+
+Texto consolidado do capítulo:
+`0-TCC DPDnano documentos/texto_original/Capítulo 6 – Simulações e Resultados.txt`
+
+Esse é o arquivo de referência primária para a redação do capítulo. Ele já contém:
+- estrutura consolidada das seções;
+- tabelas 6.1, 6.2 e 6.3 em formato textual;
+- chamadas editoriais explícitas para inserção das Figuras 6.1 a 6.7;
+- redação científica já compatível com a linha adotada nos capítulos anteriores.
+
+2. Arquivos auxiliares do capítulo
+
+Planejamento editorial de elementos visuais:
+`0-TCC DPDnano documentos/texto_original/Capítulo 6 – Plano de Figuras e Tabelas.txt`
+
+Índice operacional dos artefatos visuais:
+`0-TCC DPDnano documentos/texto_original/Capítulo 6 - Índice de Artefatos Visuais.txt`
+
+Arquivos de apoio por bloco temático:
+`0-TCC DPDnano documentos/texto_original/Capítulo 6.1 – Testes Funcionais TC001 a TC010.txt`
+`0-TCC DPDnano documentos/texto_original/Capítulo 6.2 – Métricas Qualitativas TMQ001 a TMQ010.txt`
+`0-TCC DPDnano documentos/texto_original/Capítulo 6.3 – Métricas Avançadas TMQ011 a TMQ013.txt`
+
+3. Referências bibliográficas já associadas ao capítulo
+
+Arquivo mestre de referências:
+`0-TCC DPDnano documentos/WORDs/referencias_bibliograficas_por_capitulo.txt`
+
+Referências atualmente citadas no Capítulo 6:
+- BERGERON, Janick. Writing testbenches: functional verification of HDL models. 2. ed. Boston: Kluwer Academic Publishers, 2000.
+- BHASKER, J.; CHADHA, Rakesh. Static timing analysis for nanometer designs: a practical approach. New York: Springer, 2009.
+
+Observação:
+O capítulo foi deliberadamente mantido com bibliografia suficiente, mas sem excesso de densidade. Caso, na revisão final do TCC, se deseje acrescentar mais uma ou duas referências específicas sobre verificação experimental em FPGA ou metodologia de testbench, isso poderá ser feito sem reestruturar o texto.
+
+4. Figuras previstas para inserção no Word
+
+Figura 6.1
+Arquivo:
+`tb_v3_2/results/TMQ002/tmq002_gain_vs_input.svg`
+
+Figura 6.2
+Arquivo:
+`tb_v3_2/results/TMQ003/tmq003_polynomial_response.svg`
+
+Figura 6.3
+Arquivo:
+`tb_v3_2/results/TMQ004/tmq004_quantization_histogram.svg`
+
+Figura 6.4
+Arquivo:
+`tb_v3_2/results/TMQ010/tmq010_repeatability_dashboard.svg`
+
+Figura 6.5
+Arquivo:
+`tb_v3_2/results/TMQ011/tmq011_safe_region.svg`
+
+Figura 6.6
+Arquivo:
+`tb_v3_2/results/TMQ012/tmq012_complex_safe_region.svg`
+
+Figura 6.7
+Arquivo:
+`tb_v3_2/results/TMQ013/tmq013_operational_limit_dashboard.svg`
+
+5. Tabelas previstas no capítulo
+
+Tabela 6.1 – Estrutura geral do plano de verificação do DPDnano-Lite
+Tabela 6.2 – Resumo das principais métricas temporais e de vazão
+Tabela 6.3 – Mapeamento dos elementos visuais do Capítulo 6
+
+6. Diretrizes de montagem em Word
+
+- O título do capítulo deve seguir o mesmo padrão visual dos capítulos 1, 2 e 3, com alinhamento à esquerda e sem recuo de parágrafo na primeira linha.
+- O corpo do texto deve permanecer justificado, com codificação correta em português do Brasil, evitando qualquer reaparecimento de mojibake.
+- As figuras devem ser centralizadas sem recuo lateral indevido.
+- As Figuras 6.5, 6.6 e 6.7 devem preferencialmente ser inseridas com largura maior, pois comunicam fronteiras operacionais e dashboards mais densos.
+- As tabelas devem ser ajustadas para evitar, sempre que possível, quebra entre páginas.
+- As marcações do tipo `[Inserir Figura ... aqui]` existentes no texto-base devem ser removidas somente no momento da montagem final do `.docx`, quando a figura real já estiver posicionada.
+
+7. Situação atual do capítulo
+
+Estado editorial:
+Texto consolidado e tecnicamente coerente.
+
+Estado bibliográfico:
+Referências mínimas essenciais já inseridas e registradas.
+
+Estado visual:
+Plano de figuras e tabelas definido; artefatos gráficos já existentes no repositório.
+
+Próximo passo natural:
+Gerar o arquivo `Capitulo_6_Completo_DPDnano_Lite.docx` em `0-TCC DPDnano documentos/WORDs`, no mesmo padrão adotado para os capítulos anteriores.

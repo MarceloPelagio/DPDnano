@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .axis { stroke: #2e4a62; stroke-width: 4; }
+      .ideal { stroke: #98a7b5; stroke-width: 4; stroke-dasharray: 10 8; fill: none; }
+      .real { stroke: #d17b00; stroke-width: 6; fill: none; }
+      .region { font: 700 20px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+      .mark { stroke: #b43c2f; stroke-width: 3; stroke-dasharray: 8 6; }
+    </style>
+  </defs>
+  <rect width="1200" height="700" fill="#ffffff"/>
+  <text x="600" y="50" text-anchor="middle" class="title">Figura 2.2 - Curva de transferencia de um amplificador de potencia</text>
+  <line x1="120" y1="600" x2="1080" y2="600" class="axis"/>
+  <line x1="120" y1="600" x2="120" y2="110" class="axis"/>
+  <text x="600" y="650" text-anchor="middle" class="small">Amplitude / potencia de entrada</text>
+  <text x="45" y="360" transform="rotate(-90 45 360)" text-anchor="middle" class="small">Amplitude / potencia de saida</text>
+  <path d="M140 570 L760 230" class="ideal"/>
+  <path d="M140 570 C320 470, 520 360, 690 270 C800 215, 900 205, 1030 198" class="real"/>
+  <line x1="710" y1="600" x2="710" y2="250" class="mark"/>
+  <text x="730" y="620" class="small">P1dB</text>
+  <text x="250" y="220" class="region">Regiao linear</text>
+  <text x="640" y="160" class="region">Compressao</text>
+  <text x="930" y="175" class="region">Saturacao</text>
+  <text x="810" y="255" class="small">Resposta real</text>
+  <text x="560" y="305" class="small">Resposta ideal</text>
+  <text x="600" y="680" text-anchor="middle" class="small">Fonte: elaboracao propria.</text>
+</svg>

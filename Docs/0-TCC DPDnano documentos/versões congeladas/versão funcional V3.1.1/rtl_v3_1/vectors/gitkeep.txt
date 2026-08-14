@@ -1,0 +1,20 @@
+blank file
+
+
+
+======================================
+create inside this folder a set of empty files named:
+
+vectors/
+
+README.md
+impulse.txt
+step.txt
+dc.txt
+sine_1khz.txt
+sine_10khz.txt
+twotone.txt
+qam16.txt
+qam64.txt
+ofdm.txt
+random.txt

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="520" viewBox="0 0 1400 520">
+  <defs>
+    <style>
+      .title { font: 700 30px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .label { font: 600 22px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+      .box { fill: #eef4f8; stroke: #4b6a88; stroke-width: 3; rx: 18; ry: 18; }
+      .highlight { fill: #ffe7c4; stroke: #d17b00; stroke-width: 4; rx: 18; ry: 18; }
+      .arrow { stroke: #46647f; stroke-width: 5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#46647f"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="520" fill="#ffffff"/>
+  <text x="700" y="55" text-anchor="middle" class="title">Figura 2.1 - Cadeia simplificada de transmissao RF com destaque para o amplificador de potencia</text>
+  <rect x="70" y="180" width="170" height="110" class="box"/>
+  <text x="155" y="225" text-anchor="middle" class="label">Banda-base</text>
+  <text x="155" y="255" text-anchor="middle" class="small">Processamento digital</text>
+  <rect x="300" y="180" width="170" height="110" class="box"/>
+  <text x="385" y="225" text-anchor="middle" class="label">DAC / IF</text>
+  <text x="385" y="255" text-anchor="middle" class="small">Conversao</text>
+  <rect x="530" y="180" width="170" height="110" class="box"/>
+  <text x="615" y="225" text-anchor="middle" class="label">Misturador</text>
+  <text x="615" y="255" text-anchor="middle" class="small">Upconversion RF</text>
+  <rect x="760" y="160" width="220" height="150" class="highlight"/>
+  <text x="870" y="215" text-anchor="middle" class="label">Amplificador de</text>
+  <text x="870" y="245" text-anchor="middle" class="label">Potencia (PA)</text>
+  <text x="870" y="278" text-anchor="middle" class="small">Maior consumo de energia</text>
+  <rect x="1040" y="180" width="170" height="110" class="box"/>
+  <text x="1125" y="225" text-anchor="middle" class="label">Filtro / Duplex</text>
+  <text x="1125" y="255" text-anchor="middle" class="small">Condicionamento RF</text>
+  <rect x="1270" y="180" width="90" height="110" class="box"/>
+  <text x="1315" y="225" text-anchor="middle" class="label">Antena</text>
+  <path d="M240 235 L300 235" class="arrow"/>
+  <path d="M470 235 L530 235" class="arrow"/>
+  <path d="M700 235 L760 235" class="arrow"/>
+  <path d="M980 235 L1040 235" class="arrow"/>
+  <path d="M1210 235 L1270 235" class="arrow"/>
+  <text x="870" y="375" text-anchor="middle" class="small">Bloco critico para linearidade, eficiencia e crescimento espectral</text>
+  <text x="700" y="455" text-anchor="middle" class="small">Fonte: elaboracao propria.</text>
+</svg>

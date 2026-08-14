@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="700" viewBox="0 0 1300 700">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .label { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+      .axis { stroke: #2e4a62; stroke-width: 3; }
+      .curve1 { stroke: #d17b00; stroke-width: 5; fill: none; }
+      .curve2 { stroke: #7a2f8f; stroke-width: 5; fill: none; }
+    </style>
+  </defs>
+  <rect width="1300" height="700" fill="#ffffff"/>
+  <text x="650" y="50" text-anchor="middle" class="title">Figura 2.4 - Distorcoes AM/AM e AM/PM em amplificadores de potencia</text>
+  <text x="330" y="105" text-anchor="middle" class="label">Conversao AM/AM</text>
+  <text x="970" y="105" text-anchor="middle" class="label">Conversao AM/PM</text>
+  <line x1="90" y1="580" x2="570" y2="580" class="axis"/>
+  <line x1="90" y1="580" x2="90" y2="170" class="axis"/>
+  <line x1="730" y1="580" x2="1210" y2="580" class="axis"/>
+  <line x1="730" y1="580" x2="730" y2="170" class="axis"/>
+  <path d="M110 545 C210 470, 310 390, 390 320 C460 260, 520 235, 550 228" class="curve1"/>
+  <path d="M750 540 C840 520, 930 500, 1020 445 C1090 400, 1140 330, 1185 240" class="curve2"/>
+  <text x="330" y="625" text-anchor="middle" class="small">Amplitude de entrada</text>
+  <text x="25" y="380" transform="rotate(-90 25 380)" text-anchor="middle" class="small">Amplitude de saida</text>
+  <text x="970" y="625" text-anchor="middle" class="small">Amplitude de entrada</text>
+  <text x="665" y="380" transform="rotate(-90 665 380)" text-anchor="middle" class="small">Rotacao de fase</text>
+  <text x="650" y="675" text-anchor="middle" class="small">Fonte: elaboracao propria.</text>
+</svg>

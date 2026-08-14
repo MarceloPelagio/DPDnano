@@ -1,0 +1,1122 @@
+
+# CAPÍTULO 2 – FUNDAMENTAÇÃO TEÓRICA
+
+## 2.1 Amplificadores de Potência
+
+Os amplificadores de potência (Power Amplifiers – PAs) constituem um dos elementos mais importantes da cadeia de transmissão em sistemas modernos de comunicações sem fio. Sua principal função é elevar a potência do sinal proveniente dos estágios de processamento em banda-base e de conversão para radiofrequência (RF) até níveis suficientes para que a informação possa ser irradiada pela antena e propagada através do meio de transmissão. Em praticamente todos os sistemas de telecomunicações, incluindo redes celulares, enlaces por satélite, comunicações militares, sistemas Wi-Fi, Internet das Coisas (IoT) e comunicações veiculares, o desempenho global do transmissor depende diretamente das características do amplificador de potência.
+
+Embora diversos blocos componham um transmissor digital, como moduladores, conversores digital-analógico (DACs), misturadores e osciladores locais, o amplificador de potência é normalmente o estágio responsável pelo maior consumo energético do sistema. Em estações rádio-base de telefonia móvel, por exemplo, esse componente pode representar a maior parcela do consumo total de energia do transmissor, tornando sua eficiência um fator de elevada relevância tanto sob o ponto de vista econômico quanto ambiental. Consequentemente, pesquisas relacionadas ao aumento da eficiência energética dos amplificadores de potência têm recebido crescente atenção nos últimos anos, especialmente diante da expansão das redes 5G e do desenvolvimento das futuras tecnologias de comunicação 6G.
+
+Sob o ponto de vista funcional, o amplificador de potência recebe um sinal de baixa potência, preservando, idealmente, todas as informações de amplitude, fase e frequência nele contidas, enquanto aumenta sua potência para um nível adequado à transmissão. Em um amplificador ideal, a relação entre o sinal de entrada e o sinal de saída é perfeitamente linear, de modo que o formato da envoltória do sinal permanece inalterado e apenas sua amplitude é escalada por um ganho constante. Nessa condição, todas as componentes espectrais presentes no sinal original são preservadas, inexistindo a geração de distorções harmônicas ou produtos de intermodulação.
+
+Na prática, entretanto, nenhum dispositivo eletrônico apresenta comportamento perfeitamente linear em toda sua faixa de operação. Transistores bipolares (BJTs), MOSFETs, LDMOS, dispositivos baseados em arseneto de gálio (GaAs) e tecnologias baseadas em nitreto de gálio (GaN), amplamente empregados na construção de amplificadores modernos, possuem características elétricas intrinsecamente não lineares. À medida que o nível de excitação do amplificador aumenta e o ponto de operação se aproxima da saturação, essas características tornam-se mais evidentes, provocando alterações significativas tanto na amplitude quanto na fase do sinal amplificado.
+
+Essa limitação física estabelece um dos principais desafios do projeto de transmissores modernos. Por um lado, operar o amplificador em regiões altamente lineares reduz significativamente a geração de distorções, porém implica baixa eficiência energética, uma vez que grande parte da potência consumida é dissipada sob a forma de calor. Por outro lado, operar próximo da saturação aumenta substancialmente a eficiência, permitindo melhor aproveitamento da energia disponível, mas intensifica os efeitos não lineares responsáveis pela degradação da qualidade do sinal transmitido.
+
+Esse compromisso entre linearidade e eficiência tornou-se ainda mais crítico com a evolução dos sistemas digitais de comunicação. Técnicas modernas de modulação, como QPSK, QAM de alta ordem, OFDM e suas diversas variantes empregadas em LTE, 5G NR e sistemas Wi-Fi de última geração, produzem sinais com elevada razão entre potência de pico e potência média (Peak-to-Average Power Ratio – PAPR). Esses sinais apresentam rápidas variações de amplitude, exigindo que o amplificador opere de forma linear mesmo diante de excursões instantâneas elevadas da envoltória do sinal. Caso contrário, ocorre compressão dos picos, geração de componentes espectrais indesejadas e aumento significativo da taxa de erro do sistema.
+
+Além da degradação da qualidade da informação transmitida, as não linearidades do amplificador produzem efeitos que extrapolam a largura de banda originalmente ocupada pelo sinal. Produtos de intermodulação gerados pelos dispositivos ativos provocam o chamado crescimento espectral (*spectral regrowth*), aumentando a energia irradiada em canais adjacentes e elevando os níveis de interferência sobre outros sistemas de comunicação. Em consequência, organismos reguladores e padrões internacionais estabelecem limites rigorosos para emissões fora da banda de operação, impondo requisitos de linearidade cada vez mais exigentes aos transmissores modernos.
+
+Diante desse cenário, diversas técnicas de linearização foram desenvolvidas ao longo das últimas décadas com o objetivo de conciliar elevada eficiência energética com baixo nível de distorção. Entre essas técnicas destacam-se a operação com *back-off* de potência, a alimentação dinâmica (*Envelope Tracking*), a arquitetura *Doherty*, técnicas de realimentação (*feedback*), *feedforward* e, principalmente, a Predistorção Digital (Digital Predistortion – DPD). Atualmente, a DPD é amplamente reconhecida como a solução mais eficiente para compensar as não linearidades de amplificadores de potência em sistemas digitais de alta capacidade, devido à sua flexibilidade, capacidade de adaptação e facilidade de implementação em plataformas digitais programáveis.
+
+No contexto deste trabalho, o amplificador de potência representa o elemento cuja característica não linear motiva o desenvolvimento da arquitetura DPDnano-Lite. Todo o processamento digital proposto tem como finalidade gerar uma função de predistorção capaz de compensar, de forma antecipada, as distorções introduzidas pelo amplificador, permitindo que o conjunto formado pelo predistorcedor digital e pelo amplificador apresente um comportamento global aproximadamente linear. Dessa forma, torna-se possível operar o amplificador em regiões de maior eficiência energética sem comprometer significativamente a qualidade do sinal transmitido, objetivo central das arquiteturas modernas de Predistorção Digital e fundamento sobre o qual se desenvolvem os capítulos seguintes deste trabalho.
+
+=========================================================
+
+
+
+A importância dos amplificadores de potência pode ser compreendida analisando-se a cadeia completa de transmissão de um sistema de radiofrequência. Após o processamento digital do sinal, a modulação e a conversão para radiofrequência, a potência disponível ainda é insuficiente para que a informação seja transmitida por longas distâncias. Cabe ao amplificador de potência fornecer a energia necessária para que o sinal seja irradiado pela antena com intensidade adequada, preservando, tanto quanto possível, as características originalmente produzidas pelo processamento digital.
+
+Idealmente, a potência de saída do amplificador deveria ser proporcional à potência de entrada para toda a faixa de operação. Em termos simplificados, um ganho constante significa que qualquer variação aplicada à entrada é reproduzida na saída apenas multiplicada por um fator fixo. Entretanto, essa condição somente é válida em uma região limitada de operação. À medida que a amplitude do sinal aumenta, os dispositivos semicondutores aproximam-se de seus limites físicos, fazendo com que o ganho deixe de ser constante e passe a depender do nível instantâneo do sinal.
+
+Esse fenômeno é conhecido como compressão de ganho. Inicialmente, pequenas reduções de ganho podem parecer pouco significativas, porém, em sinais digitais modernos compostos por milhares de símbolos, essa compressão modifica a envoltória do sinal, altera sua distribuição estatística e introduz componentes espectrais inexistentes no sinal original. Como consequência, ocorre degradação da qualidade da transmissão e aumento da energia irradiada fora da banda de interesse.
+
+Outro aspecto importante refere-se à eficiência energética. A eficiência de um amplificador de potência pode ser definida como a relação entre a potência entregue à carga e a potência total consumida pela fonte de alimentação. Em aplicações práticas, aumentar a eficiência reduz o consumo de energia, diminui a dissipação térmica, simplifica o sistema de refrigeração e reduz custos operacionais. Esses fatores tornam-se especialmente relevantes em estações rádio-base, onde dezenas ou centenas de amplificadores permanecem em operação contínua durante anos.
+
+Historicamente, o desenvolvimento de amplificadores de potência sempre buscou equilibrar dois objetivos conflitantes: elevada linearidade e elevada eficiência. Em geral, arquiteturas altamente lineares apresentam menor eficiência, enquanto arquiteturas extremamente eficientes tendem a apresentar comportamento mais não linear. Esse compromisso constitui um dos principais desafios da engenharia de sistemas de comunicação modernos e representa a principal motivação para o desenvolvimento de técnicas de linearização, tema que será aprofundado nas próximas seções deste capítulo.
+
+No contexto da arquitetura DPDnano-Lite, compreender esse compromisso é fundamental. A arquitetura proposta não busca modificar o amplificador de potência, mas sim compensar digitalmente suas imperfeições. Dessa forma, torna-se possível operar o amplificador em uma região mais eficiente sem comprometer significativamente a qualidade espectral e a fidelidade do sinal transmitido. Essa estratégia representa atualmente uma das abordagens mais adotadas em transmissores digitais de alto desempenho.
+
+===================================================
+
+Parte 3 – Classes de Operação
+
+As características de linearidade e eficiência de um amplificador de potência dependem diretamente de sua classe de operação. A classificação é determinada, principalmente, pelo ponto de polarização do dispositivo ativo e pelo intervalo do ciclo do sinal durante o qual o transistor permanece conduzindo corrente. Essa escolha influencia o consumo de energia, a dissipação térmica, a distorção introduzida e a complexidade do circuito.
+
+Os amplificadores de Classe A conduzem corrente durante todo o ciclo do sinal (360°). Essa característica proporciona excelente linearidade, pois o dispositivo permanece continuamente na região ativa. Em contrapartida, a corrente de polarização elevada resulta em baixa eficiência, normalmente entre 25% e 50%, tornando essa classe pouco atrativa para transmissores de alta potência, apesar de sua elevada fidelidade.
+
+Na Classe B, cada dispositivo conduz aproximadamente metade do ciclo (180°). A eficiência aumenta significativamente quando comparada à Classe A, porém surge uma distorção característica na transição entre os semiciclos, conhecida como distorção de cruzamento. Para minimizar esse efeito, a indústria utiliza amplamente a Classe AB, na qual os dispositivos permanecem levemente polarizados acima do ponto de corte. Dessa forma obtém-se um compromisso entre boa linearidade e eficiência intermediária, razão pela qual essa classe é uma das mais empregadas em transmissores comerciais.
+
+Amplificadores das Classes C, D, E e F priorizam a eficiência energética. A Classe C conduz por menos de 180° do ciclo e é indicada para aplicações de frequência fixa com circuitos ressonantes. As Classes D, E e F utilizam técnicas de chaveamento ou modelagem harmônica para reduzir as perdas de potência nos dispositivos semicondutores, alcançando eficiências bastante elevadas. Entretanto, essas arquiteturas apresentam comportamento fortemente não linear quando aplicadas diretamente a sinais modulados de elevada largura de banda.
+
+Com a evolução dos sistemas LTE, 5G NR e futuras redes 6G, os amplificadores passaram a operar com sinais de elevada PAPR e requisitos rigorosos de pureza espectral. Nesse cenário, tornou-se inviável sacrificar eficiência em favor da linearidade. A solução adotada pela indústria consiste em utilizar amplificadores de alta eficiência associados a técnicas digitais de compensação, entre as quais a Predistorção Digital ocupa posição de destaque.
+
+Portanto, a escolha da classe de operação do amplificador não pode ser analisada isoladamente. Ela deve ser considerada em conjunto com as técnicas de linearização disponíveis. Essa visão sistêmica fundamenta a proposta deste trabalho, no qual a arquitetura DPDnano-Lite atua como um elemento de compensação digital capaz de reduzir os efeitos das não linearidades introduzidas pelo amplificador, permitindo explorar regiões de operação mais eficientes sem comprometer significativamente a qualidade do sinal transmitido.
+
+=================================================================
+observação sobre as adições no texto:
+
+Observação para a versão final do TCC
+
+Nesta seção ainda iremos incluir:
+
+Figura 2.1 – Cadeia de transmissão RF destacando o amplificador de potência.
+Figura 2.2 – Curva de transferência (região linear, compressão e saturação).
+Tabela 2.1 – Comparação entre as Classes A, AB, B, C, D, E e F (linearidade, eficiência, vantagens, limitações e aplicações).
+Figura 2.3 – Comparação gráfica entre a operação linear e a operação em saturação.
+
+Esses elementos serão inseridos no texto definitivo para enriquecer a fundamentação científica e facilitar a compreensão do leitor
+==================================================================
+
+Parte 4 – Linearidade, Compressão e Saturação
+
+A linearidade de um amplificador de potência corresponde à capacidade de reproduzir na saída uma versão amplificada do sinal de entrada sem alterar suas relações de amplitude e fase. Em um dispositivo ideal, a característica de transferência seria perfeitamente linear, permitindo que qualquer componente espectral presente na entrada fosse reproduzida na saída apenas multiplicada por um ganho constante.
+
+Na prática, entretanto, a região de linearidade é limitada. À medida que a amplitude do sinal aumenta, o dispositivo ativo aproxima-se de seus limites físicos de tensão e corrente. Nessa condição, o ganho deixa de permanecer constante e passa a diminuir progressivamente, fenômeno conhecido como compressão de ganho. Um dos parâmetros mais utilizados para caracterizar esse comportamento é o ponto de compressão de 1 dB (P1dB), definido como o nível de potência no qual o ganho medido torna-se 1 dB inferior ao valor esperado para um amplificador ideal.
+
+A continuidade do aumento da potência de entrada leva o amplificador à região de saturação. Nessa condição, incrementos adicionais na amplitude do sinal praticamente não produzem aumento proporcional na potência de saída. Como consequência, os picos da envoltória são limitados, modificando significativamente a forma de onda transmitida. Esse efeito é particularmente crítico para sinais OFDM e outras modulações de elevada PAPR, cujos picos instantâneos transportam parte importante da informação.
+
+Além da compressão em amplitude, amplificadores reais também apresentam variações de fase dependentes da potência instantânea do sinal. A combinação dessas alterações de amplitude e fase resulta em produtos de intermodulação, crescimento espectral e degradação de métricas como ACPR e EVM. Esses parâmetros serão estudados detalhadamente nas próximas seções deste capítulo, pois constituem os principais indicadores de desempenho utilizados para avaliar sistemas de Predistorção Digital.
+
+Do ponto de vista da implementação em hardware, operar deliberadamente o amplificador próximo da região de compressão pode ser vantajoso sob o aspecto energético, desde que exista um mecanismo capaz de compensar as distorções introduzidas. Essa é precisamente a função da Predistorção Digital. O predistorcedor gera uma resposta inversa à característica não linear do amplificador, de modo que a cascata formada pelo DPD e pelo PA apresente um comportamento aproximadamente linear. A arquitetura DPDnano-Lite desenvolvida neste trabalho foi concebida segundo esse princípio, empregando um modelo polinomial de baixa complexidade adequado à implementação em FPGAs com recursos limitados.
+
+===============================================================
+
+Parte 5 – Modelagem Matemática da Não Linearidade
+
+2.1 Amplificadores de Potência (Parte 5 – Modelagem Matemática da Não Linearidade)
+
+Para compreender o funcionamento das técnicas de Predistorção Digital (Digital Predistortion – DPD) é necessário representar matematicamente o comportamento do amplificador de potência. Embora o funcionamento físico dos dispositivos semicondutores seja descrito por modelos eletromagnéticos e de transporte de cargas bastante complexos, em sistemas modernos de comunicações digitais é comum utilizar modelos comportamentais. Esses modelos estabelecem diretamente a relação entre o sinal de entrada e o sinal de saída, proporcionando elevada precisão com custo computacional significativamente inferior ao dos modelos físicos completos.
+
+Em sua condição ideal, um amplificador linear pode ser representado pela seguinte expressão:
+
+Equação (2.6)
+
+    y(t) = G · x(t)
+
+onde:
+
+x(t) é o sinal complexo de entrada;
+
+y(t) é o sinal complexo de saída;
+
+G representa o ganho linear do amplificador.
+
+Nessa condição, todas as componentes espectrais presentes no sinal de entrada são preservadas, ocorrendo apenas um escalonamento de amplitude. Não há geração de harmônicos, produtos de intermodulação ou alterações de fase.
+
+Entretanto, quando o amplificador passa a operar próximo da região de compressão, o ganho deixa de ser constante e a saída passa a depender de uma função não linear da entrada:
+
+Equação (2.7)
+
+    y(t) = f(x(t))
+
+A função f(·) representa a característica de transferência do amplificador e incorpora todos os efeitos de compressão, saturação e distorções introduzidas pelos dispositivos semicondutores.
+
+Como essa função geralmente não possui uma expressão analítica simples, sua aproximação é realizada por meio de séries polinomiais. Considerando apenas termos de ordem ímpar, que são predominantes na maioria dos amplificadores de radiofrequência devido às suas propriedades de simetria, obtém-se o modelo polinomial:
+
+Equação (2.8)
+
+    y(n) = Σ aₖ · x(n) · |x(n)|^(k−1)
+
+    k = 1, 3, 5, ..., K
+
+em que:
+
+aₖ representa os coeficientes complexos do modelo;
+
+K corresponde à maior ordem polinomial considerada.
+
+A utilização de coeficientes complexos permite representar simultaneamente as distorções de amplitude (AM/AM) e de fase (AM/PM). O primeiro termo (k = 1) corresponde ao ganho linear do amplificador, enquanto os termos de terceira, quinta e ordens superiores modelam os efeitos não lineares responsáveis pela geração de produtos de intermodulação e crescimento espectral.
+
+Embora o modelo polinomial descreva adequadamente amplificadores sem memória, dispositivos reais apresentam efeitos dinâmicos decorrentes de fenômenos térmicos, capacitivos, indutivos e das redes de polarização. Esses efeitos fazem com que a resposta instantânea do amplificador dependa não apenas da amostra atual, mas também de amostras anteriores do sinal.
+
+Para representar esse comportamento emprega-se o modelo conhecido como Memory Polynomial, expresso por:
+
+Equação (2.9)
+
+    y(n) =
+    Σ[m=0→M−1] Σ[k=1,3,...,K]
+    a(k,m) · x(n−m) · |x(n−m)|^(k−1)
+
+onde:
+
+M representa a profundidade de memória do modelo;
+
+a(k,m) são coeficientes complexos associados simultaneamente à ordem polinomial e ao atraso temporal.
+
+Esse modelo tornou-se um dos mais utilizados na literatura por apresentar excelente compromisso entre precisão de modelagem e complexidade computacional. Sua implementação requer apenas operações de multiplicação, soma, registradores de atraso e armazenamento de coeficientes, características que o tornam particularmente adequado para implementação em FPGAs.
+
+No presente trabalho, essa formulação constitui a base matemática da arquitetura DPDnano-Lite. Entretanto, visando reduzir a utilização de blocos DSP, elementos lógicos e memória interna da FPGA Tang Nano 4K, emprega-se uma versão simplificada do modelo Memory Polynomial, limitada a baixa ordem polinomial e pequena profundidade de memória. Essa escolha preserva a capacidade de compensação das principais não linearidades observadas em amplificadores de potência modernos, mantendo reduzida complexidade de hardware e baixo consumo de recursos computacionais.
+
+===================================================================
+
+2.2 Regiões de Operação dos Amplificadores de Potência
+
+Os amplificadores de potência apresentam diferentes regiões de operação ao longo de sua característica de transferência. Cada região está associada a um comportamento distinto do dispositivo, influenciando diretamente a linearidade, a eficiência energética e a qualidade do sinal transmitido. O conhecimento dessas regiões é fundamental para compreender por que técnicas de linearização, como a Predistorção Digital, tornaram-se indispensáveis nos sistemas modernos de comunicações.
+
+Na região linear, pequenas variações na amplitude do sinal de entrada produzem variações proporcionais na saída. O ganho permanece aproximadamente constante e o amplificador pode ser representado pelo modelo linear:
+
+Equação (2.10)
+
+    y(t) = G x(t)
+
+onde:
+
+- y(t) é o sinal de saída;
+- x(t) é o sinal de entrada;
+- G representa o ganho linear.
+
+Nessa condição, a derivada da função de transferência permanece aproximadamente constante,
+
+    dy/dx ≈ G
+
+indicando que o ganho praticamente não depende da amplitude instantânea do sinal. Essa é a região de operação desejável quando se busca máxima fidelidade, mínima distorção e elevada qualidade espectral. Entretanto, nessa condição o transistor permanece afastado da saturação, reduzindo a eficiência energética do amplificador.
+
+À medida que a potência de entrada aumenta, o dispositivo passa a operar na região de compressão. Nessa faixa, o ganho deixa de ser constante e começa a diminuir progressivamente em função da amplitude do sinal. O parâmetro mais empregado para caracterizar esse comportamento é o ponto de compressão de 1 dB (P1dB), definido como o nível de potência em que o ganho medido apresenta redução de 1 dB em relação ao ganho obtido na região linear.
+
+Equação (2.11)
+
+    Gcomp(dB) = Glinear(dB) − 1
+
+Fisicamente, o P1dB representa o início da perda significativa de linearidade e constitui um importante parâmetro de especificação de amplificadores de RF.
+
+Com o aumento adicional da potência de entrada, o amplificador atinge a região de saturação. Nessa condição, o dispositivo aproxima-se de seus limites físicos de tensão e corrente, impossibilitando que a potência de saída continue crescendo proporcionalmente à potência aplicada na entrada. Matematicamente, esse comportamento pode ser representado por:
+
+Equação (2.12)
+
+    lim x→∞ y(x) = ymax
+
+onde ymax representa a máxima amplitude que pode ser produzida pelo amplificador.
+
+A operação em saturação provoca compressão da envoltória, distorções AM/AM, rotações de fase AM/PM, geração de harmônicos e produtos de intermodulação. Esses efeitos degradam significativamente a qualidade do sinal e aumentam a energia irradiada fora da banda de interesse, fenômeno conhecido como crescimento espectral.
+
+Apesar dessas limitações, operar próximo da saturação apresenta uma importante vantagem: a eficiência energética torna-se significativamente maior. Por esse motivo, transmissores modernos normalmente operam nessa região e utilizam algoritmos de Predistorção Digital para compensar as distorções introduzidas pelo amplificador. A arquitetura DPDnano-Lite proposta neste trabalho foi desenvolvida seguindo exatamente esse princípio, permitindo que o amplificador opere em uma região de maior eficiência sem comprometer a linearidade global do sistema.
+
+=============================================================
+
+2.2 Regiões de Operação dos Amplificadores de Potência
+
+Parte 2 – Característica de Transferência e Ponto de Compressão
+
+Uma forma conveniente de analisar o comportamento de um amplificador de potência consiste em observar sua característica de transferência, isto é, a relação entre a amplitude do sinal de entrada e a amplitude correspondente do sinal de saída. Em um dispositivo ideal, essa característica é representada por uma reta de inclinação constante, indicando que qualquer incremento na entrada produz um incremento proporcional na saída.
+
+Matematicamente, essa condição é descrita por:
+
+Equação (2.13)
+
+    A_v = dVout / dVin
+
+onde:
+
+- A_v é o ganho diferencial do amplificador;
+- Vout é a tensão de saída;
+- Vin é a tensão de entrada.
+
+Enquanto o dispositivo permanece na região linear, o ganho diferencial pode ser considerado aproximadamente constante, caracterizando uma resposta praticamente proporcional entre entrada e saída.
+
+Na prática, entretanto, limitações impostas pela tensão de alimentação, pelas características dos dispositivos semicondutores e pelos efeitos parasitas fazem com que o ganho diminua gradativamente à medida que a potência de entrada aumenta. Consequentemente, a inclinação da curva de transferência deixa de ser constante, caracterizando o início da compressão.
+
+Se o ganho linear for representado por GL e o ganho efetivo por G(x), a condição de compressão pode ser expressa por:
+
+Equação (2.14)
+
+    G(x) < GL
+
+Essa desigualdade indica que o ganho instantâneo do amplificador passa a ser inferior ao ganho observado na região linear. Quanto maior a amplitude do sinal aplicado, maior será essa diferença.
+
+O parâmetro mais utilizado para especificar essa transição é o ponto de compressão de 1 dB (P1dB). Em termos matemáticos, ele pode ser definido como:
+
+Equação (2.15)
+
+    P1dB = { Pin | G(Pin) = GL − 1 dB }
+
+onde:
+
+- Pin representa a potência aplicada na entrada;
+- GL é o ganho linear do amplificador;
+- G(Pin) é o ganho efetivo para aquela potência de entrada.
+
+Embora a redução de apenas um decibel pareça pequena, ela representa o início da perda significativa de linearidade. A partir desse ponto, começam a surgir componentes harmônicas e produtos de intermodulação que provocam aumento da potência irradiada fora da banda de interesse, elevando o ACPR e degradando o EVM do sistema.
+
+Na característica de transferência de um amplificador de potência, observa-se que a distância entre a resposta ideal e a resposta real cresce progressivamente após o P1dB. Essa diferença corresponde exatamente ao erro introduzido pela não linearidade do dispositivo e constitui a grandeza que os algoritmos de Predistorção Digital procuram compensar.
+
+No contexto da arquitetura DPDnano-Lite, o objetivo não é impedir que o amplificador opere próximo da compressão. Pelo contrário, busca-se explorar essa região de maior eficiência energética, aplicando previamente ao sinal uma função inversa da característica não linear do PA. Como resultado, a cascata formada pelo predistorcedor e pelo amplificador apresenta uma resposta global aproximadamente linear, reduzindo a distorção espectral sem sacrificar a eficiência do transmissor.
+
+=============================================================
+
+Parte 3 – Eficiência, Back-Off e Compromisso entre Linearidade e Eficiência
+
+Em sistemas modernos de comunicações sem fio, a escolha da região de operação de um amplificador de potência representa um compromisso entre linearidade e eficiência energética. Quanto mais distante da saturação o dispositivo opera, menor é a distorção introduzida no sinal. Em contrapartida, uma parcela significativa da potência consumida é dissipada em forma de calor, reduzindo a eficiência global do transmissor.
+
+A eficiência de drenagem ou eficiência de potência pode ser expressa por:
+
+Equação (2.16)
+
+    η = Pout / PDC
+
+onde:
+
+- η é a eficiência do amplificador;
+- Pout é a potência de radiofrequência entregue à carga;
+- PDC é a potência fornecida pela fonte de alimentação em corrente contínua.
+
+Quanto maior o valor de η, menor será a potência dissipada em forma de calor e maior será a eficiência energética do transmissor. Entretanto, essa condição normalmente é obtida quando o amplificador opera próximo da saturação, região em que a linearidade é reduzida.
+
+Outro parâmetro amplamente empregado na literatura é o Output Back-Off (OBO), que indica o afastamento da potência média de operação em relação à potência máxima de saturação do amplificador.
+
+Equação (2.17)
+
+    OBO(dB) = 10 log10 (Psat / Pout)
+
+onde:
+
+- Psat é a potência de saturação;
+- Pout é a potência média de saída.
+
+De maneira análoga, define-se o Input Back-Off (IBO), correspondente ao afastamento entre a potência de entrada utilizada e a potência de entrada necessária para levar o amplificador à saturação.
+
+Equação (2.18)
+
+    IBO(dB) = 10 log10 (Pin,sat / Pin)
+
+em que:
+
+- Pin,sat representa a potência de entrada na saturação;
+- Pin corresponde à potência de entrada durante a operação normal.
+
+Valores elevados de OBO e IBO indicam que o amplificador está operando distante da saturação. Nessa condição, a resposta apresenta elevada linearidade, porém a eficiência energética diminui significativamente. Por outro lado, valores reduzidos de back-off aumentam a eficiência do amplificador, mas intensificam a compressão de ganho, as distorções AM/AM e AM/PM, além da geração de produtos de intermodulação e do crescimento espectral.
+
+Esse compromisso torna-se ainda mais crítico em sistemas que utilizam sinais com elevada Peak-to-Average Power Ratio (PAPR), como OFDM, LTE e 5G NR. Nesses sistemas, a presença de picos instantâneos elevados exige maior margem de operação para evitar saturação, aumentando o back-off e reduzindo a eficiência do transmissor.
+
+A Predistorção Digital surge como uma solução para esse problema. Em vez de afastar o ponto de operação da saturação, mantém-se o amplificador operando em uma região de alta eficiência e aplica-se ao sinal uma função inversa da característica não linear do PA. Como resultado, a cascata formada pelo predistorcedor e pelo amplificador apresenta uma resposta aproximadamente linear.
+
+Na arquitetura DPDnano-Lite, esse princípio é implementado por meio de um modelo Memory Polynomial de baixa complexidade computacional. A utilização de baixa ordem polinomial e pequena profundidade de memória reduz significativamente a utilização de multiplicadores, registradores e blocos DSP, permitindo a implementação em FPGAs compactas, como a Tang Nano 4K, sem comprometer a capacidade de compensação das principais não linearidades do amplificador.
+
+===============================================================
+
+Parte 4 – Transição para as Distorções AM/AM e AM/PM
+
+Até este ponto foi demonstrado que o amplificador de potência apresenta diferentes regiões de operação, variando desde um comportamento aproximadamente linear até a saturação. Entretanto, para compreender o funcionamento da Predistorção Digital é necessário analisar como essas regiões modificam separadamente a amplitude e a fase do sinal transmitido.
+
+Considere um sinal complexo de banda-base representado por:
+
+Equação (2.19)
+
+    x(n) = A(n)e^{jφ(n)}
+
+onde:
+
+- x(n) é o sinal complexo de entrada;
+- A(n) representa a envoltória (amplitude instantânea);
+- φ(n) é a fase instantânea do sinal.
+
+Em um amplificador ideal, apenas a amplitude é multiplicada por um ganho constante, preservando-se integralmente a fase do sinal. O comportamento ideal pode ser descrito por:
+
+Equação (2.20)
+
+    y(n) = G · A(n)e^{jφ(n)}
+
+em que G representa o ganho linear do amplificador.
+
+Nos amplificadores reais, entretanto, tanto a amplitude quanto a fase passam a depender da envoltória do sinal de entrada. Dessa forma, o comportamento do PA pode ser descrito por duas funções não lineares independentes.
+
+A primeira corresponde à característica AM/AM:
+
+Equação (2.21)
+
+    |y(n)| = FAM/AM(A(n))
+
+Essa função descreve como a amplitude de saída varia em função da amplitude aplicada na entrada. Na região linear, FAM/AM apresenta comportamento aproximadamente proporcional. À medida que o dispositivo se aproxima da saturação, observa-se compressão progressiva da envoltória, reduzindo o ganho efetivo do amplificador.
+
+A segunda corresponde à característica AM/PM:
+
+Equação (2.22)
+
+    ∠y(n) = φ(n) + FAM/PM(A(n))
+
+Essa expressão mostra que a fase do sinal de saída não depende apenas da fase original φ(n), mas também da amplitude instantânea do sinal. Em consequência dos efeitos físicos presentes no transistor e em sua rede de polarização, diferentes amplitudes produzem diferentes rotações de fase.
+
+A combinação simultânea das características AM/AM e AM/PM provoca distorção vetorial do sinal transmitido, aumentando o Error Vector Magnitude (EVM). Além disso, a resposta não linear gera produtos de intermodulação que se espalham para frequências adjacentes, produzindo o fenômeno conhecido como crescimento espectral (*spectral regrowth*).
+
+Consequentemente, um algoritmo de Predistorção Digital deve estimar simultaneamente ambas as funções não lineares para produzir uma característica aproximadamente inversa à do amplificador. Na arquitetura DPDnano-Lite, essa inversão é realizada por meio de um modelo Memory Polynomial de baixa complexidade, capaz de aproximar as características AM/AM e AM/PM utilizando coeficientes complexos e pequena profundidade de memória. Dessa forma, torna-se possível operar o amplificador próximo da saturação, obtendo elevada eficiência energética sem comprometer a linearidade do sistema.
+
+Com isso, encerra-se a análise das regiões de operação dos amplificadores de potência. A próxima seção aprofunda o estudo das não linearidades, iniciando pela modelagem detalhada da distorção AM/AM e, em seguida, da distorção AM/PM, que constituem a base matemática para os algoritmos de Predistorção Digital empregados na arquitetura DPDnano-Lite.
+
+=============================================================
+
+2.3 Não Linearidades dos Amplificadores de Potência
+
+Parte 1 – Origem Física e Representação Matemática
+
+Os amplificadores de potência utilizados em sistemas modernos de radiofrequência apresentam comportamento intrinsecamente não linear. Embora possam operar aproximadamente de forma linear para pequenos níveis de excitação, a aproximação da região de compressão faz com que diversos fenômenos físicos passem a influenciar simultaneamente a resposta do dispositivo. Como consequência, a relação entre o sinal de entrada e o sinal de saída deixa de ser proporcional, originando distorções que comprometem a qualidade do sinal transmitido.
+
+As principais fontes de não linearidade estão associadas às características dos dispositivos semicondutores, às limitações impostas pela alimentação elétrica, aos efeitos capacitivos e indutivos parasitas, ao aquecimento da junção e às redes de polarização. Em conjunto, esses fenômenos fazem com que o ganho e a fase do amplificador passem a depender da amplitude instantânea do sinal aplicado.
+
+De forma geral, o comportamento do amplificador pode ser representado por uma função não linear:
+
+Equação (2.23)
+
+    y(n) = f[x(n)]
+
+onde:
+
+- x(n) é o sinal complexo de entrada;
+- y(n) é o sinal complexo de saída;
+- f(·) representa a característica de transferência não linear do amplificador.
+
+Na prática, a função f(·) raramente é conhecida de forma analítica. Por essa razão, utiliza-se uma aproximação baseada na Série de Taylor em torno do ponto de operação do dispositivo:
+
+Equação (2.24)
+
+    y(n) = a0 + a1x(n) + a2x²(n) + a3x³(n) + ... + aKxᴷ(n)
+
+onde:
+
+- a0 representa o termo constante;
+- a1 corresponde ao ganho linear;
+- a2, a3, ..., aK representam os coeficientes das diferentes ordens da expansão.
+
+Fisicamente, cada termo da expansão descreve uma contribuição distinta para a resposta do amplificador. O termo linear reproduz o comportamento ideal, enquanto os termos de ordem superior modelam as não linearidades responsáveis pela geração de harmônicos e produtos de intermodulação.
+
+Nos amplificadores de RF empregados em comunicações digitais, o termo constante normalmente é desprezado e, devido à simetria da característica de transferência, os termos de ordem par possuem contribuição reduzida na banda útil. Dessa forma, a expansão pode ser simplificada para conter apenas ordens ímpares:
+
+Equação (2.25)
+
+    y(n) = a1x(n) + a3x³(n) + a5x⁵(n) + ... + aKxᴷ(n)
+
+Essa simplificação reduz significativamente a complexidade matemática sem comprometer a representação dos principais efeitos não lineares observados experimentalmente.
+
+Quando o sinal é representado em banda-base complexa, a expressão anterior pode ser reescrita como:
+
+Equação (2.26)
+
+    y(n) = Σ[k=1,3,...,K] ak · x(n)|x(n)|^(k−1)
+
+em que:
+
+- ak são coeficientes complexos;
+- K é a maior ordem polinomial considerada.
+
+Os coeficientes complexos permitem que o modelo represente simultaneamente as distorções de amplitude (AM/AM) e de fase (AM/PM), tornando essa formulação particularmente adequada para aplicações de Predistorção Digital.
+
+Essa expressão é conhecida na literatura como **Memoryless Polynomial** e constitui a base matemática de diversos algoritmos de DPD. Entretanto, amplificadores reais apresentam efeitos dinâmicos decorrentes de memória elétrica e térmica, que não podem ser descritos por esse modelo.
+
+No contexto da arquitetura DPDnano-Lite, essa equação representa o ponto de partida para o desenvolvimento do predistorcedor digital. Nas próximas subseções, serão incorporados atrasos temporais ao modelo polinomial, originando o **Memory Polynomial**, que constitui a formulação matemática empregada na implementação em FPGA proposta neste trabalho.
+
+======================================================
+
+Parte 2 – Harmônicos e Produtos de Intermodulação
+
+Os termos de ordem superior presentes na expansão polinomial não apenas modificam o ganho do amplificador, mas também geram novas componentes espectrais inexistentes no sinal original. Essas componentes são classificadas como harmônicos e produtos de intermodulação, constituindo a principal causa da degradação espectral observada em amplificadores de potência operando próximos da saturação.
+
+Considere inicialmente um sinal senoidal de entrada representado por:
+
+Equação (2.27)
+
+    x(t) = A cos(ωt)
+
+onde:
+
+- A é a amplitude do sinal;
+- ω = 2πf é a frequência angular do sinal de entrada.
+
+Admitindo um modelo cúbico simplificado para o amplificador, sua saída pode ser escrita como:
+
+Equação (2.28)
+
+    y(t) = a₁x(t) + a₃x³(t)
+
+em que:
+
+- a₁ representa o ganho linear;
+- a₃ representa o coeficiente responsável pela principal não linearidade de terceira ordem.
+
+Substituindo a Equação (2.27) na Equação (2.28) e aplicando a identidade trigonométrica
+
+    cos³(θ) = (3cosθ + cos3θ)/4
+
+obtém-se:
+
+Equação (2.29)
+
+    y(t) =
+    (a₁A + 3a₃A³/4) cos(ωt)
+    + (a₃A³/4) cos(3ωt)
+
+Observa-se que o termo cúbico gera uma nova componente espectral em 3ω, denominada terceiro harmônico. Da mesma forma, termos de quinta, sétima e ordens superiores produzem harmônicos adicionais em 5ω, 7ω e demais múltiplos ímpares da frequência fundamental.
+
+Embora a geração de harmônicos seja importante, em sistemas modernos de comunicações o principal problema decorre da intermodulação entre diferentes componentes espectrais do sinal transmitido. Considerando um sinal composto por duas frequências,
+
+Equação (2.30)
+
+    x(t) =
+    A₁ cos(ω₁t)
+    +
+    A₂ cos(ω₂t)
+
+os termos cúbicos da expansão polinomial produzem novas componentes espectrais localizadas em:
+
+Equação (2.31)
+
+    2ω₁ − ω₂
+
+    2ω₂ − ω₁
+
+    2ω₁ + ω₂
+
+    2ω₂ + ω₁
+
+Essas frequências são conhecidas como produtos de intermodulação de terceira ordem (IM3). Entre elas, as componentes 2ω₁ − ω₂ e 2ω₂ − ω₁ são as mais críticas, pois surgem muito próximas da banda útil do sinal, tornando inviável sua eliminação por simples filtragem.
+
+Como consequência, parte da potência originalmente concentrada no canal de transmissão passa a ser irradiada em canais adjacentes, provocando crescimento espectral (*spectral regrowth*), aumento do ACPR e degradação da qualidade da transmissão.
+
+No domínio de banda-base complexa, esses efeitos são representados naturalmente pelos termos
+
+    x(n)|x(n)|²,
+
+    x(n)|x(n)|⁴,
+
+e demais ordens ímpares do modelo polinomial. Essa representação explica por que os algoritmos de Predistorção Digital empregam predominantemente modelos polinomiais de ordens ímpares.
+
+Na arquitetura DPDnano-Lite, o termo cúbico constitui a principal contribuição para a compensação das não linearidades do amplificador, uma vez que os produtos de intermodulação de terceira ordem normalmente representam a maior parcela da distorção observada em amplificadores de RF. Quando necessário, termos polinomiais adicionais podem ser incorporados à arquitetura, permitindo aumentar a precisão do modelo sem alterar sua estrutura modular.
+
+=============================================================
+
+Parte 3 – Modelo de Saleh
+
+Entre os modelos comportamentais propostos para representar amplificadores de potência, o modelo desenvolvido por Adel A. M. Saleh destaca-se por sua simplicidade matemática e pela boa capacidade de representar amplificadores que operam sem efeitos significativos de memória. Originalmente proposto para amplificadores de ondas viajantes (Traveling Wave Tube Amplifiers – TWTA), esse modelo passou a ser amplamente empregado como referência na avaliação de algoritmos de Predistorção Digital.
+
+O modelo de Saleh descreve separadamente as características AM/AM e AM/PM por meio de funções racionais dependentes apenas da amplitude do sinal de entrada. Essa separação permite analisar individualmente a compressão de ganho e a rotação de fase produzidas pelo amplificador.
+
+Considerando A como a amplitude da envoltória do sinal de entrada, a característica AM/AM é descrita por:
+
+Equação (2.32)
+
+    GAM/AM(A) = (αa · A) / (1 + βa · A²)
+
+onde:
+
+- A é a amplitude instantânea do sinal de entrada;
+- αa controla o ganho para pequenos sinais;
+- βa determina a taxa de compressão do ganho.
+
+Para valores reduzidos de A, o denominador aproxima-se da unidade e o ganho apresenta comportamento praticamente linear. À medida que a amplitude aumenta, o termo βaA² torna-se dominante, reduzindo progressivamente o ganho efetivo e reproduzindo a compressão característica dos amplificadores de potência.
+
+A variação de fase é modelada independentemente por:
+
+Equação (2.33)
+
+    ΦAM/PM(A) = (αφ · A²) / (1 + βφ · A²)
+
+em que:
+
+- αφ determina a intensidade da rotação de fase;
+- βφ controla a velocidade com que essa rotação cresce em função da amplitude.
+
+Essa expressão descreve a distorção AM/PM, responsável pela conversão indesejada entre amplitude e fase do sinal transmitido.
+
+Combinando ambas as funções, o sinal complexo de saída pode ser escrito como:
+
+Equação (2.34)
+
+    y(n) =
+    GAM/AM(A) · e^[j(φ(n) + ΦAM/PM(A))]
+
+Essa equação mostra que tanto a amplitude quanto a fase do sinal de saída dependem exclusivamente da envoltória instantânea A. Não existe qualquer dependência de amostras anteriores, razão pela qual o modelo de Saleh é classificado como um modelo **sem memória (memoryless)**.
+
+Apesar dessa limitação, o modelo continua sendo amplamente utilizado na literatura por apresentar reduzido número de parâmetros, facilidade de ajuste experimental e excelente capacidade de reproduzir qualitativamente as curvas AM/AM e AM/PM. Em muitos trabalhos científicos, ele constitui a primeira etapa de validação de algoritmos de Predistorção Digital antes da utilização de modelos mais completos.
+
+No contexto da arquitetura DPDnano-Lite, o modelo de Saleh possui grande importância didática, pois demonstra que a compensação da não linearidade exige a correção simultânea da amplitude e da fase do sinal. Entretanto, amplificadores empregados em sistemas LTE, 5G e outras comunicações de banda larga apresentam efeitos de memória que não podem ser representados por esse modelo. Por essa razão, nas próximas subseções serão estudados modelos mais avançados, culminando no **Memory Polynomial**, que constitui a base matemática adotada na implementação proposta neste trabalho.
+
+
+=============================================================
+Sugestão para enriquecer o TCC: 
+nesta seção, vale a pena incluir uma figura com as curvas AM/AM e AM/PM geradas a partir das Equações (2.32) e (2.33). Como essas curvas são obtidas diretamente das equações apresentadas, elas reforçam visualmente a fundamentação teórica e facilitam a transição para os modelos de Rapp, Ghorbani e, posteriormente, para o Memory Polynomial utilizado no DPDnano-Lite.
+=============================================================
+
+=====================================================================
+
+Parte 4 – Modelo de Rapp
+
+Entre os modelos comportamentais utilizados para representar amplificadores de potência, o modelo proposto por Ch. Rapp destaca-se por sua simplicidade e pela excelente capacidade de representar a compressão suave característica dos amplificadores de estado sólido (Solid State Power Amplifiers – SSPAs). Diferentemente do modelo de Saleh, originalmente desenvolvido para amplificadores de ondas viajantes (TWTA), o modelo de Rapp foi concebido para aplicações em sistemas modernos de comunicações digitais, sendo amplamente utilizado em estudos envolvendo sinais OFDM, LTE e 5G.
+
+O modelo considera que a principal não linearidade do amplificador está associada à compressão de ganho (AM/AM), desprezando os efeitos de conversão entre amplitude e fase (AM/PM). Essa aproximação é adequada para diversos amplificadores de estado sólido, nos quais a variação de fase é significativamente menor que a compressão de amplitude.
+
+Seja A a amplitude instantânea do sinal de entrada. A característica AM/AM é descrita por:
+
+Equação (2.35)
+
+    GAM/AM(A) =
+        A
+    -----------------------------
+          [1 + (A/Asat)^(2p)]^(1/2p)
+
+onde:
+
+- A é a amplitude da envoltória do sinal de entrada;
+- Asat representa a amplitude correspondente à saturação do amplificador;
+- p é o parâmetro de suavidade da transição entre a região linear e a saturação.
+
+Para amplitudes muito inferiores a Asat,
+
+    A << Asat,
+
+tem-se aproximadamente
+
+    GAM/AM(A) ≈ A,
+
+indicando comportamento praticamente linear.
+
+À medida que a amplitude cresce e se aproxima de Asat, o denominador da Equação (2.35) aumenta gradualmente, reduzindo o ganho efetivo do amplificador. Essa característica produz uma transição contínua entre a região linear e a saturação, reproduzindo com boa precisão o comportamento observado experimentalmente em amplificadores de potência de estado sólido.
+
+O parâmetro p exerce influência direta sobre a forma da curva de compressão. Para valores reduzidos de p, a transição ocorre de maneira bastante suave. À medida que p aumenta, a curva torna-se mais abrupta, aproximando-se do comportamento de um limitador ideal.
+
+Como o modelo considera apenas a característica AM/AM, a variação de fase é assumida nula:
+
+Equação (2.36)
+
+    ΦAM/PM(A) = 0
+
+Consequentemente, o sinal complexo de saída pode ser representado por:
+
+Equação (2.37)
+
+    y(n) = GAM/AM(A)e^{jφ(n)}
+
+Observa-se que a fase permanece inalterada e apenas a envoltória sofre compressão. Essa simplificação reduz significativamente a complexidade matemática do modelo e explica sua ampla utilização em simulações de sistemas de comunicações digitais.
+
+Apesar de sua elevada simplicidade, o modelo de Rapp apresenta duas limitações importantes. A primeira consiste em não representar as distorções AM/PM observadas em diversos amplificadores reais. A segunda é a ausência de efeitos de memória, fazendo com que a resposta dependa exclusivamente da amplitude instantânea do sinal de entrada.
+
+No contexto da arquitetura DPDnano-Lite, o modelo de Rapp possui importância por demonstrar que uma representação relativamente simples pode reproduzir adequadamente a compressão de ganho observada em SSPAs. Entretanto, como o objetivo deste trabalho é implementar um predistorcedor capaz de compensar simultaneamente efeitos de amplitude, fase e memória, torna-se necessária a adoção de modelos mais completos. Nas próximas subseções serão apresentados os modelos de Ghorbani e, posteriormente, o modelo Memory Polynomial, que constitui a base matemática da arquitetura proposta.
+
+
+=======================================================================
+   COMENTÁRIO DO TCC
+A sequência do capítulo ficará bastante consistente: Saleh → Rapp → Ghorbani → Volterra → Memory Polynomial. 
+Essa evolução mostra ao leitor como os modelos comportamentais foram sendo refinados ao longo do tempo e justifica tecnicamente a escolha do Memory Polynomial como núcleo matemático da arquitetura DPDnano-Lite.
+=======================================================================
+
+Parte 5 – Modelo de Ghorbani
+
+Entre os modelos comportamentais desenvolvidos para representar amplificadores de potência, o modelo proposto por A. Ghorbani destaca-se por oferecer maior flexibilidade na representação simultânea das características AM/AM e AM/PM. Diferentemente do modelo de Rapp, que considera apenas a compressão de ganho, e do modelo de Saleh, que utiliza funções racionais relativamente simples, o modelo de Ghorbani emprega funções paramétricas capazes de ajustar com maior precisão dados experimentais obtidos em amplificadores de estado sólido.
+
+Essa característica tornou o modelo particularmente interessante para aplicações em sistemas de comunicações digitais de banda larga, nos quais pequenas diferenças entre o modelo matemático e o comportamento real do amplificador podem comprometer significativamente o desempenho dos algoritmos de Predistorção Digital.
+
+A característica AM/AM pode ser expressa por:
+
+Equação (2.38)
+
+        αa A^βa
+GAM/AM = ------------------- + γa A
+         1 + δa A^βa
+
+onde:
+
+- A representa a amplitude instantânea do sinal;
+- αa, βa, γa e δa são parâmetros ajustados experimentalmente.
+
+Os parâmetros αa e βa determinam a forma da compressão do ganho, enquanto γa e δa permitem ajustar a inclinação da curva para diferentes tecnologias de amplificadores.
+
+De maneira semelhante, a característica AM/PM é representada por:
+
+Equação (2.39)
+
+         αφ A^βφ
+ΦAM/PM = -------------------- + γφ A
+          1 + δφ A^βφ
+
+em que:
+
+- αφ, βφ, γφ e δφ controlam a variação de fase produzida pelo amplificador.
+
+Diferentemente do modelo de Saleh, no qual poucos parâmetros determinam toda a característica do dispositivo, o modelo de Ghorbani permite ajustar separadamente a resposta de ganho e de fase, oferecendo maior fidelidade quando comparado a medições experimentais.
+
+O sinal complexo de saída pode então ser representado por:
+
+Equação (2.40)
+
+y(n) =
+GAM/AM(A)e^{j[φ(n)+ΦAM/PM(A)]}
+
+Observa-se que tanto a amplitude quanto a fase tornam-se funções da envoltória do sinal de entrada. Dessa forma, o modelo consegue reproduzir com maior precisão a resposta de amplificadores comerciais utilizados em sistemas de telecomunicações.
+
+Apesar dessa vantagem, o modelo continua pertencendo à categoria dos modelos sem memória (memoryless). Em outras palavras, a resposta do amplificador depende exclusivamente da amplitude instantânea do sinal aplicado, não existindo qualquer dependência de amostras anteriores.
+
+Na prática, entretanto, amplificadores de potência empregados em sistemas LTE, 5G NR e enlaces de elevada largura de banda apresentam efeitos de memória decorrentes de fenômenos térmicos, capacitâncias parasitas, redes de polarização, filtros de casamento de impedância e armazenamento de energia em elementos reativos. Esses efeitos modificam dinamicamente a característica do amplificador e não podem ser representados pelos modelos de Saleh, Rapp ou Ghorbani.
+
+Essa limitação motivou o desenvolvimento de modelos comportamentais dinâmicos, capazes de representar simultaneamente as não linearidades estáticas e a dependência temporal do sistema. Entre esses modelos, a Série de Volterra tornou-se a formulação matemática mais geral para descrição de sistemas não lineares com memória, servindo como base para diversos modelos simplificados empregados atualmente em algoritmos de Predistorção Digital.
+
+No contexto da arquitetura DPDnano-Lite, o modelo de Ghorbani representa um importante estágio evolutivo dos modelos comportamentais. Entretanto, devido à ausência dos efeitos de memória e ao elevado número de parâmetros necessários para sua identificação, sua utilização direta em hardware não é a alternativa mais adequada para FPGAs de recursos limitados. Por essa razão, a próxima subseção apresenta a Série de Volterra, da qual deriva o modelo Memory Polynomial adotado neste trabalho por oferecer excelente compromisso entre precisão de modelagem, custo computacional e facilidade de implementação em hardware digital.
+
+===================================================================
+   COMENTÁRIO DO TCC
+A próxima parte iniciará a Série de Volterra, mostrando sua derivação matemática e explicando por que ela é considerada o modelo mais geral para sistemas não lineares com memória. A partir dela, derivaremos passo a passo o Memory Polynomial, justificando matematicamente a arquitetura adotada no DPDnano-Lite.
+===================================================================
+
+=============================================================================
+
+Parte 6 – Série de Volterra
+
+À medida que a largura de banda dos sistemas de comunicações aumenta, os efeitos de memória dos amplificadores tornam-se mais evidentes, tornando insuficientes os modelos sem memória apresentados anteriormente. Para representar simultaneamente as não linearidades estáticas e a dependência temporal do sistema, utiliza-se a Série de Volterra, considerada a formulação matemática mais geral para sistemas não lineares com memória.
+
+De forma análoga à resposta impulsiva utilizada em sistemas lineares, a Série de Volterra representa a saída como a soma de integrais (ou somatórios, no caso discreto) de diferentes ordens. Cada núcleo de Volterra descreve a contribuição de uma determinada ordem de não linearidade e de sua interação temporal.
+
+Na forma discreta, a saída do sistema pode ser escrita como:
+
+Equação (2.41)
+
+y(n) =
+h₀
++ Σ h₁(k₁)x(n−k₁)
++ ΣΣ h₂(k₁,k₂)x(n−k₁)x(n−k₂)
++ ΣΣΣ h₃(k₁,k₂,k₃)x(n−k₁)x(n−k₂)x(n−k₃)
++ ⋯
+
+onde:
+
+- h₀ representa o termo constante;
+- h₁, h₂ e h₃ são os núcleos (kernels) de Volterra de primeira, segunda e terceira ordem;
+- k₁, k₂ e k₃ representam os atrasos temporais associados às amostras do sinal de entrada.
+
+O primeiro termo corresponde ao comportamento linear clássico. Os termos de segunda e terceira ordem representam as não linearidades do dispositivo, enquanto os atrasos temporais introduzem os efeitos de memória do amplificador. Dessa forma, a resposta em um determinado instante passa a depender não apenas da amostra atual, mas também de diversas amostras anteriores.
+
+A principal vantagem da Série de Volterra consiste em sua elevada capacidade de modelagem. Em teoria, qualquer sistema não linear estável com memória pode ser aproximado com precisão arbitrária utilizando um número suficientemente grande de termos da expansão.
+
+Entretanto, essa elevada flexibilidade possui um custo computacional significativo. O número de coeficientes cresce rapidamente com a ordem polinomial e com a profundidade de memória, aumentando exponencialmente a quantidade de multiplicações e somas necessárias. Consequentemente, uma implementação direta da Série de Volterra torna-se inviável em FPGAs de pequeno porte e em sistemas embarcados com recursos limitados.
+
+Para aplicações práticas de Predistorção Digital, torna-se necessário simplificar a Série de Volterra sem perder sua capacidade de representar os principais fenômenos observados nos amplificadores reais. Essa necessidade levou ao desenvolvimento de modelos reduzidos, como o Memory Polynomial e o Generalized Memory Polynomial (GMP), que preservam apenas os termos de maior relevância física.
+
+No DPDnano-Lite, a Série de Volterra desempenha papel fundamental como base teórica. Embora sua implementação direta não seja adotada devido ao elevado consumo de recursos lógicos e multiplicadores DSP, ela fornece a fundamentação matemática que justifica a utilização do modelo Memory Polynomial implementado na FPGA Tang Nano 4K. Esse modelo mantém os termos dominantes da expansão de Volterra, reduzindo significativamente a complexidade computacional sem comprometer a precisão necessária para a linearização do amplificador.
+
+================================================================
+    COMENTÁRIO
+Na próxima parte será feita a derivação matemática da Série de Volterra para o modelo Memory Polynomial, 
+mostrando como a eliminação dos termos cruzados reduz drasticamente a complexidade computacional e por que essa 
+simplificação é especialmente adequada para implementação em FPGAs com recursos limitados, como a Tang Nano 4K. 
+================================================================
+
+=========================================================================
+
+Parte 7 – Derivação do Modelo Memory Polynomial
+
+Embora a Série de Volterra forneça uma representação extremamente precisa dos sistemas não lineares com memória, sua implementação prática apresenta elevada complexidade computacional. O crescimento exponencial do número de coeficientes inviabiliza sua utilização direta em plataformas de hardware com recursos limitados, motivando o desenvolvimento de modelos simplificados.
+
+Uma das simplificações mais importantes consiste em eliminar os termos cruzados entre diferentes atrasos temporais, preservando apenas aqueles em que a amplitude utilizada para ponderação pertence à mesma amostra considerada pelo atraso. Essa aproximação conduz diretamente ao modelo conhecido como Memory Polynomial.
+
+Partindo da expansão de Volterra e desprezando os kernels cruzados de maior complexidade, obtém-se:
+
+Equação (2.42)
+
+                M−1     K
+y(n) =  Σ      Σ      a(k,m) · x(n−m)|x(n−m)|^(k−1)
+        m=0   k=1,3,...
+
+onde:
+
+- M representa a profundidade de memória do modelo;
+- K corresponde à maior ordem polinomial considerada (normalmente apenas ordens ímpares);
+- a(k,m) são coeficientes complexos obtidos por identificação experimental.
+
+Nessa formulação, cada termo polinomial está associado exclusivamente à sua própria amostra atrasada. Dessa forma, permanecem representados simultaneamente os efeitos de memória e as principais não linearidades do amplificador, porém utilizando uma quantidade significativamente menor de coeficientes quando comparada à Série de Volterra completa.
+
+A eliminação dos termos cruzados reduz drasticamente o número de operações matemáticas. Enquanto a Série de Volterra completa apresenta crescimento combinatório do número de coeficientes, o Memory Polynomial apresenta crescimento aproximadamente linear em função da profundidade de memória e da ordem polinomial adotada.
+
+Essa redução possui impacto direto na implementação em hardware. O número de multiplicadores, registradores, somadores e blocos DSP passa a ser compatível com dispositivos FPGA de pequeno porte, permitindo a implementação em tempo real mesmo em arquiteturas com recursos limitados.
+
+O modelo Memory Polynomial tornou-se um dos modelos mais utilizados em algoritmos modernos de Predistorção Digital devido ao excelente compromisso entre precisão, estabilidade numérica e custo computacional. Diversos trabalhos experimentais demonstram que esse modelo reproduz com elevada fidelidade os efeitos predominantes encontrados em amplificadores utilizados em sistemas LTE, 5G NR e transmissões OFDM.
+
+No DPDnano-Lite, essa equação constitui o núcleo matemático da arquitetura proposta. Cada termo do somatório é implementado por módulos independentes responsáveis pelo cálculo das potências do sinal, aplicação dos coeficientes complexos, inserção dos atrasos temporais e acumulação parcial dos resultados. Essa estrutura modular permite parametrizar facilmente a ordem polinomial e a profundidade de memória, adaptando o consumo de recursos da FPGA às necessidades de diferentes aplicações.
+
+Além disso, a modularização facilita futuras extensões da arquitetura, permitindo incorporar novos termos polinomiais ou aumentar a profundidade de memória sem alterar significativamente a organização do hardware. Essa característica foi um dos principais critérios considerados durante o desenvolvimento do DPDnano-Lite para a FPGA Tang Nano 4K.
+
+=================================================================
+   COMENTARIO
+Na próxima parte, iniciaremos a Seção 2.4 – Predistorção Digital (Digital Predistortion – DPD), mostrando a 
+formulação matemática do predistorcedor, o conceito de função inversa do amplificador e a derivação das equações que 
+levam diretamente à arquitetura implementada no DPDnano-Lite.
+=================================================================
+
+===========================================================================
+2.4 Predistorção Digital (Digital Predistortion – DPD)
+
+Parte 1 – Princípio de Funcionamento
+
+A crescente utilização de sinais de alta eficiência espectral, como OFDM, LTE e 5G NR, impôs requisitos cada vez mais rigorosos sobre a linearidade dos amplificadores de potência. Entretanto, operar esses amplificadores em sua região estritamente linear reduz significativamente sua eficiência energética. Como alternativa, tornou-se amplamente difundida a técnica de Predistorção Digital (Digital Predistortion – DPD), que permite operar o amplificador próximo da saturação mantendo níveis reduzidos de distorção.
+
+A ideia fundamental da Predistorção Digital consiste em aplicar ao sinal de entrada uma distorção previamente calculada que seja aproximadamente inversa à característica não linear do amplificador. Após atravessar o amplificador, ambas as distorções tendem a se cancelar, produzindo uma resposta aproximadamente linear.
+
+Considere inicialmente o amplificador representado por uma função não linear F(·):
+
+Equação (2.43)
+
+    y(n) = F[x(n)]
+
+onde:
+
+- x(n) é o sinal de entrada do amplificador;
+- y(n) é o sinal de saída;
+- F(·) representa a característica não linear do amplificador.
+
+Inserindo um predistorcedor P(·) antes do amplificador, o sinal aplicado ao PA passa a ser:
+
+Equação (2.44)
+
+    u(n) = P[x(n)]
+
+A saída completa do sistema torna-se:
+
+Equação (2.45)
+
+    y(n) = F{P[x(n)]}
+
+O objetivo do projeto do predistorcedor consiste em determinar a função P(·) de forma que sua composição com o amplificador resulte em um comportamento aproximadamente linear:
+
+Equação (2.46)
+
+    F ○ P ≈ I
+
+em que:
+
+- P representa o predistorcedor digital;
+- F representa o amplificador;
+- I representa a função identidade.
+
+Quando essa condição é satisfeita, obtém-se:
+
+Equação (2.47)
+
+    y(n) ≈ G·x(n)
+
+onde G representa o ganho linear desejado para o sistema.
+
+Na prática, a função inversa exata do amplificador raramente é conhecida. Além disso, suas características variam com temperatura, envelhecimento dos componentes, frequência de operação e potência transmitida. Por esse motivo, o predistorcedor normalmente é identificado experimentalmente por meio de algoritmos de estimação de coeficientes.
+
+Quando o amplificador é modelado utilizando o modelo Memory Polynomial, o predistorcedor costuma empregar exatamente a mesma estrutura matemática, alterando apenas os coeficientes do modelo. Essa propriedade reduz significativamente a complexidade da implementação e facilita a realização de atualizações dos coeficientes durante a operação.
+
+No DPDnano-Lite, essa abordagem foi adotada como base da arquitetura proposta. O predistorcedor utiliza um modelo Memory Polynomial parametrizável, implementado em Verilog, com coeficientes complexos, profundidade de memória configurável e ordem polinomial ajustável. Essa solução oferece excelente compromisso entre precisão de linearização, utilização de blocos DSP e consumo de recursos lógicos da FPGA Tang Nano 4K, tornando-a adequada para aplicações embarcadas de baixo custo.
+
+=========================================
+Na sequência desenvolveremos a Parte 2 – Arquiteturas de Predistorção Digital, comparando as arquiteturas Direct Learning Architecture (DLA) e Indirect Learning Architecture (ILA), apresentando suas equações de identificação e justificando matematicamente a escolha da estratégia adotada no DPDnano-Lite.
+=========================================
+
+=========================================================
+
+Parte 2 – Arquiteturas de Aprendizado: DLA e ILA
+
+Além da escolha do modelo matemático utilizado para representar o predistorcedor, a forma como seus coeficientes são identificados exerce influência direta sobre o desempenho do sistema. Na literatura, duas arquiteturas são amplamente empregadas: a Direct Learning Architecture (DLA) e a Indirect Learning Architecture (ILA).
+
+Na Direct Learning Architecture (DLA), os coeficientes do predistorcedor são ajustados diretamente por meio da minimização do erro entre o sinal desejado e o sinal obtido após a passagem pelo amplificador.
+
+O erro pode ser definido como:
+
+Equação (2.48)
+
+    e(n) = x(n) − y(n)/G
+
+onde:
+
+- x(n) é o sinal de referência;
+- y(n) é o sinal medido na saída do amplificador;
+- G representa o ganho linear desejado;
+- e(n) corresponde ao erro utilizado pelo algoritmo de adaptação.
+
+Os coeficientes do predistorcedor são atualizados iterativamente com o objetivo de minimizar uma função custo, normalmente baseada no erro quadrático médio (Mean Squared Error – MSE):
+
+Equação (2.49)
+
+    J = E{|e(n)|²}
+
+em que:
+
+- J representa a função custo;
+- E{·} denota o operador esperança estatística.
+
+Embora apresente elevada precisão, a DLA exige algoritmos de otimização mais sofisticados, podendo apresentar maior custo computacional e maior sensibilidade às condições iniciais do processo de identificação.
+
+Uma alternativa amplamente utilizada é a Indirect Learning Architecture (ILA). Nessa abordagem, em vez de identificar diretamente o predistorcedor, identifica-se inicialmente um pós-distorcedor que aproxima a resposta inversa do amplificador.
+
+Matematicamente, o pós-distorcedor pode ser representado por:
+
+Equação (2.50)
+
+    x(n) ≈ Q[y(n)]
+
+onde:
+
+- Q(·) representa o pós-distorcedor;
+- y(n) é o sinal medido na saída do amplificador.
+
+Após a identificação de Q(·), seus coeficientes são transferidos para o predistorcedor, assumindo-se que ambos possuem a mesma estrutura matemática:
+
+Equação (2.51)
+
+    P(·) = Q(·)
+
+Essa estratégia simplifica significativamente a identificação, pois utiliza diretamente os sinais medidos na saída do amplificador, evitando problemas associados à inversão direta do modelo durante o processo iterativo.
+
+Por esse motivo, a ILA tornou-se uma das arquiteturas mais empregadas em sistemas de Predistorção Digital descritos na literatura técnica e em implementações experimentais.
+
+No DPDnano-Lite, a arquitetura foi concebida para utilizar um modelo Memory Polynomial parametrizável, permitindo que os coeficientes sejam identificados externamente, utilizando ferramentas computacionais de maior capacidade, e posteriormente carregados para a FPGA. Essa separação entre a etapa de identificação e o processamento em tempo real reduz a complexidade do hardware, preserva recursos lógicos e facilita futuras extensões para adaptação automática dos coeficientes.
+
+==========================================================
+Na próxima parte será apresentada a identificação dos coeficientes do Memory Polynomial, incluindo os métodos de Mínimos Quadrados (Least Squares – LS) e Mínimos Quadrados Recursivos (Recursive Least Squares – RLS), estabelecendo a base matemática para a obtenção dos coeficientes utilizados na arquitetura DPDnano-Lite.
+==========================================================
+
+===================================================================
+
+Parte 3 – Identificação dos Coeficientes: Mínimos Quadrados (LS) e Mínimos Quadrados Recursivos (RLS)
+
+Após a definição da estrutura matemática do predistorcedor, torna-se necessário determinar os coeficientes do modelo Memory Polynomial. Essa etapa é conhecida como identificação do modelo e consiste em ajustar os coeficientes de forma que a saída estimada reproduza, com o menor erro possível, o comportamento inverso do amplificador de potência.
+
+Considerando N amostras adquiridas durante o processo de medição, a saída do modelo pode ser escrita em forma matricial como:
+
+Equação (2.52)
+
+    y = Xa
+
+onde:
+
+- y representa o vetor das amostras desejadas;
+- X é a matriz de regressão formada pelos termos do Memory Polynomial;
+- a corresponde ao vetor dos coeficientes complexos do modelo.
+
+Cada linha da matriz X contém os termos do tipo
+
+    x(n−m)|x(n−m)|^(k−1)
+
+para todas as ordens polinomiais e profundidades de memória consideradas. Dessa forma, o problema de identificação transforma-se em um problema clássico de estimação linear.
+
+O método dos Mínimos Quadrados (Least Squares – LS) determina os coeficientes que minimizam a soma dos erros quadráticos entre os valores medidos e os valores estimados pelo modelo.
+
+Equação (2.53)
+
+    J = (y − Xa)ᴴ(y − Xa)
+
+onde:
+
+- J representa a função custo;
+- (·)ᴴ indica a transposta conjugada (Hermitiana).
+
+Anulando o gradiente da função custo em relação ao vetor de coeficientes obtém-se a solução clássica:
+
+Equação (2.54)
+
+    a = (XᴴX)⁻¹Xᴴy
+
+Essa solução fornece os coeficientes ótimos no sentido dos mínimos quadrados, desde que a matriz XᴴX seja inversível. O método LS é amplamente empregado na calibração offline de predistortores devido à elevada precisão obtida e à simplicidade de implementação computacional.
+
+Quando os parâmetros do amplificador variam continuamente devido à temperatura, envelhecimento ou alterações da potência de operação, torna-se interessante atualizar os coeficientes durante o funcionamento do sistema. Nesse cenário destaca-se o algoritmo Recursive Least Squares (RLS).
+
+A atualização iterativa dos coeficientes pode ser representada de forma simplificada por:
+
+Equação (2.55)
+
+    a(n) = a(n−1) + K(n)e(n)
+
+onde:
+
+- a(n) é o vetor atualizado de coeficientes;
+- K(n) representa o ganho adaptativo do algoritmo;
+- e(n) corresponde ao erro instantâneo de estimação.
+
+O algoritmo RLS apresenta convergência significativamente mais rápida do que métodos baseados em gradiente, sendo amplamente utilizado em sistemas adaptativos de Predistorção Digital. Em contrapartida, exige maior capacidade de processamento, maior utilização de memória e operações matriciais mais complexas.
+
+No DPDnano-Lite, a identificação dos coeficientes é realizada externamente à FPGA. Após serem estimados por LS, RLS ou outro algoritmo equivalente, os coeficientes complexos são carregados para o banco de coeficientes da arquitetura. Essa abordagem reduz significativamente a utilização de recursos lógicos e blocos DSP da FPGA Tang Nano 4K, permitindo que o hardware execute exclusivamente o processamento do Memory Polynomial em tempo real.
+
+===============================================
+Na próxima parte será apresentada a estrutura completa do algoritmo Memory Polynomial aplicado à Predistorção Digital, detalhando a geração dos termos polinomiais, o uso dos coeficientes complexos, a acumulação das contribuições de cada ramo e a correspondência direta entre as equações matemáticas e os módulos implementados na arquitetura DPDnano-Lite. 
+===============================================
+
+=================================================================
+
+Parte 4 – Estrutura do Memory Polynomial para DPD
+
+Após a identificação dos coeficientes, o predistorcedor passa a operar em tempo real aplicando o modelo Memory Polynomial a cada nova amostra do sinal de entrada. A implementação consiste em gerar os termos polinomiais, aplicar os coeficientes complexos correspondentes e acumular todas as contribuições para formar o sinal predistorcido.
+
+Matematicamente, o predistorcedor pode ser expresso por:
+
+Equação (2.56)
+
+          M−1       K
+yDPD(n) = Σ         Σ      c(k,m)x(n−m)|x(n−m)|^(k−1)
+          m=0     k=1,3,...
+
+onde:
+
+• yDPD(n) é a saída do predistorcedor;
+
+• x(n−m) corresponde à amostra atrasada de m períodos;
+
+• c(k,m) representa o coeficiente complexo associado à ordem polinomial k e ao atraso m;
+
+• M é a profundidade de memória;
+
+• K corresponde à maior ordem polinomial considerada.
+
+Cada termo da expansão possui uma interpretação física. O fator x(n−m) preserva simultaneamente as informações de amplitude e fase do sinal complexo, enquanto |x(n−m)|^(k−1) representa a contribuição não linear da envoltória. A multiplicação pelo coeficiente complexo permite compensar, de forma simultânea, as distorções AM/AM e AM/PM produzidas pelo amplificador.
+
+Do ponto de vista computacional, a implementação do algoritmo pode ser dividida em quatro etapas principais:
+
+1. Geração das amostras atrasadas por meio da linha de memória;
+
+2. Cálculo das potências da envoltória para cada ordem polinomial;
+
+3. Multiplicação de cada termo pelos respectivos coeficientes complexos;
+
+4. Acumulação de todas as contribuições para obtenção do sinal predistorcido.
+
+Essa organização modular permite elevado paralelismo, reduzindo a latência e aumentando a taxa de processamento da arquitetura. Além disso, facilita a parametrização do projeto, permitindo alterar a ordem polinomial e a profundidade de memória sem modificar a estrutura geral do hardware.
+
+No DPDnano-Lite, cada uma dessas etapas foi implementada como um módulo independente em Verilog. Os blocos de atraso fornecem as amostras históricas do sinal de entrada, os módulos polinomiais calculam os termos x|x|², x|x|⁴ e demais ordens configuradas, o banco de coeficientes armazena os parâmetros complexos previamente identificados e o acumulador reúne todas as contribuições antes das etapas de arredondamento, ajuste de escala e saturação.
+
+Essa correspondência direta entre a formulação matemática e a arquitetura RTL simplifica significativamente a verificação funcional, favorece a reutilização de módulos e permite que futuras versões do DPDnano-Lite incorporem novas ordens polinomiais ou maior profundidade de memória com alterações mínimas no restante do projeto.
+
+============================================
+A próxima seção abordará a análise da complexidade computacional do Memory Polynomial, quantificando o número de multiplicações, somas, coeficientes e blocos DSP necessários em função da ordem polinomial e da profundidade de memória. Essa análise fará a ponte entre a teoria apresentada neste capítulo e as decisões de projeto adotadas na implementação do DPDnano-Lite.
+============================================
+
+====================================================================
+
+Parte 5 – Complexidade Computacional do Memory Polynomial
+
+Além da capacidade de modelagem, um aspecto decisivo na escolha do algoritmo de Predistorção Digital é sua complexidade computacional. Em aplicações embarcadas, especialmente em FPGAs de pequeno porte, o número de operações aritméticas influencia diretamente a utilização de recursos lógicos, blocos DSP, consumo de energia e frequência máxima de operação.
+
+Considerando um modelo Memory Polynomial com profundidade de memória M e maior ordem polinomial K (considerando apenas ordens ímpares), o número total de termos do modelo pode ser expresso por:
+
+Equação (2.57)
+
+             (K + 1)
+Ntermos = M · -------
+                2
+
+onde:
+
+- M é a profundidade de memória;
+- K é a maior ordem polinomial;
+- Ntermos representa a quantidade total de ramos do modelo.
+
+Essa equação mostra que a complexidade cresce linearmente tanto com a profundidade de memória quanto com a ordem polinomial. Essa propriedade é um dos principais fatores que tornam o Memory Polynomial adequado para implementação em hardware digital.
+
+Cada termo do modelo exige, em sua forma básica:
+
+• geração da amostra atrasada;
+
+• cálculo da potência da envoltória;
+
+• multiplicação pelo coeficiente complexo;
+
+• acumulação parcial do resultado.
+
+Assim, o número aproximado de multiplicações complexas pode ser estimado por:
+
+Equação (2.58)
+
+              (K + 1)
+Nmul ≈ M · -------
+                 2
+
+Da mesma forma, o número de operações de acumulação pode ser aproximado por:
+
+Equação (2.59)
+
+Nacc ≈ Ntermos − 1
+
+Embora essas expressões representem aproximações, elas evidenciam que o custo computacional cresce de maneira praticamente linear. Esse comportamento contrasta com a Série de Volterra completa, cujo número de coeficientes cresce de forma combinatória devido à presença dos termos cruzados entre diferentes atrasos temporais.
+
+A eliminação desses termos reduz drasticamente a quantidade de multiplicações, somas e coeficientes necessários, preservando elevada precisão para a maioria das aplicações de Predistorção Digital descritas na literatura.
+
+No DPDnano-Lite, essa característica foi explorada para compatibilizar o algoritmo com os recursos disponíveis na FPGA Tang Nano 4K. A arquitetura utiliza processamento modular e pipeline entre estágios sucessivos, permitindo elevada taxa de processamento com utilização reduzida de blocos DSP e de lógica programável.
+
+Outro aspecto importante é a parametrização do algoritmo. A ordem polinomial e a profundidade de memória podem ser ajustadas de acordo com a aplicação, possibilitando diferentes compromissos entre precisão de linearização, área ocupada na FPGA, consumo de energia e desempenho temporal.
+
+Essas propriedades justificam a adoção do modelo Memory Polynomial como núcleo matemático do DPDnano-Lite, oferecendo excelente equilíbrio entre fidelidade de modelagem, simplicidade de implementação, escalabilidade e eficiência computacional.
+
+=======================================================
+A próxima parte encerrará a Seção 2.4, comparando o Memory Polynomial com outros modelos de Predistorção Digital (LUT, Volterra, GMP e Redes Neurais), apresentando uma tabela comparativa e justificando tecnicamente a escolha do Memory Polynomial para a arquitetura DPDnano-Lite. 
+=======================================================
+
+======================================================================
+
+Parte 6 – Comparação entre Modelos de DPD e Justificativa da Escolha
+
+Diversos modelos matemáticos foram propostos para implementação de sistemas de Predistorção Digital. A escolha do modelo depende do compromisso desejado entre precisão de modelagem, custo computacional, facilidade de identificação dos coeficientes e recursos disponíveis na plataforma de hardware.
+
+O modelo baseado em Tabelas de Consulta (Lookup Table – LUT) caracteriza-se pela simplicidade de implementação e pelo reduzido custo computacional. Entretanto, sua capacidade de interpolação é limitada e a quantidade de memória cresce rapidamente quando se deseja maior resolução ou representação simultânea dos efeitos de memória do amplificador.
+
+A Série de Volterra constitui a formulação matemática mais geral para sistemas não lineares com memória. Sua elevada capacidade de modelagem permite representar com grande fidelidade o comportamento de amplificadores de potência. Contudo, o número de coeficientes cresce rapidamente com a ordem polinomial e com a profundidade de memória, tornando sua implementação direta pouco prática em FPGAs de pequeno porte.
+
+O modelo Generalized Memory Polynomial (GMP) estende o Memory Polynomial por meio da inclusão de termos cruzados entre diferentes atrasos temporais. Essa estratégia melhora a representação de amplificadores que apresentam fortes efeitos de memória, porém aumenta significativamente o número de coeficientes, multiplicações complexas, operações de acumulação e blocos DSP necessários para sua implementação.
+
+Outra alternativa consiste na utilização de Redes Neurais Artificiais (Artificial Neural Networks – ANN). Esses modelos apresentam elevada capacidade de aproximação de funções altamente não lineares e podem representar fenômenos complexos que dificilmente seriam descritos por modelos polinomiais tradicionais. Em contrapartida, exigem grande volume de dados para treinamento, elevado custo computacional e maior complexidade de implementação em hardware.
+
+Comparativamente, o modelo Memory Polynomial oferece um excelente equilíbrio entre precisão de modelagem e simplicidade computacional. A eliminação dos termos cruzados reduz drasticamente a complexidade em relação à Série de Volterra, preservando precisão suficiente para representar os principais efeitos observados em amplificadores empregados em sistemas LTE, 5G NR e transmissões OFDM.
+
+Do ponto de vista da implementação em FPGA, o Memory Polynomial apresenta vantagens adicionais. Sua estrutura modular facilita a divisão do processamento em estágios independentes, permitindo elevado paralelismo, utilização eficiente de pipeline e parametrização da ordem polinomial e da profundidade de memória. Essas características simplificam a reutilização de módulos e favorecem a escalabilidade da arquitetura.
+
+Além disso, o número de operações cresce aproximadamente de forma linear com a ordem do modelo e com a profundidade de memória, permitindo adaptar o algoritmo às limitações de diferentes dispositivos programáveis sem alterar sua estrutura matemática fundamental.
+
+Essas propriedades justificam a escolha do Memory Polynomial como núcleo matemático da arquitetura DPDnano-Lite. A decisão baseia-se não apenas em sua ampla aceitação na literatura científica, mas também em sua excelente relação entre desempenho de linearização, simplicidade de implementação e eficiência computacional. Essa escolha possibilitou o desenvolvimento de uma arquitetura modular compatível com a FPGA Tang Nano 4K, mantendo flexibilidade para futuras extensões e atualizações.
+
+Com isso, conclui-se a fundamentação teórica referente à Predistorção Digital. Os conceitos apresentados ao longo deste capítulo servirão como base para o Capítulo 3, no qual será descrita detalhadamente a arquitetura DPDnano-Lite, estabelecendo a correspondência entre os modelos matemáticos estudados e sua implementação em hardware digital.
+
+====================================
+Com esta parte, a Seção 2.4 fica concluída. O próximo passo será iniciar o Capítulo 3 – Predistorção Digital, onde deixaremos a fundamentação teórica geral para entrar na evolução das arquiteturas de DPD e preparar o leitor para o Capítulo 4, que apresentará a arquitetura DPDnano-Lite propriamente dita.
+====================================
+
+=================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

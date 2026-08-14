@@ -1,0 +1,183 @@
+A estrutura que seguiremos será:
+
+
+Capítulo 1 – Introdução
+
+1.1 Contextualização
+
+1.2 Motivação
+
+1.3 Problema de Pesquisa
+
+1.4 Hipótese
+
+1.5 Objetivos
+
+• Objetivo Geral
+
+• Objetivos Específicos
+
+1.6 Metodologia
+
+1.7 Organização do Trabalho
+--------------------------------------
+
+CAPÍTULO 1 – INTRODUÇÃO
+
+1.1 Contextualização
+   (3 a 5 páginas)
+
+1.2 Motivação
+   (2 a 3 páginas)
+
+1.3 Problema de Pesquisa
+   (1 a 2 páginas)
+
+1.4 Hipótese
+   (1 página)
+
+1.5 Objetivos
+      1.5.1 Objetivo Geral
+      1.5.2 Objetivos Específicos
+   (1 a 2 páginas)
+
+1.6 Metodologia
+   (2 a 3 páginas)
+
+1.7 Organização do Trabalho
+   (1 página)
+
+-------------------------------------
+==================================================================
+
+
+
+Pré-textuais
+Capa
+Folha de rosto
+Folha de aprovação
+Dedicatória (opcional)
+Agradecimentos (opcional)
+Resumo
+Abstract
+Lista de Figuras
+Lista de Tabelas
+Lista de Siglas
+Sumário
+
+Capítulo 1 – Introdução
+1.1 Contextualização
+1.2 Motivação
+1.3 Problema de Pesquisa
+1.4 Hipótese
+1.5 Objetivos
+Geral
+Específicos
+1.6 Metodologia
+1.7 Organização do Trabalho
+
+Capítulo 2 – Amplificadores de Potência e Linearização
+Fundamentos dos amplificadores RF
+Não linearidades
+Métricas de desempenho
+ACPR
+EVM
+Eficiência
+Técnicas de linearização
+Back-Off
+Feedback
+Feedforward
+Envelope Tracking
+Doherty
+Digital Predistortion (DPD)
+
+Capítulo 3 – Predistorção Digital
+Conceitos de DPD
+Cadeia transmissora
+Modelos de predistorção
+LUT
+Polinomial
+Série de Volterra
+Wiener
+Hammerstein
+Wiener-Hammerstein
+Memory Polynomial
+Generalized Memory Polynomial (GMP)
+Dynamic Deviation Reduction (DDR)
+Redes Neurais
+Comparação entre os modelos
+Justificativa da escolha do Memory Polynomial simplificado utilizado no DPDnano
+
+Capítulo 4 – Arquitetura DPDnano
+Objetivos da arquitetura
+Requisitos para FPGA de baixo custo
+Representação IQ
+Aritmética em ponto fixo
+Formatos Q
+Pipeline
+Saturação
+Overflow
+Arredondamento
+Multiplicadores
+DSP Slices
+Arquitetura modular
+Fluxo interno de processamento
+Latência
+Throughput
+Consumo estimado de recursos
+
+Capítulo 5 – Implementação em Verilog
+Organização do projeto
+Estrutura dos módulos RTL
+Descrição dos principais módulos
+complex_mult
+complex_add
+fixed_mult
+coeff_bank
+iq_delay
+poly_kernel
+poly_branch
+rounding
+saturator
+dpd_core
+Fluxo dos dados
+Considerações de síntese
+
+Capítulo 6 – Simulações e Resultados
+Ambiente ModelSim
+Plano de verificação
+Testbenches
+Casos de teste (TC001 até TC008)
+Formato das mensagens PASS/FAIL
+Formas de onda
+Discussão dos resultados
+Limitações
+
+Capítulo 7 – Conclusão
+Contribuições
+Limitações
+Trabalhos futuros
+Referências
+Apêndices
+Arquivos de configuração
+Scripts ModelSim
+Trechos relevantes do código
+Resultados complementares
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

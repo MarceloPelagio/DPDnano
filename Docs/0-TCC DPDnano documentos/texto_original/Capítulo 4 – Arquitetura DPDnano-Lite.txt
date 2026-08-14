@@ -1,0 +1,310 @@
+Capítulo 4 - Arquitetura DPDnano-Lite
+
+4.1 Introdução
+
+Este capítulo apresenta a arquitetura DPDnano-Lite proposta neste trabalho, descrevendo com rigor técnico a organização do caminho de dados, a representação numérica, a hierarquia modular e os critérios de projeto que orientaram a implementação em FPGA. Diferentemente dos capítulos anteriores, voltados à fundamentação teórica e à evolução conceitual da predistorção digital, este capítulo concentra-se na materialização da proposta em uma arquitetura RTL sintetizável, compatível com restrições reais de hardware e coerente com a meta central do trabalho: demonstrar que um predistorcedor digital funcional, tecnicamente consistente e verificável pode ser construído de forma compacta para dispositivos reconfiguráveis de pequeno porte.
+
+Desde sua concepção, o DPDnano-Lite nasceu como uma solução intencionalmente simples, eficiente e orientada a FPGA de recursos limitados, tendo como plataforma-alvo principal a Tang Nano 4K, baseada no dispositivo Gowin GW1NSR-LV4C (SIPEED, 2026). Isso significa que a compactação estrutural da arquitetura não deve ser interpretada como simplificação posterior, nem como redução derivada de uma versão originalmente mais ampla. Ao contrário, a simplicidade arquitetural faz parte da identidade do projeto e constitui uma decisão fundacional, adotada para viabilizar implementação prática, verificabilidade funcional e consumo compatível com uma plataforma reconfigurável de pequeno porte.
+
+O desenvolvimento do DPDnano-Lite foi guiado por uma tensão permanente entre dois objetivos de engenharia frequentemente conflitantes. De um lado, era necessário preservar a estrutura matemática mínima capaz de reproduzir o comportamento essencial de um predistorcedor polinomial complexo, incluindo o ramo linear e a compensação não linear cúbica. De outro, a arquitetura deveria permanecer compatível com a Tang Nano 4K, cuja disponibilidade de blocos DSP, registradores, memória embarcada e elementos lógicos é significativamente mais restrita do que a encontrada em plataformas de maior porte. Essa tensão entre fidelidade algorítmica e austeridade arquitetural constitui o eixo estruturante da proposta.
+
+Sob o ponto de vista conceitual, o DPDnano-Lite deriva da família de modelos polinomiais discutida nos capítulos anteriores, em especial da formulação de predistorção baseada em termos complexos de baixa ordem, amplamente utilizada na literatura por combinar expressividade e custo computacional moderado (DING et al., 2004; MORGAN et al., 2006; ZHU, 2016). Entretanto, a arquitetura congelada validada neste trabalho não reproduz uma implementação genérica e ilimitada do modelo Memory Polynomial. Em vez disso, ela adota uma especialização intencional e controlada, coerente com sua origem como arquitetura enxuta para FPGA compacta: o caminho de dados efetivamente validado em hardware utiliza dois ramos complexos ativos, um ramo linear e um ramo cúbico, ambos aplicados à amostra corrente, com acumulação posterior em ponto fixo. Essa decisão reduz drasticamente a complexidade estrutural sem romper a coerência com a lógica de predistorção polinomial e com o compromisso de custo computacional observado em implementações de DPD em hardware reconfigurável (LI; MONTORO; GILABERT, 2024).
+
+Essa observação é metodologicamente importante. Em projetos acadêmicos e industriais, é comum que a documentação arquitetural contenha módulos de suporte, alternativas de expansão e elementos preparados para versões futuras. No DPDnano-Lite, essa situação também ocorre: há módulos auxiliares e convenções de projeto que preservam compatibilidade com formulações mais abrangentes, inclusive com extensões de memória. Contudo, para que o texto deste TCC permaneça fiel à arquitetura congelada efetivamente verificada, a descrição do capítulo distingue explicitamente entre: (i) o caminho de dados ativo da versão validada; (ii) os blocos auxiliares desenvolvidos como parte do ecossistema RTL; e (iii) as possibilidades de expansão previstas, mas não incorporadas ao fluxo funcional principal da versão congelada.
+
+A Figura 4.1 apresenta essa visão geral em dois níveis. No primeiro nível, mostra o caminho de dados efetivamente ativo: entrada complexa em Q1.15, multiplicação complexa linear, geração do termo cúbico, ramo não linear complexo, acumulação, arredondamento e saturação. No segundo nível, a figura posiciona os módulos auxiliares e de expansão ao redor desse núcleo, evidenciando que o projeto foi estruturado para permitir evolução sem comprometer a rastreabilidade da versão congelada.
+
+Em termos funcionais, a arquitetura pode ser resumida pela seguinte cadeia:
+
+Equação (4.1)
+
+y(n) = sat{ round[ c1 . x(n) + c3 . x(n)|x(n)|^2 ] }
+
+na qual x(n) representa a amostra complexa de entrada, c1 representa o coeficiente complexo do ramo linear, c3 representa o coeficiente complexo do ramo cúbico, round(.) representa a conversão de escala com arredondamento aritmético e sat(.) representa a limitação final ao intervalo numérico da saída. Essa expressão resume a essência do DPDnano-Lite congelado: uma arquitetura de predistorção complexa de terceira ordem, com dois coeficientes complexos externos e cadeia numérica totalmente determinística.
+
+Do ponto de vista de engenharia digital, quatro decisões estruturais definem o caráter da proposta.
+
+Primeiro, toda a aritmética é realizada em ponto fixo, com formatos numéricos congelados e semanticamente bem definidos. Essa escolha evita a variabilidade estrutural associada a implementações em ponto flutuante e reduz significativamente o custo de síntese em FPGA.
+
+Segundo, a arquitetura separa explicitamente as funções de conversão de escala e de saturação. O módulo rounding é o único autorizado a realizar arredondamento e mudança de formato numérico, enquanto o módulo saturator apenas aplica a limitação de amplitude e registra a saída. Essa separação não é apenas uma convenção de codificação: ela é uma decisão arquitetural central, porque simplifica a análise numérica, reduz ambiguidades funcionais e torna os testes de verificação mais objetivos.
+
+Terceiro, o projeto adota organização modular rigorosa. Mesmo quando a versão congelada utiliza um subconjunto reduzido dos blocos disponíveis, os módulos são definidos com interfaces claras, o que facilita depuração, reaproveitamento, ampliação e rastreabilidade documental.
+
+Quarto, o fluxo de dados é temporalmente sincronizado por registradores que mantêm o caráter pipeline da implementação. Ainda que a arquitetura não explore paralelismo agressivo, ela preserva um comportamento síncrono previsível e apropriado a sistemas em fluxo contínuo.
+
+Ao longo deste capítulo, a arquitetura será descrita em diferentes níveis de abstração. A Seção 4.2 detalhará a visão global do sistema e deixará explícito o caminho de dados realmente ativo. A Seção 4.3 formalizará a representação numérica congelada e discutirá o crescimento de palavra ao longo do processamento. A Seção 4.4 examinará o fluxo de dados amostra a amostra. A Seção 4.5 tratará da sincronização temporal, da latência e do throughput. A Seção 4.6 apresentará a função de cada módulo RTL, distinguindo os blocos centrais dos blocos auxiliares. A Seção 4.7 discutirá os compromissos de implementação em FPGA que justificam a arquitetura proposta. Por fim, a Seção 4.8 sintetizará as contribuições do capítulo e estabelecerá a transição para a implementação em Verilog.
+
+4.2 Visão Geral da Arquitetura DPDnano-Lite
+
+A arquitetura DPDnano-Lite deve ser compreendida como uma implementação RTL especializada de um predistorcedor polinomial complexo de baixa ordem, orientada desde a origem por restrições reais de hardware. Sua lógica central não consiste em uma rede genérica de processamento programável, mas em um encadeamento bem definido de operações aritméticas com semântica física clara: multiplicação complexa linear, geração de termo cúbico, ponderação complexa do termo não linear, soma dos ramos, conversão de escala e saturação.
+
+Esse ponto merece ênfase adicional. Em muitos projetos acadêmicos, a arquitetura apresentada no texto corresponde a uma forma parcialmente idealizada do algoritmo, enquanto o código RTL sintetizável incorpora concessões posteriores impostas pela plataforma. No DPDnano-Lite, procurou-se o caminho inverso: a arquitetura foi concebida desde o início como objeto implementável na classe de FPGA pretendida. Isso significa que decisões aparentemente "modestas", como limitar a quantidade de ramos ativos, congelar ordens polinomiais baixas, manter coeficientes externos e restringir a profundidade do pipeline ao estritamente necessário, não representam empobrecimento metodológico, mas disciplina de projeto orientada por realizabilidade.
+
+Na versão congelada validada neste trabalho, o módulo de topo dpd_core recebe as entradas `din_re` e `din_im`, ambas em formato Q1.15, além de quatro coeficientes complexos externos: `coef1_re`, `coef1_im`, `coef3_re` e `coef3_im`, também em Q1.15. Os coeficientes `coef1_*` alimentam o ramo linear, enquanto os coeficientes `coef3_*` alimentam o ramo cúbico. Essa escolha tem implicações importantes. Ao receber coeficientes externamente, o módulo de topo se torna imediatamente reutilizável em cenários de teste, calibração e experimentação, sem exigir recompilação do hardware para cada novo conjunto de parâmetros, o que é compatível com práticas de identificação e ajuste de coeficientes largamente adotadas em DPD (DING et al., 2004).
+
+A Figura 4.2 mostra o diagrama em blocos do caminho de dados ativo da versão congelada. Nessa figura, explicitam-se os dois ramos paralelos:
+
+- ramo linear: `complex_mult`
+- ramo não linear: `poly_kernel` seguido de `poly_branch`
+
+Após esses dois ramos, observam-se o alinhamento temporal do ramo linear, a acumulação em largura estendida, o módulo `rounding` e, finalmente, o módulo `saturator`.
+
+O fluxo funcional pode ser representado da seguinte forma:
+
+Equação (4.2)
+
+Entrada IQ -> ramo linear: complex_mult(coef1) || ramo cubico: poly_kernel -> poly_branch(coef3) -> alinhamento temporal -> acumulacao complexa -> rounding -> saturator -> saida IQ
+
+Essa decomposição em dois ramos não é arbitrária. O ramo linear preserva o ganho complexo básico do sistema e realiza a ponderação direta da amostra de entrada. O ramo cúbico, por sua vez, introduz a componente não linear dominante de terceira ordem, frequentemente suficiente para capturar, de maneira simplificada, a porção mais relevante da distorção AM/AM e AM/PM em cenários didáticos e em validações controladas de arquitetura. Em outras palavras, o DPDnano-Lite não busca esgotar toda a riqueza de modelos comportamentais de DPD, mas sim capturar o núcleo operacional mínimo que torna a proposta tecnicamente significativa, eficiente e implementável em hardware enxuto, especialmente na Tang Nano 4K.
+
+Sob a ótica de espaço de projeto, essa especialização corresponde a um recorte deliberado. Durante a evolução do trabalho, permaneceu claro que uma formulação mais ampla poderia incorporar novos termos polinomiais, coeficientes adicionais, memória explícita e até mecanismos de adaptação dinâmica. Contudo, cada uma dessas extensões elevaria o custo aritmético e o custo de integração. Por isso, a versão Lite foi posicionada como variante de entrada da família DPDnano: não uma prova de conceito incompleta, mas um ponto de equilíbrio no qual a arquitetura ainda preserva significado técnico de predistorção complexa, ao mesmo tempo em que respeita um orçamento estrutural suficientemente baixo para a plataforma-alvo.
+
+Do ponto de vista de implementação, isso se refletiu também em uma meta prática de contenção de blocos aritméticos dedicados. O projeto foi conduzido com a intenção de preservar margem de recursos no dispositivo-alvo, adotando como orientação limitar o consumo de blocos DSP a uma faixa compatível com uma implementação confortável da versão Lite, em vez de ocupar agressivamente a capacidade disponível. Essa postura é relevante porque, em FPGA pequeno, o sucesso de um núcleo não depende apenas de "caber", mas de ainda deixar espaço para lógica de integração, interfaces, instrumentação de teste e eventuais módulos periféricos.
+
+Um aspecto particularmente relevante da arquitetura é o fato de que a acumulação dos ramos não é realizada por um módulo somador genérico externo no caminho principal. No arquivo `dpd_core.v`, a soma dos ramos é implementada diretamente em lógica sequencial registrada, por meio de extensão de sinal e soma das saídas `lin_*_d` e `poly_*`. Isso significa que o acumulador principal não é apenas um somador aritmético: ele também atua como elemento de sincronização funcional entre ramos paralelos. Portanto, ao descrever a arquitetura, é mais rigoroso falar em "estágio de acumulação registrada" do que em "somador isolado".
+
+Outro ponto de interesse científico diz respeito à diferença entre o conjunto de módulos existentes no repositório e aqueles efetivamente usados no caminho de dados congelado. A organização do diretório RTL inclui, além do núcleo funcional, módulos como `iq_delay`, `coeff_bank`, `complex_add` e `fixed_mult`. Esses blocos são importantes para a coerência arquitetural do projeto, para testes unitários, para documentação de evolução e para possíveis extensões futuras. Contudo, o caminho de dados ativo do `dpd_core` congelado usa diretamente `complex_mult`, `poly_kernel`, `poly_branch`, `rounding` e `saturator`, além da lógica registrada de alinhamento e acumulação. Tal distinção será mantida ao longo do capítulo para evitar que a documentação atribua ao hardware validado funcionalidades ou estruturas que não participam do fluxo principal da versão analisada.
+
+Do ponto de vista de organização sistêmica, a arquitetura pode ser interpretada em quatro camadas.
+
+Na primeira camada encontra-se a interface externa, composta por clock, reset, sinal de validade de entrada, amostras I/Q e coeficientes complexos.
+
+Na segunda camada encontra-se o plano de transformação aritmética primária, no qual a amostra de entrada é decomposta em ramo linear e ramo cúbico.
+
+Na terceira camada encontra-se o plano de recomposição numérica, no qual os dois ramos são alinhados temporalmente e somados em um acumulador complexo em Q4.30.
+
+Na quarta camada encontra-se o plano de conformação de saída, composto pela conversão numérica, pela detecção de clip e pela saturação final em Q1.15.
+
+Essa leitura em camadas é útil porque mostra que o DPDnano-Lite não é apenas um conjunto de módulos independentes, mas uma arquitetura com fronteiras funcionais claras. Cada camada atende a uma responsabilidade bem delimitada e reduz o acoplamento lógico com as demais, o que favorece verificação, manutenção e documentação.
+
+Sob uma perspectiva mais estritamente metodológica, a definição dessas camadas também foi importante para orientar o próprio processo de desenvolvimento. Em vez de atacar o problema como uma massa única de código RTL, o projeto foi sendo refinado em torno de perguntas de engenharia bastante objetivas: qual é a interface mínima necessária? qual é o núcleo aritmético essencial? em que ponto ocorre a recomposição segura dos ramos? onde deve ficar a fronteira entre precisão interna e formato externo? Essa forma de decompor o problema ajudou a transformar uma formulação matemática abstrata em uma arquitetura verificável por blocos, algo especialmente importante quando se trabalha com FPGA de pequeno porte e margem limitada para erros de integração.
+
+Também convém destacar que a opção por coeficientes complexos externos não atende apenas à conveniência de teste. Ela preserva uma separação conceitual fundamental entre estrutura e parametrização. A estrutura do DPDnano-Lite, isto é, o conjunto de operações e o caminho de dados, permanece fixo; os coeficientes representam o grau de liberdade pelo qual o comportamento do predistorcedor pode ser ajustado a diferentes cenários de validação. Em termos de engenharia de sistemas, essa separação é valiosa porque permite estudar a robustez estrutural da arquitetura independentemente do processo específico de obtenção dos coeficientes, que pode variar conforme método de identificação, tipo de amplificador e procedimento experimental.
+
+Essa distinção entre estrutura fixa e parametrização variável também prepara o terreno para futuras evoluções. Caso uma versão posterior venha a incorporar atualização dinâmica de coeficientes, banco interno de parâmetros ou interface com algoritmo adaptativo externo, o núcleo arquitetural já terá sido concebido dentro de um paradigma favorável a essa expansão. Assim, mesmo quando a versão Lite não explora adaptação online, ela já organiza o problema de forma compatível com uma evolução tecnicamente coerente.
+
+4.3 Representação Numérica e Formato de Ponto Fixo
+
+A representação numérica adotada no DPDnano-Lite é um dos pilares mais importantes da arquitetura. Em implementações de processamento digital em FPGA, a escolha do formato numérico não é um detalhe secundário, mas uma decisão de primeira ordem, pois determina simultaneamente a precisão dos resultados, o risco de overflow, a facilidade de síntese, o consumo de recursos aritméticos e a previsibilidade funcional do sistema. No presente trabalho, optou-se por uma arquitetura integralmente baseada em ponto fixo, com larguras de palavra explicitamente congeladas no arquivo `config.vh`, em consonância com a busca por implementações mais leves e previsíveis em hardware reconfigurável (LI; MONTORO; GILABERT, 2024).
+
+Na interface externa, tanto a entrada quanto a saída usam o formato Q1.15, representado por 16 bits com um bit de sinal e quinze bits fracionários. Esse formato é adequado para sinais normalizados em banda base complexa, nos quais o valor absoluto costuma permanecer próximo da faixa unitária. O uso de Q1.15 também é particularmente conveniente porque estabelece compatibilidade direta com vetores de teste, rotinas de quantização e ferramentas de validação já amplamente utilizadas em ambientes acadêmicos e industriais.
+
+Os coeficientes complexos do predistorcedor também são representados em Q1.15. Essa escolha simplifica a interface do módulo de topo, evita heterogeneidade desnecessária entre dados e parâmetros e permite que a análise de quantização permaneça conceitualmente homogênea. No entanto, a homogeneidade de interface não implica homogeneidade de precisão interna. Pelo contrário: à medida que as operações se encadeiam, a largura das palavras internas cresce de forma controlada para preservar a informação matemática relevante de cada etapa.
+
+Os formatos principais definidos na arquitetura congelada são os seguintes:
+
+- entrada: Q1.15, 16 bits
+- coeficientes: Q1.15, 16 bits
+- magnitude ao quadrado `|x|^2`: Q3.30, 33 bits
+- termo cúbico `x|x|^2`: Q4.45, 49 bits
+- saída do ramo após ponderação cúbica: Q3.30, 33 bits
+- acumulador complexo: Q4.30, 34 bits
+- saída do módulo `rounding`: Q1.15, 16 bits
+- saída final do módulo `saturator`: Q1.15, 16 bits
+
+Essa progressão de formatos não foi escolhida por conveniência textual, mas por necessidade algébrica. Quando duas grandezas Q1.15 são multiplicadas, o resultado bruto cresce em largura e passa a conter mais bits fracionários. Da mesma forma, ao se formar `|x|^2 = x_re^2 + x_im^2`, a arquitetura precisa acomodar o crescimento simultâneo da parte inteira e da parte fracionária. O formato Q3.30 para `mag2` decorre precisamente dessa necessidade. Em seguida, ao multiplicar a amostra original por `|x|^2`, obtém-se um termo cúbico com precisão expandida, armazenado em 49 bits. Só depois de ponderar esse termo pelo coeficiente complexo e normalizar o resultado é que o ramo não linear retorna a uma largura mais compatível com a acumulação.
+
+A Figura 4.3 ilustra esse crescimento e essa contração controlada de largura de palavra. Nela, mostra-se explicitamente a sequência:
+
+Q1.15 -> Q3.30 -> Q4.45 -> Q3.30 -> Q4.30 -> Q1.15
+
+acompanhada da identificação dos módulos responsáveis por cada transição.
+
+Do ponto de vista de modelagem numérica, a arquitetura adota um princípio fundamental: preservar precisão interna durante as etapas de formação dos termos e adiar a redução de escala para o final do caminho de dados. Esse princípio reduz erro acumulado de quantização e torna o comportamento do sistema mais próximo da formulação matemática original. Ele também ajuda a separar dois fenômenos distintos que frequentemente são confundidos em implementações menos cuidadosas: erro de arredondamento e saturação por extrapolação da faixa representável.
+
+No DPDnano-Lite, a conversão de escala e o arredondamento são responsabilidade exclusiva do módulo `rounding`. Esse módulo recebe o acumulador em Q4.30, aplica viés de arredondamento com sinal, executa o deslocamento aritmético necessário para converter a palavra para Q1.15 e, adicionalmente, produz sinais de indicação de clip para as componentes real e imaginária. Em termos conceituais, isso significa que o arredondamento não é tratado como uma operação implícita ou distribuída pela arquitetura, mas como um estágio numérico explícito, observável e verificável, reforçando a disciplina numérica recomendada em projetos de DPD com controle rigoroso de custo computacional (ZHU, 2016).
+
+O uso de viés de arredondamento dependente do sinal merece destaque. Em `rounding.v`, a arquitetura não simplesmente desloca bits para truncar o valor; ela adiciona ou subtrai uma constante antes do deslocamento, dependendo do sinal do operando. Isso reduz o erro sistemático associado à truncagem pura e melhora o comportamento estatístico da quantização. Em um TCC voltado à implementação digital, esse detalhe é relevante porque mostra que a arquitetura não foi concebida apenas para "funcionar", mas para manter disciplina numérica compatível com boas práticas de projeto digital.
+
+Além do benefício estritamente numérico, essa escolha também simplifica a arquitetura. Ao concentrar a política de arredondamento em um único estágio, evita-se replicar lógica de truncagem e correção em múltiplos pontos do caminho de dados. Isso reduz ambiguidade funcional, simplifica a depuração e contribui para a contenção de área. Em termos de engenharia de hardware, a solução adotada é particularmente elegante porque transforma uma necessidade inevitável, a redução final de escala, em um estágio explícito, compacto e semanticamente isolado. O resultado é uma arquitetura mais fácil de verificar, mais fácil de documentar e menos propensa a inconsistências entre simulação comportamental e implementação sintetizada.
+
+Após a conversão em `rounding`, entra em ação o módulo `saturator`. A função desse bloco é estritamente limitar os valores ao intervalo representável por Q1.15, ou seja, entre `SAT_MIN = -16'sh8000` e `SAT_MAX = 16'sh7FFF`. A saturação é realizada com base nos indicadores de clip produzidos no estágio anterior, e não por reescalonamento adicional. Isso preserva a separação de responsabilidades e permite que a ocorrência de saturação seja analisada como um fenômeno físico-numérico claramente localizado no final da cadeia.
+
+A arquitetura ainda disponibiliza, quando habilitada por diretiva de compilação, sinalização explícita de overflow. Os sinais `overflow`, `overflow_re` e `overflow_im` constituem recursos valiosos para verificação e depuração, pois permitem correlacionar condições de saturação com cenários de excitação, escolha de coeficientes e limites de faixa dinâmica. Assim, a representação numérica do DPDnano-Lite não deve ser vista apenas como um conjunto de formatos Q; ela constitui um regime numérico completo, no qual precisão, rastreabilidade e verificabilidade são tratados como atributos arquiteturais.
+
+Há ainda uma consequência arquitetural importante da política numérica adotada: ela torna mais clara a interpretação dos erros observados nos testes. Quando o arredondamento está concentrado em um estágio específico e a saturação está isolada em outro, os desvios entre modelo ideal e implementação podem ser classificados com muito mais precisão. Se um erro aparece antes da saturação, ele tende a estar ligado à quantização, ao reescalonamento ou ao encadeamento aritmético interno. Se o erro aparece no estágio final com ativação de clip, a causa provável passa a ser extrapolação de faixa. Essa capacidade de localizar o fenômeno é extremamente útil em um trabalho experimental, porque evita confundir limitações intrínsecas do formato fixo com falhas arquiteturais de outra natureza.
+
+Do ponto de vista de engenharia eletrônica, essa clareza não é secundária. Em implementações digitais para telecomunicações, o comportamento do sistema raramente é avaliado apenas pelo valor instantâneo da saída; interessa compreender sob quais condições a arquitetura entra em regiões de não idealidade e como essas regiões se distribuem ao longo do espaço de operação. Ao organizar a cadeia numérica dessa maneira, o DPDnano-Lite oferece uma base melhor para testes de sensibilidade, análise de saturação, avaliação de erro de quantização e definição de envelopes operacionais seguros, temas que se tornam particularmente relevantes nos capítulos experimentais do trabalho.
+
+4.4 Fluxo de Processamento da Arquitetura DPDnano-Lite
+
+Uma vez estabelecida a semântica numérica, pode-se examinar o fluxo de processamento propriamente dito. O DPDnano-Lite opera sobre amostras complexas I/Q sincronizadas por `clk` e qualificadas por `in_valid`. Cada amostra válida percorre uma cadeia de transformação determinística, sem arbitragens, sem seleção dinâmica de caminhos e sem dependência de microcontrole. Essa simplicidade operacional é uma virtude da proposta, pois torna a latência previsível, facilita a verificação funcional e reduz o número de estados implícitos do sistema.
+
+O primeiro processamento explícito ocorre no ramo linear, por meio do módulo `complex_mult`. Esse bloco realiza a multiplicação complexa entre a amostra de entrada e o coeficiente complexo linear. A operação segue a decomposição clássica em quatro produtos reais:
+
+Equação (4.3)
+
+(a + jb)(c + jd) = (ac - bd) + j(ad + bc)
+
+No RTL, essa decomposição é implementada pelas variáveis `p0`, `p1`, `p2` e `p3`, seguidas da recomposição em `sum_re` e `sum_im`. O resultado é registrado e disponibilizado no formato compatível com `BRANCH_WIDTH`. Esse ramo produz a contribuição linear do predistorcedor e, por ser computacionalmente mais simples, torna-se disponível um ciclo antes do ramo cúbico. Por essa razão, o topo da arquitetura insere um estágio explícito de alinhamento temporal (`lin_re_d`, `lin_im_d`, `lin_valid_d`) para equalizar a chegada dos dois ramos ao acumulador.
+
+Esse alinhamento merece ser interpretado como decisão de integridade matemática, e não apenas como ajuste temporal local. Como a arquitetura opera sobre sinais complexos, qualquer desalinhamento entre a contribuição linear e a contribuição cúbica comprometeria simultaneamente amplitude, fase e coerência entre partes real e imaginária. Em outras palavras, a soma correta não exige apenas que cada ramo esteja "pronto", mas que ambos representem exatamente a mesma amostra lógica no mesmo instante arquitetural. O registrador adicional do ramo linear existe porque o ramo cúbico possui maior profundidade interna; sem essa compensação, a parte linear de uma amostra poderia ser somada à parte não linear da amostra seguinte ou anterior, produzindo erro estrutural grave, difícil de detectar apenas por inspeção superficial da saída.
+
+Paralelamente, a mesma amostra segue para o módulo `poly_kernel`. Esse bloco calcula inicialmente os termos quadráticos das componentes I e Q e os soma para obter `mag2 = |x|^2`. Em seguida, multiplica `x_re` e `x_im` por `mag2`, gerando `term_re` e `term_im`, que representam as componentes do termo cúbico complexo `x|x|^2`. É importante notar que, embora a literatura trate essa operação como uma etapa conceitualmente simples, sua implementação em ponto fixo exige crescimento controlado de largura, o que justifica os formatos internos expandidos descritos na seção anterior.
+
+O termo cúbico segue então para o módulo `poly_branch`, onde é ponderado pelo coeficiente complexo do ramo não linear. Novamente, a multiplicação complexa é decomposta em quatro produtos reais, mas agora envolvendo operandos de larguras significativamente maiores. Após a recomposição das partes real e imaginária, o módulo aplica uma etapa explícita de normalização por deslocamento aritmético à direita, precedida por viés de arredondamento. Esse ponto é crucial: o ramo cúbico não entrega diretamente um resultado "bruto" ao acumulador; ele o reescala para o formato Q3.30 antes da soma com o ramo linear.
+
+A etapa seguinte ocorre no interior do `dpd_core`, onde os dois ramos são somados em registradores de acumulador com largura `ACC_WIDTH = 34`. A operação inclui extensão de sinal de cada ramo antes da soma, o que garante consistência numérica e evita erros de interpretação entre palavras de larguras distintas. Em termos arquiteturais, essa etapa representa a recomposição do predistorcedor propriamente dito, pois é nela que o sistema materializa a combinação entre componente linear e componente não linear.
+
+Depois da acumulação, o resultado é encaminhado ao módulo `rounding`, que converte o acumulador Q4.30 para Q1.15 e gera simultaneamente os indicadores de clip. Por fim, o módulo `saturator` utiliza esses indicadores para formar a saída final do sistema, com possível limitação a `SAT_MAX` ou `SAT_MIN`.
+
+Convém observar que a acumulação em Q4.30 não foi escolhida apenas para "acomodar a soma". Ela representa uma decisão de fronteira entre precisão e custo. Se o acumulador fosse estreitado prematuramente, a arquitetura passaria a introduzir perdas adicionais justamente no ponto em que os dois ramos são recombinados, isto é, no momento mais sensível da operação. Se, em contrapartida, o acumulador fosse expandido muito além do necessário, o sistema passaria a consumir mais área e potencialmente impor maiores custos de roteamento e temporização sem benefício proporcional para a proposta Lite. O formato adotado procura, portanto, preservar a soma com segurança numérica, mas sem abandonar a austeridade estrutural que caracteriza o projeto.
+
+Outra consequência importante do fluxo escolhido é a rastreabilidade causal. Como o ramo linear e o ramo cúbico são formados por blocos separados e só se recombinam no acumulador, torna-se possível observar experimentalmente não apenas a saída final, mas também a contribuição relativa de cada mecanismo de transformação. Isso é valioso para fins didáticos e científicos, porque ajuda a demonstrar que o DPDnano-Lite não se resume a uma "caixa-preta" polinomial: ele explicita, em hardware, a contribuição da parcela linear, a formação do núcleo não linear e a recomposição final em ponto fixo.
+
+Essa observabilidade é especialmente útil quando o trabalho discute limites operacionais. Ao se variar amplitude de entrada, fase relativa ou coeficientes complexos, o pesquisador pode relacionar alterações na saída a regiões específicas do fluxo interno. Em um capítulo de arquitetura, esse tipo de propriedade merece destaque porque mostra que a escolha estrutural também foi guiada pela necessidade de produzir um objeto experimental inteligível, e não apenas funcional.
+
+O fluxo pode ser resumido, de forma fiel ao caminho de dados congelado, como:
+
+Equação (4.4)
+
+x(n) -> {ramo linear: complex_mult(c1); ramo cubico: poly_kernel -> poly_branch(c3)} -> acumulacao -> rounding -> saturator -> y(n)
+
+A Figura 4.4 representa esse fluxo em perspectiva temporal e estrutural. Nela, observam-se explicitamente a entrada da amostra, a bifurcação em dois ramos, a defasagem relativa entre os ramos, os registradores de alinhamento, o acumulador e os estágios finais de conformação numérica.
+
+Sob a ótica de projeto, esse fluxo possui três propriedades que justificam sua adoção.
+
+Primeiro, ele é determinístico. Cada amostra percorre exatamente o mesmo conjunto de transformações, sem reconfiguração de rota ou dependência de estado adaptativo interno.
+
+Segundo, ele é observável. Cada estágio possui sinais e formatos claramente identificáveis, o que facilita a instrumentação de testbenches e a depuração por waveform.
+
+Terceiro, ele é extensível. Embora o fluxo principal congelado use apenas um termo linear e um termo cúbico, a organização por ramos paralelos seguida de acumulação é compatível com futuras extensões para ordens mais altas, maior número de coeficientes ou inclusão de memória explícita.
+
+4.5 Arquitetura Pipeline e Sincronização Temporal
+
+O desempenho temporal do DPDnano-Lite decorre menos de uma exploração agressiva de paralelismo massivo e mais de uma sincronização disciplinada entre estágios registrados. A arquitetura é síncrona, monodomínio e orientada a fluxo. Cada bloco funcional relevante registra sua saída, o que segmenta o caminho crítico e torna o comportamento do sistema previsível sob o ponto de vista de temporização.
+
+No ramo linear, o módulo `complex_mult` registra o resultado da multiplicação complexa. No ramo cúbico, o módulo `poly_kernel` registra o termo `x|x|^2`, e o módulo `poly_branch` registra a saída do ramo não linear já reescalada. Em seguida, o próprio `dpd_core` registra a soma dos ramos. Depois disso, `rounding` registra a saída convertida e os indicadores de clip, e `saturator` registra a saída final. Essa cadeia de registradores caracteriza a natureza pipeline da arquitetura.
+
+Em implementações síncronas desse tipo, a latência pode ser interpretada como o número de estágios registrados atravessados por uma amostra válida desde sua entrada até a disponibilidade de `out_valid` e dos valores `dout_re` e `dout_im`. Mais importante do que o valor absoluto dessa latência, neste contexto, é o fato de ela ser fixa e determinística. Uma vez conhecido o posicionamento dos registradores no caminho de dados, a arquitetura passa a oferecer previsibilidade temporal completa, o que é essencial para verificação funcional e integração sistêmica.
+
+Na versão Lite congelada e validada, essa organização resulta em um pipeline efetivo de cinco ciclos de clock entre a aceitação da amostra válida e a disponibilização da saída correspondente. Esse número não deve ser entendido apenas como dado descritivo, mas como consequência direta das escolhas de particionamento do caminho de dados: um estágio associado ao ramo linear complexo, dois estágios no ramo cúbico (`poly_kernel` e `poly_branch`), um estágio de acumulação registrada em `dpd_core` e os dois estágios finais de conformação (`rounding` e `saturator`), com o alinhamento explícito garantindo convergência temporal entre os ramos. O resultado observado em verificação confirma que a latência arquitetural é estável e compatível com a estratégia de pipeline adotada.
+
+Equação (4.5)
+
+Latencia total = soma dos estagios registrados do caminho ativo
+
+Na prática, o sistema produz uma relação direta entre validade de entrada e validade de saída. Cada bloco propaga seu sinal `valid` correspondente, preservando a coerência temporal entre amostras e resultados. Esse mecanismo é particularmente importante porque a arquitetura contém dois ramos com profundidades internas diferentes. Sem o alinhamento explícito do ramo linear implementado em `dpd_core.v`, a soma final combinaria amostras temporalmente incompatíveis. Portanto, o registrador de alinhamento do ramo linear não é um detalhe acessório; ele é o elemento que garante integridade temporal da operação aritmética principal.
+
+Também é nessa etapa que se evidencia uma característica importante da filosofia Lite: o pipeline foi levado até o ponto de utilidade máxima, e não até o ponto de sofisticação máxima. Seria possível introduzir mais estágios para reduzir ainda mais trechos combinacionais, perseguindo frequências mais altas. No entanto, tal decisão aumentaria registradores, complexidade de controle temporal e custo de validação. A solução de cinco ciclos representa, portanto, um compromisso maduro entre simplicidade estrutural, previsibilidade funcional e desempenho suficiente para o objetivo desta versão.
+
+Após o preenchimento inicial do pipeline, o sistema passa a admitir uma nova amostra válida por ciclo de clock, desde que o ambiente externo mantenha `in_valid` em conformidade com a taxa de alimentação desejada. Em termos de throughput, isso significa que a arquitetura foi desenhada para operação em fluxo contínuo, mesmo que a latência absoluta não seja mínima. Essa é uma escolha correta do ponto de vista de sistemas digitais de comunicação, nos quais throughput sustentado costuma ser mais relevante do que resposta imediata de uma amostra isolada.
+
+Equação (4.6)
+
+Throughput nominal = 1 amostra valida por ciclo, apos enchimento do pipeline
+
+A Figura 4.5 apresenta um diagrama temporal com amostras consecutivas, de modo a evidenciar simultaneamente a entrada serial, a propagação pelos blocos, o alinhamento entre ramos e a emissão contínua de saídas após o enchimento. Esse diagrama é particularmente útil porque permite visualizar que a arquitetura, embora compacta, possui comportamento temporal rigorosamente organizado.
+
+Outro aspecto importante diz respeito ao reset. Nos módulos principais, a arquitetura adota reset síncrono ou assíncrono conforme o bloco, mas sempre com a finalidade de estabelecer estado inicial conhecido para registradores de dados e de validade. Do ponto de vista de projeto, essa inicialização previsível é indispensável para evitar propagação de valores indefinidos, sobretudo durante testes funcionais automatizados.
+
+Sob a perspectiva de síntese em FPGA, a segmentação pipeline reduz o comprimento combinacional de cada estágio e melhora a capacidade de fechamento de temporização. Essa vantagem é especialmente relevante em dispositivos compactos, nos quais caminhos críticos extensos podem comprometer frequência máxima ou exigir uso adicional de recursos para correção temporal. Assim, a sincronização temporal do DPDnano-Lite deve ser interpretada não apenas como requisito funcional, mas como parte essencial da estratégia de implementação.
+
+Em termos mais amplos, a escolha por um pipeline de cinco ciclos revela a filosofia de compromisso que permeia toda a arquitetura. Um pipeline muito curto poderia simplificar a interpretação temporal, porém concentraria esforço combinacional excessivo em poucos estágios, dificultando fechamento de temporização e aumentando a sensibilidade a escolhas de síntese. Um pipeline excessivamente profundo, por outro lado, poderia ampliar a frequência máxima potencial, mas introduziria maior custo em registradores, maior latência sistêmica e mais complexidade para alinhamento de sinais de validade, depuração e correlação amostra-a-amostra. A versão congelada posiciona-se entre esses extremos: não busca o mínimo absoluto de latência, tampouco persegue uma agressividade temporal que descaracterizaria a proposta Lite.
+
+Isso é particularmente importante quando se considera que o DPDnano-Lite foi concebido para integrar um ecossistema de testes, validação funcional e eventual uso embarcado em plataforma modesta. Em tal contexto, previsibilidade e robustez de integração podem ser mais valiosas do que ganhos marginais de frequência máxima. A arquitetura favorece, portanto, um throughput estável de uma amostra válida por ciclo após enchimento, sem transformar a lógica de controle em elemento dominante do projeto. Trata-se de uma decisão bastante coerente com sistemas de processamento contínuo em banda base, nos quais o fluxo sustentado costuma importar mais do que a resposta isolada de uma única amostra.
+
+Sob a ótica de verificação, a latência fixa de cinco ciclos também facilita construção de testbenches autoavaliáveis. Uma vez conhecida a distância temporal entre entrada e saída, torna-se mais direto correlacionar vetores de estímulo, janelas de observação e critérios de comparação. Isso reduz ambiguidades no processo experimental e ajuda a documentar os resultados com rigor, algo especialmente valioso em um trabalho acadêmico que pretende demonstrar não apenas a existência da arquitetura, mas sua verificabilidade sistemática.
+
+4.6 Organização dos Módulos RTL
+
+O Capítulo 4 só estará tecnicamente completo se a organização modular do DPDnano-Lite for descrita com precisão suficiente para permitir ao leitor reconstruir mentalmente a arquitetura a partir de seus blocos. Para isso, é necessário distinguir entre módulos centrais do caminho de dados congelado e módulos auxiliares, de apoio ou de expansão arquitetural.
+
+Os módulos centrais do caminho de dados ativo são:
+
+- `dpd_core`
+- `complex_mult`
+- `poly_kernel`
+- `poly_branch`
+- `rounding`
+- `saturator`
+
+Os módulos auxiliares ou complementares presentes no repositório são:
+
+- `fixed_mult`
+- `complex_add`
+- `iq_delay`
+- `coeff_bank`
+- `mult_generic`
+
+Além deles, há arquivos de configuração e empacotamento, como `config.vh` e `coeff_pkg.vh`, que desempenham papel essencial no congelamento da arquitetura, embora não sejam módulos de processamento em si.
+
+O módulo `dpd_core` é a entidade de topo e o verdadeiro núcleo arquitetural do sistema. Ele integra os ramos linear e cúbico, controla o alinhamento temporal entre eles, implementa a acumulação registrada e conecta os estágios finais de conformação de saída. Em termos de responsabilidade sistêmica, `dpd_core` é o ponto no qual a formulação matemática do predistorcedor se transforma em caminho de dados sintetizável. Seu papel vai além da simples interconexão: ele define o contrato funcional da arquitetura congelada.
+
+No contexto desta dissertação, o `dpd_core` também cumpre papel epistemológico importante: ele delimita o que efetivamente constitui a arquitetura DPDnano-Lite. Em outras palavras, é nele que se torna inequívoco quais módulos pertencem ao caminho de dados validado e quais permanecem como infraestrutura de suporte ou possibilidades de evolução. Essa observação é relevante porque impede que a descrição do projeto misture, inadvertidamente, recursos presentes no repositório com recursos efetivamente exercitados na versão congelada.
+
+O módulo `complex_mult` implementa a multiplicação complexa do ramo linear. Sua estrutura é clássica e aritmeticamente transparente: quatro multiplicações reais, seguidas de uma subtração para a parte real e uma adição para a parte imaginária. Embora simples, esse bloco é central porque materializa o ganho complexo linear do predistorcedor, isto é, a parte do modelo que preserva a contribuição proporcional ao sinal de entrada.
+
+O módulo `poly_kernel` gera o núcleo não linear cúbico. Ele calcula `i2 = x_re^2`, `q2 = x_im^2`, soma esses termos para obter `mag2 = |x|^2` e, por fim, multiplica a amostra complexa por essa magnitude ao quadrado. O resultado é a formação explícita do termo `x|x|^2`, que constitui a base do ramo cúbico. Esse módulo é particularmente importante porque representa a etapa em que a arquitetura deixa de ser linear e passa a incorporar a distorção inversa desejada.
+
+Do ponto de vista arquitetural, o `poly_kernel` é um dos melhores exemplos de como uma expressão matemática aparentemente compacta pode se desdobrar em custo computacional não trivial quando transposta para hardware. A expressão `x|x|^2` esconde multiplicações, crescimento de largura de palavra, necessidade de preservar sinal e propagação de validade entre estágios. Ao explicitar esse núcleo em um bloco próprio, o projeto torna visível uma das regiões de maior densidade aritmética da arquitetura. Isso ajuda a justificar por que a versão Lite preferiu limitar-se ao termo cúbico dominante, em vez de acumular prematuramente ordens adicionais.
+
+O módulo `poly_branch` aplica o coeficiente complexo do ramo cúbico ao termo gerado por `poly_kernel`. Além da multiplicação complexa em largura estendida, ele realiza arredondamento intermediário e normalização para o formato Q3.30. Portanto, sua função não é apenas "multiplicar pelo coeficiente", mas também adaptar numericamente o resultado para que ele possa ser somado ao ramo linear em condições controladas.
+
+É justamente nesse bloco que se percebe, de maneira mais clara, a necessidade de compatibilizar fidelidade algorítmica com disciplina de implementação. A contribuição cúbica poderia ser tratada de modo mais genérico, com maior liberdade de escalas internas ou com organização diferente de normalização. No entanto, isso aumentaria a dificuldade de garantir que o termo chegasse ao acumulador em formato consistente e temporalmente compatível. A solução adotada em `poly_branch` mostra que a arquitetura não delega essa consistência a convenções informais; ela a incorpora explicitamente ao caminho de dados.
+
+O módulo `rounding` ocupa posição especial na arquitetura. Conforme a documentação congelada do projeto e o próprio código RTL, ele é o único módulo autorizado a executar conversão de escala entre o acumulador e o formato final de saída. Ele também detecta condições de clip para cada componente. Em termos metodológicos, isso transforma o `rounding` em um estágio de fronteira numérica: tudo o que ocorre antes dele é processamento interno de precisão estendida; tudo o que ocorre depois dele é apenas conformação final de faixa.
+
+O módulo `saturator`, por sua vez, recebe a saída já convertida para Q1.15 e aplica saturação quando os sinais de clip indicam extrapolação da faixa representável. Opcionalmente, ele também produz sinalização de overflow por componente e sinalização global. Sua importância arquitetural reside em isolar o tratamento de saturação como fenômeno final e explicitamente monitorável.
+
+Essa decisão de isolar a saturação tem ainda um benefício documental e experimental relevante. Ao manter o `saturator` semanticamente "puro", isto é, sem acumular responsabilidades de arredondamento, reescala ou manipulação adicional de formato, o projeto cria uma correspondência quase direta entre o conceito teórico de saturação e sua realização em hardware. Em um TCC de engenharia, essa limpeza semântica é valiosa porque fortalece a rastreabilidade entre descrição textual, código RTL e resultados de teste.
+
+Entre os módulos auxiliares, o `iq_delay` merece análise cuidadosa. Ele implementa uma linha de atraso com três amostras visíveis (`x0`, `x1`, `x2`) e propagação correspondente do sinal de validade, o que o torna compatível com arquiteturas que incorporam memória explícita. Entretanto, na versão congelada do `dpd_core` analisada neste trabalho, esse bloco não participa do caminho de dados ativo. Sua presença no repositório indica que o projeto foi concebido com consciência de expansão para modelos com memória, mas a validação principal desta dissertação concentra-se no núcleo reduzido atualmente conectado.
+
+Situação semelhante ocorre com `coeff_bank`. Esse módulo fornece coeficientes constantes definidos em `coeff_pkg.vh`, o que seria útil em versões com parametrização interna estática. Contudo, o `dpd_core` congelado recebe os coeficientes relevantes diretamente por porta de entrada. Assim, `coeff_bank` deve ser interpretado como módulo de suporte e de organização arquitetural, e não como parte indispensável do fluxo principal validado.
+
+O módulo `complex_add` também não integra o caminho de dados de topo na versão congelada. Sua existência, porém, continua tecnicamente justificada como componente auxiliar de biblioteca aritmética, potencialmente útil em variantes arquiteturais com mais ramos ou somas explicitamente externalizadas. Já `fixed_mult` e `mult_generic` cumprem papel de infraestrutura aritmética e de reutilização, ajudando a documentar a filosofia modular do projeto.
+
+A Figura 4.6 apresenta a hierarquia dos módulos RTL em dois grupos visuais: núcleo funcional congelado e módulos auxiliares/de expansão. Essa distinção é valiosa porque mostra que o projeto não é desorganizado nem contraditório; ele possui, na verdade, uma base congelada claramente identificável e um conjunto de blocos preparados para evolução.
+
+4.7 Considerações de Implementação em FPGA
+
+A relevância arquitetural do DPDnano-Lite só pode ser plenamente compreendida quando se considera o contexto físico de implementação para o qual ele foi concebido. O alvo do projeto, a Tang Nano 4K, impõe um regime de escassez relativa de recursos quando comparada a plataformas FPGA mais robustas. Em tal contexto, cada ampliação de ordem polinomial, cada aumento de largura de palavra e cada acréscimo de profundidade de memória produz impacto real sobre uso de DSPs, área lógica, registradores, roteamento e fechamento de temporização.
+
+Por essa razão, o DPDnano-Lite não foi desenhado como demonstração maximalista de capacidade algorítmica, mas como proposta conscientemente compacta desde a sua origem. A especialização do caminho de dados em um ramo linear e um ramo cúbico reduz o número de multiplicações complexas e, consequentemente, o custo da implementação. Em uma formulação genérica de maior ordem e maior memória, o número de produtos cresceria rapidamente, tornando inviável a síntese eficiente em dispositivos pequenos e contrariando a filosofia de projeto originalmente estabelecida para a Tang Nano 4K (SIPEED, 2026; LI; MONTORO; GILABERT, 2024).
+
+Equação (4.7)
+
+Custo aritmetico ~ numero de ramos x numero de multiplicacoes por ramo x largura dos operandos
+
+No ramo linear, a multiplicação complexa já exige quatro produtos reais. No ramo cúbico, além da ponderação complexa final, há a geração prévia do termo `x|x|^2`, que também consome recursos aritméticos significativos. Portanto, mesmo uma arquitetura aparentemente simples como a do DPDnano-Lite já representa compromisso técnico não trivial entre expressividade e custo.
+
+Essa observação ajuda a entender por que o projeto foi conduzido com forte preocupação em limitar o orçamento aritmético. Em uma FPGA compacta, não basta que o algoritmo seja matematicamente correto; ele precisa ser materializável dentro de uma margem de recursos coerente com o ecossistema do sistema. A orientação adotada no DPDnano-Lite foi manter o núcleo em uma faixa de consumo compatível com uma implementação enxuta, preservando folga para interconexão, lógica de teste, circuitos auxiliares e eventual integração com outros blocos de transmissão digital. Isso explica a recusa deliberada em expandir prematuramente a ordem polinomial ou ativar caminhos adicionais de memória na versão congelada.
+
+A adoção integral de ponto fixo é uma das estratégias mais importantes para tornar esse compromisso viável. Em FPGA, implementações em ponto flutuante costumam demandar estruturas maiores, mais profundas e energeticamente mais caras. Ao congelar os formatos e concentrar a redução de escala em estágio bem definido, o DPDnano-Lite obtém comportamento numérico previsível com custo estrutural compatível com o alvo de hardware.
+
+Outro aspecto relevante é a separação entre precisão interna e formato externo. A arquitetura não tenta manter as palavras sempre curtas; ela expande a largura nos pontos matematicamente necessários e só depois a reconduz ao formato de interface. Isso evita que a economia de recursos seja obtida às custas de uma degradação numérica descontrolada. Em termos de engenharia, trata-se de uma economia seletiva, e não de uma simplificação indiscriminada.
+
+O pipeline registrado também contribui decisivamente para a viabilidade em FPGA. Ao distribuir o processamento em estágios, a arquitetura reduz a complexidade combinacional de cada trecho, o que tende a beneficiar o fechamento de temporização e a estabilidade do roteamento. Em dispositivos compactos, essa prática é particularmente valiosa porque o fracasso no fechamento temporal pode inviabilizar o uso do projeto mesmo quando a ocupação lógica parece aceitável.
+
+A Figura 4.7 apresenta uma visualização conceitual da distribuição de custo arquitetural, indicando que os maiores focos de esforço computacional concentram-se na geração do termo cúbico, nas multiplicações complexas e na acumulação em largura estendida. Essa figura não representa números absolutos de síntese; ela funciona como mapa qualitativo de densidade computacional do projeto.
+
+Convém enfatizar que esse mapa qualitativo de custo não tem apenas valor ilustrativo. Ele traduz uma percepção central do processo de projeto: a arquitetura Lite foi sendo refinada à medida que se compreendia quais regiões realmente pressionavam o orçamento de hardware e quais simplificações podiam ser adotadas sem descaracterizar a proposta. Em trabalhos de engenharia digital, essa leitura é muitas vezes tão importante quanto a própria listagem final de módulos, porque mostra que a arquitetura resultante não nasceu de um exercício abstrato de escrita de código, mas de sucessivas decisões orientadas por criticidade aritmética, sincronização e viabilidade de síntese.
+
+Do ponto de vista de escalabilidade, a arquitetura mantém potencial de expansão, mas essa expansão não é gratuita. A inclusão de memória explícita no caminho principal, por exemplo, exigiria ativação efetiva de linhas de atraso, aumento do número de termos e revisão da política de acumulação. De forma semelhante, a inclusão de ordens mais elevadas exigiria novos ramos e maior custo de multiplicação. Assim, o DPDnano-Lite deve ser entendido como um ponto de equilíbrio deliberado dentro do espaço de projeto, e não como solução universal para qualquer cenário de predistorção digital.
+
+Nesse sentido, é tecnicamente útil explicitar a diferença entre três classes de evolução possíveis para a família DPDnano. A primeira seria uma variante intermediária, ainda voltada a FPGA de pequeno ou médio porte, porém com maior riqueza estrutural: inclusão de memória explícita, ampliação moderada da base polinomial e eventual reorganização do acumulador para múltiplos termos. A segunda corresponderia a uma versão de maior desempenho, com aprofundamento de pipeline, maior paralelismo interno e uso mais intenso de blocos dedicados, priorizando frequência de operação e capacidade de expansão em detrimento da austeridade estrutural. A terceira envolveria mecanismos adaptativos, tais como atualização dinâmica de coeficientes, bancos de parâmetros reconfiguráveis e integração com laços de aprendizagem indireta. Todas essas direções são coerentes com a base conceitual do projeto, mas extrapolam deliberadamente o recorte da versão Lite.
+
+No caso de uma variante intermediária, a evolução mais natural seria ativar de forma efetiva a infraestrutura de atraso já insinuada pela presença de módulos como `iq_delay`, permitindo construir uma formulação com memória explícita sem abandonar completamente a filosofia de baixo custo. Essa versão continuaria exigindo forte disciplina de quantização e provavelmente manteria coeficientes externos, mas passaria a lidar com mais termos na recomposição e com maior pressão sobre acumuladores e sincronização.
+
+Já em uma variante de maior desempenho, a discussão mudaria de patamar. O objetivo deixaria de ser apenas preservar funcionalidade com austeridade e passaria a incluir metas mais agressivas de frequência de operação, paralelismo e potencial de integração com cadeias de rádio digital mais exigentes. Nesse cenário, aprofundar pipeline, duplicar caminhos aritméticos ou repartir operações entre estágios mais numerosos poderia ser plenamente justificável. Contudo, tais escolhas também ampliariam custo de validação, complexidade de fechamento temporal e dependência de recursos dedicados, afastando o projeto do espírito original da versão Lite.
+
+Por fim, uma arquitetura com coeficientes dinâmicos ou adaptação online introduziria uma nova dimensão de complexidade: a coexistência entre caminho de dados de predistorção e caminho de atualização paramétrica. Isso implicaria discutir armazenamento de coeficientes, protocolos de atualização, estabilidade transitória, política de sincronização entre parâmetro e amostra e, possivelmente, interação com observação do amplificador de potência. Trata-se de uma direção cientificamente muito rica, mas que configura uma nova classe de problema. Registrar essa distinção já no Capítulo 4 é importante para mostrar que o recorte da versão Lite não decorre de ausência de visão, e sim de escolha metodológica consciente.
+
+Ao registrar essas possibilidades já neste capítulo, evita-se uma interpretação equivocada de que a arquitetura final teria "parado cedo" por limitação conceitual. O que ocorreu, em termos de engenharia, foi uma seleção criteriosa de fronteira: a versão Lite encerra conscientemente o caminho de simplificação no ponto em que ainda preserva relevância matemática, fidelidade funcional e utilidade experimental. A partir daí, quaisquer ampliações passam a representar novas classes de projeto, com outras metas de custo, temporização e escalabilidade.
+
+Essa característica é, na verdade, uma virtude científica da proposta. Ao documentar claramente o recorte adotado, o trabalho oferece ao leitor não apenas uma arquitetura funcional, mas também um estudo de compromisso entre algoritmo, aritmética e plataforma de implementação. Em outras palavras, o capítulo não descreve apenas "como implementar um DPD"; ele mostra como transformar uma ideia de predistorção digital em um objeto arquitetural realista sob restrição de recursos.
+
+4.8 Síntese do Capítulo e Considerações Finais
+
+O Capítulo 4 apresentou o coração técnico do DPDnano-Lite. Ao longo das seções anteriores, foi estabelecida uma descrição arquitetural precisa da proposta, evidenciando que a versão congelada validada neste trabalho corresponde a um predistorcedor complexo de terceira ordem com dois ramos ativos, implementação integral em ponto fixo, cadeia síncrona registrada e separação explícita entre conversão numérica e saturação.
+
+Mais do que enumerar módulos, o capítulo buscou demonstrar a racionalidade interna da arquitetura. O ramo linear preserva a contribuição proporcional ao sinal; o ramo cúbico introduz a compensação não linear dominante; o acumulador recompõe o sinal predistorcido em largura estendida; o módulo `rounding` realiza a única conversão de escala permitida; e o módulo `saturator` garante conformidade final da saída com a faixa Q1.15. Esse encadeamento não apenas implementa uma equação, mas traduz em hardware uma decisão de projeto coerente com a meta de eficiência estrutural.
+
+Foi igualmente importante mostrar que a simplicidade observada na versão Lite não corresponde a superficialidade técnica. Ao contrário, a arquitetura só pôde ser reduzida a esse núcleo porque várias decisões finas de engenharia precisaram ser tomadas com cuidado: onde expandir e onde contrair largura de palavra; em que estágio concentrar o arredondamento; como garantir alinhamento exato entre ramos de profundidades diferentes; como preservar throughput contínuo com latência fixa; e como conter o custo aritmético sem eliminar a essência funcional do predistorcedor complexo. Em conjunto, essas decisões compõem o verdadeiro conteúdo científico do capítulo.
+
+Também foi mostrado que a fidelidade científica do texto exige distinguir entre o caminho de dados congelado e o conjunto mais amplo de módulos presentes no ecossistema RTL. Essa distinção é especialmente importante porque evita leituras equivocadas da arquitetura e reforça a credibilidade técnica do trabalho. Em vez de apresentar uma descrição idealizada ou excessivamente genérica, o capítulo documenta a arquitetura efetivamente validada, preservando ao mesmo tempo a visão de modularidade e expansão do projeto.
+
+Sob a perspectiva do TCC como um todo, este capítulo cumpre papel central porque conecta a fundamentação teórica dos capítulos anteriores à materialização concreta da proposta. A partir daqui, deixa-se o domínio predominantemente conceitual e passa-se ao domínio da implementação detalhada. É precisamente essa transição que justifica a centralidade do Capítulo 4: ele constitui a ponte entre teoria, arquitetura e verificação experimental.
+
+O capítulo seguinte aprofundará essa ponte ao descrever a implementação em Verilog-2001, analisando os arquivos RTL, as interfaces, as decisões de codificação sintetizável e a correspondência entre os blocos arquiteturais aqui apresentados e sua realização concreta no código-fonte do projeto.

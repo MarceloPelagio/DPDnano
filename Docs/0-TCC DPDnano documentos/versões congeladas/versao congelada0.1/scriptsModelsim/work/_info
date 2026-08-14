@@ -1,0 +1,287 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/scriptsModelsim
+vcomplex_mult
+!s110 1784215182
+!i10b 1
+!s100 W3iMPkU?7L<=JOQmH1[VY1
+Z1 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IfZchiSObCKAJ3GeAU4hZH0
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1784210020
+8../rtl/complex_mult.v
+F../rtl/complex_mult.v
+!i122 14
+L0 10 53
+Z3 OV;L;2020.1;71
+r1
+!s85 0
+31
+!s108 1784215182.000000
+!s107 ../rtl/config.vh|../rtl/complex_mult.v|
+!s90 -reportprogress|300|+incdir+../rtl|../rtl/complex_mult.v|
+!i113 1
+Z4 !s92 +incdir+../rtl
+Z5 tCvgOpt 0
+vfixed_mult
+Z6 !s110 1784188493
+!i10b 1
+!s100 Va2ZFzQof:;TjLchKQhGG1
+R1
+I3NEnfUjQo::J`MR`POa]E3
+R2
+R0
+w1784188402
+8../rtl/fixed_mult.v
+F../rtl/fixed_mult.v
+!i122 0
+L0 5 17
+R3
+r1
+!s85 0
+31
+Z7 !s108 1784188493.000000
+!s107 ../rtl/config.vh|../rtl/fixed_mult.v|
+!s90 -reportprogress|300|+incdir+../rtl|../rtl/fixed_mult.v|
+!i113 1
+R4
+R5
+vpoly_branch
+!s110 1784216955
+!i10b 1
+!s100 e`8A?UHMZ^QP:82Zkm>lK2
+R1
+In@R4VNnUOFLnjB6>Zm?b02
+R2
+R0
+w1784216812
+8../rtl/poly_branch.v
+F../rtl/poly_branch.v
+!i122 20
+L0 11 58
+R3
+r1
+!s85 0
+31
+!s108 1784216955.000000
+!s107 ../rtl/config.vh|../rtl/poly_branch.v|
+!s90 -reportprogress|300|+incdir+../rtl|../rtl/poly_branch.v|
+!i113 1
+R4
+R5
+vpoly_kernel
+Z8 !s110 1784215806
+!i10b 1
+!s100 UHm<M>kdL<DHGbj1GS20`0
+R1
+I5]2fnPM[KlSlDC3NIf3R[3
+R2
+R0
+w1784215765
+8../rtl/poly_kernel.v
+F../rtl/poly_kernel.v
+!i122 18
+L0 11 50
+R3
+r1
+!s85 0
+31
+Z9 !s108 1784215806.000000
+!s107 ../rtl/config.vh|../rtl/poly_kernel.v|
+!s90 -reportprogress|300|+incdir+../rtl|../rtl/poly_kernel.v|
+!i113 1
+R4
+R5
+vrounding
+Z10 !s110 1784218013
+!i10b 1
+!s100 ;zATTWYT?c_f9HDkDN;F71
+R1
+IDf:nJXR[iQILfg6JfDXeZ2
+R2
+R0
+w1784217951
+8../rtl/rounding.v
+F../rtl/rounding.v
+!i122 26
+L0 10 52
+R3
+r1
+!s85 0
+31
+Z11 !s108 1784218013.000000
+!s107 ../rtl/config.vh|../rtl/rounding.v|
+!s90 -reportprogress|300|+incdir+../rtl|../rtl/rounding.v|
+!i113 1
+R4
+R5
+vsaturator
+Z12 !s110 1784218363
+!i10b 1
+!s100 E2Vzmm];a1i@XQR];bfO23
+R1
+IPY@fzS9O;Y[XzU>0G5R>R1
+R2
+R0
+w1784218199
+8../rtl/saturator.v
+F../rtl/saturator.v
+!i122 28
+L0 10 55
+R3
+r1
+!s85 0
+31
+Z13 !s108 1784218363.000000
+!s107 ../rtl/config.vh|../rtl/saturator.v|
+!s90 -reportprogress|300|+incdir+../rtl|../rtl/saturator.v|
+!i113 1
+R4
+R5
+vtb_complex_mult
+!s110 1784215183
+!i10b 1
+!s100 eZQA:?<oi^4Q=`6AK30i;2
+R1
+IdeGTKM:>>nHjVP0`l5FzW2
+R2
+R0
+w1784215112
+8../sim/tb_complex_mult.v
+F../sim/tb_complex_mult.v
+!i122 15
+L0 11 130
+R3
+r1
+!s85 0
+31
+!s108 1784215183.000000
+!s107 ../rtl/config.vh|../sim/tb_complex_mult.v|
+!s90 -reportprogress|300|+incdir+../rtl|../sim/tb_complex_mult.v|
+!i113 1
+R4
+R5
+vtb_fixed_mult
+R6
+!i10b 1
+!s100 FYENd9]FLKjWOLRI0gVG^0
+R1
+IG3Z8JH`QZ3h:ki^mRW5I@2
+R2
+R0
+w1784188405
+8../sim/tb_fixed_mult.v
+F../sim/tb_fixed_mult.v
+!i122 1
+L0 4 15
+R3
+r1
+!s85 0
+31
+R7
+!s107 ../rtl/config.vh|../sim/tb_fixed_mult.v|
+!s90 -reportprogress|300|+incdir+../rtl|../sim/tb_fixed_mult.v|
+!i113 1
+R4
+R5
+vtb_poly_branch
+!s110 1784216956
+!i10b 1
+!s100 =?Uo4IVE]>PeJ5YEN9czQ1
+R1
+Io[d=LCj5IEEDZTJQdH6bN0
+R2
+R0
+w1784216868
+8../sim/tb_poly_branch.v
+F../sim/tb_poly_branch.v
+!i122 21
+Z14 L0 4 95
+R3
+r1
+!s85 0
+31
+!s108 1784216956.000000
+!s107 ../rtl/config.vh|../sim/tb_poly_branch.v|
+!s90 -reportprogress|300|+incdir+../rtl|../sim/tb_poly_branch.v|
+!i113 1
+R4
+R5
+vtb_poly_kernel
+R8
+!i10b 1
+!s100 0oNG1]XG=nZ:Q<_3ii`NX1
+R1
+I]mV0oezYdBaMXTKYFaKb23
+R2
+R0
+w1784215554
+8../sim/tb_poly_kernel.v
+F../sim/tb_poly_kernel.v
+!i122 19
+L0 9 114
+R3
+r1
+!s85 0
+31
+R9
+!s107 ../rtl/config.vh|../sim/tb_poly_kernel.v|
+!s90 -reportprogress|300|+incdir+../rtl|../sim/tb_poly_kernel.v|
+!i113 1
+R4
+R5
+vtb_rounding
+R10
+!i10b 1
+!s100 cL[S4MT>b1AKGMkXc98;@2
+R1
+I`DN1dEa;Wfo2^?gfDX__M3
+R2
+R0
+w1784217649
+8../sim/tb_rounding.v
+F../sim/tb_rounding.v
+!i122 27
+L0 4 97
+R3
+r1
+!s85 0
+31
+R11
+!s107 ../rtl/config.vh|../sim/tb_rounding.v|
+!s90 -reportprogress|300|+incdir+../rtl|../sim/tb_rounding.v|
+!i113 1
+R4
+R5
+vtb_saturator
+R12
+!i10b 1
+!s100 5fM;7oBC;ZCKB`MiV04RP0
+R1
+IY;]cI9@k9RHeYo1j7ZDPk3
+R2
+R0
+w1784218234
+8../sim/tb_saturator.v
+F../sim/tb_saturator.v
+!i122 29
+R14
+R3
+r1
+!s85 0
+31
+R13
+!s107 ../rtl/config.vh|../sim/tb_saturator.v|
+!s90 -reportprogress|300|+incdir+../rtl|../sim/tb_saturator.v|
+!i113 1
+R4
+R5

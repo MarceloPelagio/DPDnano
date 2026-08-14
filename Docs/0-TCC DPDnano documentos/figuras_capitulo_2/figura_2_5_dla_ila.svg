@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="780" viewBox="0 0 1500 780">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .subtitle { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .label { font: 600 20px 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .small { font: 500 18px 'Segoe UI', Arial, sans-serif; fill: #35516b; }
+      .box { fill: #eef4f8; stroke: #4b6a88; stroke-width: 3; rx: 16; ry: 16; }
+      .accent { fill: #ffe7c4; stroke: #d17b00; stroke-width: 3; rx: 16; ry: 16; }
+      .arrow { stroke: #46647f; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#46647f"/>
+    </marker>
+  </defs>
+  <rect width="1500" height="780" fill="#ffffff"/>
+  <text x="750" y="45" text-anchor="middle" class="title">Figura 2.5 - Arquiteturas Direct Learning Architecture (DLA) e Indirect Learning Architecture (ILA)</text>
+  <text x="375" y="105" text-anchor="middle" class="subtitle">DLA</text>
+  <text x="1125" y="105" text-anchor="middle" class="subtitle">ILA</text>
+  <rect x="90" y="210" width="150" height="90" class="box"/><text x="165" y="262" text-anchor="middle" class="label">x(n)</text>
+  <rect x="300" y="190" width="180" height="130" class="accent"/><text x="390" y="245" text-anchor="middle" class="label">Predistorcedor</text><text x="390" y="275" text-anchor="middle" class="small">ajuste direto</text>
+  <rect x="540" y="190" width="170" height="130" class="box"/><text x="625" y="245" text-anchor="middle" class="label">PA</text><text x="625" y="275" text-anchor="middle" class="small">modelo real</text>
+  <rect x="300" y="420" width="180" height="100" class="box"/><text x="390" y="470" text-anchor="middle" class="label">Minimizacao</text><text x="390" y="498" text-anchor="middle" class="small">erro direto</text>
+  <path d="M240 255 L300 255" class="arrow"/>
+  <path d="M480 255 L540 255" class="arrow"/>
+  <path d="M625 320 L625 380 L480 380 L480 420" class="arrow"/>
+  <path d="M390 420 L390 320" class="arrow"/>
+  <text x="390" y="570" text-anchor="middle" class="small">Coeficientes ajustados diretamente no predistorcedor</text>
+  <rect x="840" y="210" width="150" height="90" class="box"/><text x="915" y="262" text-anchor="middle" class="label">x(n)</text>
+  <rect x="1050" y="190" width="180" height="130" class="box"/><text x="1140" y="245" text-anchor="middle" class="label">PA</text><text x="1140" y="275" text-anchor="middle" class="small">sistema medido</text>
+  <rect x="1290" y="190" width="180" height="130" class="accent"/><text x="1380" y="245" text-anchor="middle" class="label">Pos-distorcedor</text><text x="1380" y="275" text-anchor="middle" class="small">identificacao inversa</text>
+  <rect x="1290" y="420" width="180" height="100" class="box"/><text x="1380" y="470" text-anchor="middle" class="label">Copia de</text><text x="1380" y="498" text-anchor="middle" class="small">coeficientes</text>
+  <path d="M990 255 L1050 255" class="arrow"/>
+  <path d="M1230 255 L1290 255" class="arrow"/>
+  <path d="M1380 320 L1380 420" class="arrow"/>
+  <text x="1140" y="570" text-anchor="middle" class="small">Coeficientes do pos-distorcedor sao reaproveitados no DPD</text>
+  <text x="750" y="735" text-anchor="middle" class="small">Fonte: elaboracao propria.</text>
+</svg>

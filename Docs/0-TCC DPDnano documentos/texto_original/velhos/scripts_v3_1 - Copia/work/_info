@@ -1,0 +1,242 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/scripts_v3_1
+vcomplex_add
+Z1 !s110 1784359604
+!i10b 1
+!s100 HR=LbaKJi<JXHUZ1g4<Q62
+Z2 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IVh@6f_6De@Ze=lJ?hmg@Y2
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1784184436
+8../rtl_v3_1/complex_add.v
+F../rtl_v3_1/complex_add.v
+!i122 2
+L0 5 19
+Z4 OV;L;2020.1;71
+r1
+!s85 0
+31
+Z5 !s108 1784359604.000000
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/complex_add.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/complex_add.v|
+!i113 1
+Z6 o-work work
+Z7 tCvgOpt 0
+vcomplex_mult
+R1
+!i10b 1
+!s100 Q]J3SX5J^03M:YQEWcc`j2
+R2
+I[PPLgW4k80Yje1QTW3XD>0
+R3
+R0
+w1784226768
+8../rtl_v3_1/complex_mult.v
+F../rtl_v3_1/complex_mult.v
+!i122 1
+L0 3 19
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/complex_mult.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/complex_mult.v|
+!i113 1
+R6
+R7
+vdpd_core
+R1
+!i10b 1
+!s100 5ANegkN1AQndJl7=ggC^Y2
+R2
+IEZ4n:S?ViHLIAYjfODN>62
+R3
+R0
+w1784342820
+8../rtl_v3_1/dpd_core.v
+F../rtl_v3_1/dpd_core.v
+!i122 8
+L0 4 143
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/dpd_core.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/dpd_core.v|
+!i113 1
+R6
+R7
+vfixed_mult
+R1
+!i10b 1
+!s100 Va2ZFzQof:;TjLchKQhGG1
+R2
+I=7JDlPTncz7cgzVd]dB@X0
+R3
+R0
+w1784188402
+8../rtl_v3_1/fixed_mult.v
+F../rtl_v3_1/fixed_mult.v
+!i122 0
+L0 5 17
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/fixed_mult.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/fixed_mult.v|
+!i113 1
+R6
+R7
+viq_delay
+R1
+!i10b 1
+!s100 9ZD;hVoB94FL2fKheHolV2
+R2
+I2`BW`gC17bEF=<fgi_AMz0
+R3
+R0
+w1784178083
+8../rtl_v3_1/iq_delay.v
+F../rtl_v3_1/iq_delay.v
+!i122 3
+L0 5 48
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/iq_delay.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/iq_delay.v|
+!i113 1
+R6
+R7
+vpoly_branch
+R1
+!i10b 1
+!s100 K<5PaZcW7AD[gl0Rnlj1=3
+R2
+I<oFlC;WB@3^8KaRO]UNBG3
+R3
+R0
+w1784227230
+8../rtl_v3_1/poly_branch.v
+F../rtl_v3_1/poly_branch.v
+!i122 5
+L0 4 48
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/poly_branch.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/poly_branch.v|
+!i113 1
+R6
+R7
+vpoly_kernel
+R1
+!i10b 1
+!s100 4o_XbDim`Wo]Ph`mI]i3Y1
+R2
+I2OlU:jM9e^jR_?HSUeZ`^2
+R3
+R0
+w1784295521
+8../rtl_v3_1/poly_kernel.v
+F../rtl_v3_1/poly_kernel.v
+!i122 4
+L0 16 50
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/poly_kernel.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/poly_kernel.v|
+!i113 1
+R6
+R7
+vrounding
+R1
+!i10b 1
+!s100 ^5iOWID<H=z3d?BDEYn@F2
+R2
+IaHKH4;j0cm7S7aTRMigPk1
+R3
+R0
+w1784337463
+8../rtl_v3_1/rounding.v
+F../rtl_v3_1/rounding.v
+!i122 6
+L0 4 81
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/rounding.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/rounding.v|
+!i113 1
+R6
+R7
+vsaturator
+R1
+!i10b 1
+!s100 DE<[`DaV9=Q<9M`d;MfQR2
+R2
+I;fP_=hBh6KnNT_iQOV_0R3
+R3
+R0
+w1784337704
+8../rtl_v3_1/saturator.v
+F../rtl_v3_1/saturator.v
+!i122 7
+L0 4 69
+R4
+r1
+!s85 0
+31
+R5
+!s107 ..\rtl_v3_1\config.vh|../rtl_v3_1/saturator.v|
+!s90 -reportprogress|300|-work|work|../rtl_v3_1/saturator.v|
+!i113 1
+R6
+R7
+vtb_dpdnano_lite_TC009_Nightmare
+R1
+!i10b 1
+!s100 XEdjBdo4m]Sd=JVXf[:mG3
+R2
+I?nR;B=J2XV6;_MAL=bLMA2
+R3
+R0
+w1784359462
+8../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+F../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v
+!i122 9
+L0 4 152
+R4
+r1
+!s85 0
+31
+R5
+!s107 ../rtl_v3_1/config.vh|../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v|
+!s90 -reportprogress|300|-work|work|../tb_v3_1/tb_dpdnano_lite_TC009_Nightmare.v|
+!i113 1
+R6
+R7
+ntb_dpdnano_lite_@t@c009_@nightmare

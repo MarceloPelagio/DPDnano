@@ -1,0 +1,852 @@
+Capítulo 5 – Implementação RTL em Verilog-2001
+
+5.1 Introdução
+
+Este capítulo apresenta a implementação da arquitetura DPDnano-Lite utilizando a linguagem Verilog-2001. Após a definição do modelo matemático e da organização arquitetural, o desenvolvimento concentra-se na descrição em nível RTL (Register Transfer Level), estabelecendo a correspondência entre cada bloco funcional e sua implementação em hardware.
+
+A descrição RTL foi estruturada de forma modular, permitindo que cada componente seja sintetizado, simulado e validado individualmente antes da integração ao módulo principal. Essa estratégia reduz a complexidade do desenvolvimento, facilita a depuração e melhora a reutilização de código em versões futuras da arquitetura.
+
+Todos os módulos compartilham um único domínio de clock e um sinal de reset, simplificando a sincronização temporal e favorecendo o fechamento de temporização na FPGA Tang Nano 4K. As interfaces utilizam barramentos independentes para as componentes I e Q, mantendo compatibilidade com a representação complexa adotada pelo algoritmo Memory Polynomial.
+
+Os parâmetros globais da arquitetura, como largura de palavra, formato de ponto fixo, ordem polinomial e profundidade de memória, são definidos em arquivos de configuração. Dessa forma, a adaptação para diferentes dispositivos FPGA pode ser realizada sem alterações significativas na estrutura do código RTL.
+
+Durante a implementação foram adotadas boas práticas de projeto digital, incluindo parametrização, separação funcional dos módulos, uso de registradores de pipeline, tratamento explícito de overflow por saturação e conversão de escala por arredondamento. Essas decisões contribuíram para uma arquitetura organizada, escalável e compatível com ferramentas de síntese e simulação.
+
+A Figura 5.1 (a ser inserida) deverá apresentar a hierarquia dos arquivos RTL do projeto, evidenciando a relação entre o módulo principal **dpd_core** e seus respectivos submódulos.
+
+Nas próximas seções serão descritos detalhadamente os principais módulos implementados, suas interfaces, responsabilidades funcionais e integração dentro da arquitetura DPDnano-Lite.
+
+==========================================================
+Na próxima continuação será desenvolvida a Seção 5.2 – Arquivo de Configuração (config.vh), detalhando todos os parâmetros congelados da arquitetura (larguras de palavra, formatos Q, profundidade de memória, ordem polinomial e constantes de configuração), explicando a função de cada parâmetro e sua influência na implementação RTL do DPDnano-Lite.
+==========================================================
+
+============================================================================
+
+5.2 Arquivo de Configuração (config.vh)
+
+O arquivo `config.vh` constitui o ponto central de parametrização da arquitetura DPDnano-Lite e representa uma das principais decisões de projeto adotadas durante o desenvolvimento do sistema. Em arquiteturas digitais compostas por diversos módulos RTL, a existência de parâmetros distribuídos em múltiplos arquivos aumenta significativamente a complexidade de manutenção, favorece inconsistências entre módulos e dificulta a evolução do projeto. Por essa razão, optou-se por concentrar todas as constantes globais em um único arquivo de configuração, compartilhado por toda a hierarquia do projeto.
+
+Durante a fase inicial de desenvolvimento foram analisadas diferentes estratégias para armazenamento dos parâmetros globais da arquitetura. A primeira alternativa consistia na utilização de constantes locais em cada módulo. Embora essa abordagem simplifique módulos isolados, ela torna extremamente trabalhosa qualquer alteração de largura de palavra, ordem polinomial ou profundidade de memória, uma vez que modificações precisam ser repetidas manualmente em diversos arquivos RTL.
+
+Uma segunda alternativa considerada foi a utilização exclusiva de parâmetros (`parameter`) definidos individualmente em cada módulo. Essa solução oferece maior flexibilidade, porém aumenta a quantidade de conexões hierárquicas e exige a propagação explícita dos parâmetros ao longo de toda a árvore de instâncias, tornando a arquitetura mais complexa e suscetível a erros de configuração.
+
+Após a análise dessas alternativas, foi adotada uma terceira abordagem, baseada em um único arquivo de inclusão (`config.vh`). Essa solução permite que todos os módulos compartilhem exatamente a mesma definição de formatos numéricos, larguras de barramentos e constantes do algoritmo, garantindo consistência entre as diferentes partes da arquitetura e simplificando o processo de manutenção.
+
+Outra vantagem dessa organização é a possibilidade de gerar diferentes versões da arquitetura a partir de um único conjunto de arquivos RTL. Alterações na largura de palavra, profundidade de memória ou ordem do modelo podem ser realizadas diretamente no arquivo de configuração, propagando-se automaticamente para toda a arquitetura durante a compilação, sem necessidade de modificar os módulos funcionais.
+
+Os parâmetros definidos em `config.vh` foram organizados em grupos de acordo com sua finalidade. Essa divisão melhora a legibilidade do código, facilita a localização das constantes e reduz a probabilidade de erros durante futuras modificações.
+
+Os principais grupos de parâmetros são apresentados na Tabela 5.1.
+
+Tabela 5.1 – Principais grupos de parâmetros do arquivo `config.vh`
+
+| Grupo | Exemplos | Finalidade |
+|-------|----------|------------|
+| Representação numérica | DATA_WIDTH, DATA_FRAC_BITS | Definição dos formatos Q e largura dos sinais |
+| Coeficientes | COEF_WIDTH, COEF_FRAC_BITS | Padronização dos coeficientes complexos |
+| Processamento interno | MAG2_WIDTH, TERM_WIDTH, ACC_WIDTH | Preservação da precisão dos resultados intermediários |
+| Modelo matemático | DPD_ORDER, DPD_MEMORY_DEPTH | Configuração do Memory Polynomial |
+| Controle | Constantes auxiliares | Padronização da arquitetura |
+
+A definição desses parâmetros foi resultado de sucessivas análises de crescimento de palavra ao longo do datapath da arquitetura. Cada multiplicação e cada etapa de acumulação produzem aumento na largura dos sinais internos, tornando necessária a utilização de barramentos com precisão expandida para evitar perdas numéricas.
+
+Os sinais de entrada, saída e coeficientes foram padronizados no formato Q1.15, enquanto os resultados intermediários utilizam larguras superiores, compatíveis com o crescimento esperado durante as operações aritméticas. Essa estratégia reduz a propagação de erros de quantização e preserva a precisão do algoritmo até a etapa final de arredondamento e saturação.
+
+Outro aspecto importante refere-se à parametrização da ordem polinomial e da profundidade de memória. Embora a versão congelada do DPDnano-Lite utilize uma configuração específica, esses parâmetros permaneceram configuráveis por projeto, permitindo que futuras versões explorem diferentes compromissos entre desempenho de linearização e consumo de recursos da FPGA.
+
+Sob a perspectiva da engenharia de hardware, a utilização de um arquivo único de configuração também melhora a rastreabilidade do projeto. Todas as decisões relacionadas à representação numérica e aos parâmetros do algoritmo encontram-se documentadas em um único local, facilitando auditorias de projeto, revisões técnicas e processos de validação.
+
+Além da parametrização funcional, o arquivo `config.vh` estabelece um padrão de nomenclatura para toda a arquitetura. Essa padronização torna os módulos mais consistentes, simplifica a leitura do código Verilog e facilita a elaboração de testbenches reutilizáveis, uma vez que todos os barramentos seguem convenções homogêneas de largura e representação.
+
+Em síntese, o arquivo `config.vh` não atua apenas como um conjunto de definições de constantes, mas como o elemento responsável por garantir a consistência estrutural da arquitetura DPDnano-Lite. Sua utilização reduz o esforço de manutenção, melhora a escalabilidade do projeto e fornece a base necessária para que todos os módulos RTL operem de forma coerente dentro da arquitetura proposta.
+
+===============================
+A partir da próxima seção (5.3), seguiremos esse mesmo nível de profundidade, incluindo justificativas de engenharia, análise das alternativas consideradas, decisões de projeto, tabelas, equações, diagramas sugeridos e a relação direta entre cada módulo RTL e a arquitetura congelada do DPDnano-Lite. 
+===============================
+
+=======================================================
+
+5.3 Estrutura Hierárquica do Projeto RTL
+
+Após a definição dos parâmetros globais da arquitetura, a próxima etapa do desenvolvimento consistiu na organização estrutural do projeto RTL. A maneira como os arquivos são organizados influencia diretamente a facilidade de manutenção, a reutilização de componentes, a verificação funcional e a evolução da arquitetura ao longo do ciclo de desenvolvimento. Em projetos digitais de maior porte, a definição de uma hierarquia clara é tão importante quanto a implementação dos próprios algoritmos.
+
+No DPDnano-Lite foi adotada uma arquitetura hierárquica baseada em módulos independentes, na qual cada bloco funcional implementa uma única responsabilidade. Essa decisão segue os princípios clássicos de projeto digital, reduzindo o acoplamento entre módulos e aumentando a coesão interna de cada componente. Como consequência, alterações em um bloco específico tendem a produzir impacto mínimo sobre os demais elementos da arquitetura.
+
+A estrutura foi organizada em três níveis principais. O primeiro nível corresponde aos arquivos de configuração e definições globais, responsáveis por padronizar os formatos numéricos e os parâmetros do algoritmo. O segundo nível reúne os módulos RTL responsáveis pelo processamento aritmético e pelo fluxo de dados. O terceiro nível contempla os ambientes de verificação, compostos pelos testbenches, scripts de compilação e arquivos auxiliares utilizados durante as simulações no ModelSim.
+
+Essa separação permitiu que o desenvolvimento fosse realizado de forma incremental. Cada módulo foi implementado, compilado, simulado e validado individualmente antes de ser integrado ao módulo superior. Essa estratégia reduziu significativamente o tempo de depuração e permitiu localizar falhas de maneira objetiva.
+
+Outro aspecto importante foi a definição de interfaces padronizadas entre os módulos. Todos os blocos utilizam convenções comuns para sinais de clock, reset, barramentos I/Q e formatos numéricos. Essa uniformização simplifica a integração entre módulos, evita conversões desnecessárias de sinais e reduz a probabilidade de erros durante a síntese e a verificação funcional.
+
+A Figura 5.2 (a ser inserida) deverá apresentar a hierarquia completa da arquitetura, destacando o módulo **dpd_core** como elemento superior e seus respectivos submódulos.
+
+**Tabela 5.2 – Organização hierárquica do projeto RTL**
+
+| Nível | Arquivos | Responsabilidade |
+|-------|----------|------------------|
+| Configuração | `config.vh`, `coeff_pkg.vh` | Definição dos parâmetros globais da arquitetura |
+| RTL | `fixed_mult`, `complex_mult`, `complex_add`, `iq_delay`, `poly_kernel`, `poly_branch`, `coeff_bank`, `rounding`, `saturator`, `dpd_core` | Implementação funcional do algoritmo Memory Polynomial |
+| Verificação | Testbenches e scripts `.do` | Compilação, simulação e validação funcional |
+
+A modularização adotada também favorece a reutilização de componentes. Módulos como `fixed_mult`, `complex_mult`, `rounding` e `saturator` podem ser empregados em outros projetos de processamento digital sem modificações significativas, reduzindo o esforço de desenvolvimento em futuras arquiteturas.
+
+Do ponto de vista da engenharia de sistemas, a hierarquia modular melhora a rastreabilidade entre requisitos, implementação e verificação. Cada requisito funcional pode ser associado a um ou mais módulos RTL específicos e aos respectivos testbenches, simplificando atividades de validação, documentação e manutenção.
+
+Outra decisão importante foi manter o módulo **dpd_core** como único ponto de integração da arquitetura. Todos os blocos subordinados permanecem independentes e encapsulados, permitindo sua evolução individual sem alterar a interface externa do sistema. Essa abordagem favorece a escalabilidade e reduz o risco de regressões durante futuras modificações.
+
+Em síntese, a organização hierárquica adotada no DPDnano-Lite constitui um elemento fundamental da arquitetura proposta. Além de facilitar o desenvolvimento e a manutenção do código, ela estabelece uma base sólida para a verificação funcional, a síntese em FPGA e a expansão futura do projeto.
+
+============================
+A próxima seção (5.4 – Módulo fixed_mult) passará a detalhar o primeiro bloco RTL em profundidade, incluindo fundamentação matemática, alternativas de implementação, justificativa da arquitetura escolhida, análise do crescimento da largura de palavra, mapeamento em DSPs, interface RTL, pipeline, diagrama do datapath e trechos comentados do código Verilog. Esse nível de detalhamento será mantido para todos os módulos seguintes do DPDnano-Lite.
+============================
+
+============================================
+
+5.4 Módulo fixed_mult
+
+O módulo `fixed_mult` constitui a unidade aritmética fundamental da arquitetura DPDnano-Lite. Embora sua funcionalidade aparente seja simplesmente realizar multiplicações em ponto fixo, sua implementação influencia diretamente a precisão numérica, o consumo de blocos DSP, a frequência máxima de operação e o desempenho global do predistorcedor. Por esse motivo, sua definição foi tratada como uma decisão central de engenharia durante o desenvolvimento da arquitetura.
+
+O modelo Memory Polynomial é composto predominantemente por produtos entre amostras, coeficientes e termos polinomiais. Consequentemente, praticamente todos os módulos da arquitetura dependem de operações de multiplicação. Centralizar essa operação em um módulo reutilizável reduz a duplicação de código, padroniza o tratamento numérico e simplifica a verificação funcional.
+
+Do ponto de vista matemático, a multiplicação em ponto fixo pode ser representada por:
+
+**Equação (5.1)**
+
+\[
+z = x \times y
+\]
+
+onde:
+
+- **x** representa o primeiro operando;
+- **y** representa o segundo operando;
+- **z** corresponde ao produto obtido.
+
+Considerando dois operandos representados no formato Qm.n, a multiplicação produz um resultado cuja largura é superior à dos operandos originais. Esse crescimento de palavra é uma consequência natural da operação aritmética e deve ser preservado durante o processamento para evitar perda prematura de informação.
+
+Durante o desenvolvimento do DPDnano-Lite foram analisadas duas estratégias principais para tratar esse crescimento de largura.
+
+A primeira consistia em truncar imediatamente o resultado da multiplicação para a largura original dos operandos. Essa abordagem reduziria a quantidade de registradores e simplificaria alguns barramentos internos. Entretanto, verificou-se que o erro de quantização introduzido em cada multiplicação seria propagado ao longo das sucessivas etapas do algoritmo Memory Polynomial, comprometendo a qualidade da predistorção.
+
+A segunda estratégia consistia em preservar integralmente a largura expandida do produto e realizar a redução apenas nas etapas finais da arquitetura, após a acumulação dos termos polinomiais. Essa alternativa apresentou maior precisão numérica e foi adotada como solução definitiva na arquitetura congelada do DPDnano-Lite.
+
+Na implementação final, o módulo `fixed_mult` produz um resultado com largura suficiente para acomodar o crescimento natural da multiplicação, permitindo que os módulos subsequentes operem com precisão ampliada antes da conversão para o formato de saída.
+
+Outra decisão importante foi manter a interface do módulo extremamente simples. O bloco recebe dois operandos em ponto fixo, sinais de clock e reset, produzindo um único resultado registrado. Essa padronização facilita sua reutilização em diferentes partes da arquitetura e simplifica a criação de testbenches independentes.
+
+A Figura 5.3 (a ser inserida) deverá apresentar o datapath interno do módulo, destacando:
+
+- operandos de entrada;
+- multiplicador;
+- registrador de pipeline;
+- barramento de saída.
+
+Sob a perspectiva de implementação física, o módulo foi desenvolvido para favorecer o mapeamento automático das operações de multiplicação nos blocos DSP da FPGA Tang Nano 4K. Essa decisão reduz significativamente a utilização de LUTs, melhora a frequência máxima de operação e simplifica o fechamento de temporização durante a síntese.
+
+Também foi adotada uma separação explícita entre as responsabilidades dos módulos aritméticos. O `fixed_mult` executa exclusivamente a multiplicação, enquanto os ajustes de escala, arredondamento e saturação são realizados posteriormente pelos módulos `rounding` e `saturator`. Essa divisão reduz o acoplamento funcional, melhora a legibilidade do código RTL e facilita a reutilização do módulo em outros projetos de processamento digital.
+
+Durante a fase de verificação funcional, o módulo foi submetido a um conjunto dedicado de testbenches contemplando multiplicações positivas, negativas, valores nulos, extremos da faixa dinâmica e situações de máximo crescimento de palavra. A validação isolada desse bloco permitiu identificar e corrigir eventuais inconsistências antes da integração com os demais módulos da arquitetura.
+
+**Tabela 5.3 – Principais decisões de projeto do módulo `fixed_mult`**
+
+| Decisão | Justificativa técnica |
+|----------|-----------------------|
+| Preservar largura expandida do produto | Minimizar erros de quantização |
+| Módulo independente | Favorecer reutilização e validação isolada |
+| Mapeamento preferencial em DSPs | Reduzir uso de LUTs e aumentar desempenho |
+| Ausência de saturação interna | Separação clara entre multiplicação, arredondamento e saturação |
+
+Em síntese, o módulo `fixed_mult` estabelece a base aritmética da arquitetura DPDnano-Lite. Sua implementação prioriza precisão numérica, modularidade, compatibilidade com os recursos disponíveis na FPGA Tang Nano 4K e facilidade de verificação, tornando-o um componente essencial para o desempenho global do predistorcedor digital.
+
+=================================
+A partir da próxima seção (5.5 – Módulo complex_mult), o nível de detalhamento aumentará ainda mais. Além da descrição arquitetural, será apresentada a dedução completa da multiplicação complexa, análise das alternativas de implementação (3 versus 4 multiplicadores reais), justificativa da solução adotada, impacto no uso de DSPs da Tang Nano 4K, diagrama do datapath, pipeline, crescimento da largura de palavra e comentários sobre os principais trechos do código RTL.
+=================================
+
+======================================================
+
+5.5 Módulo complex_mult
+
+O módulo `complex_mult` implementa uma das operações matemáticas mais importantes de toda a arquitetura DPDnano-Lite: a multiplicação entre números complexos. Essa operação aparece repetidamente durante o cálculo dos termos do modelo Memory Polynomial, sendo utilizada para combinar as amostras complexas do sinal de entrada com os coeficientes complexos armazenados no banco de coeficientes. Dessa forma, a eficiência desse bloco exerce influência direta tanto sobre o desempenho computacional quanto sobre o consumo de recursos da FPGA.
+
+Ao contrário de um multiplicador convencional, o processamento de sinais I/Q exige que as componentes real e imaginária sejam tratadas simultaneamente, preservando a relação de fase entre elas. Essa característica é essencial para que o predistorcedor consiga reproduzir corretamente a resposta inversa do amplificador de potência, compensando tanto as distorções de amplitude (AM-AM) quanto as distorções de fase (AM-PM).
+
+Matematicamente, sejam dois números complexos definidos por
+
+x = a + jb
+
+e
+
+c = u + jv
+
+O produto complexo é dado pela Equação (5.2):
+
+**Equação (5.2)**
+
+\[
+(a+jb)(u+jv)=(au-bv)+j(av+bu)
+\]
+
+Observa-se que a componente real do resultado é formada pela diferença entre dois produtos, enquanto a componente imaginária é obtida pela soma de outros dois produtos. Portanto, uma multiplicação complexa pode ser implementada utilizando quatro multiplicações reais e duas operações de soma/subtração.
+
+Durante o desenvolvimento do DPDnano-Lite foram avaliadas duas arquiteturas distintas para implementar essa operação.
+
+A primeira corresponde à implementação clássica, composta por quatro multiplicadores reais independentes. Essa solução apresenta estrutura simples, fluxo de dados intuitivo, pipeline facilmente balanceado e excelente compatibilidade com a inferência automática de blocos DSP pelas ferramentas de síntese.
+
+A segunda alternativa analisada foi o algoritmo de Gauss, capaz de reduzir o número de multiplicações reais de quatro para três, à custa de um maior número de operações de soma e de um fluxo de dados significativamente mais complexo.
+
+Embora o algoritmo de Gauss apresente redução no número de multiplicadores, verificou-se que essa economia não representa necessariamente uma redução proporcional dos recursos utilizados na FPGA. O aumento da lógica combinacional, a maior profundidade do caminho crítico e a necessidade de sincronização adicional podem comprometer a frequência máxima de operação, especialmente em dispositivos de pequeno porte.
+
+Considerando que o objetivo principal do DPDnano-Lite é fornecer uma arquitetura robusta, previsível e de fácil verificação, optou-se pela implementação clássica com quatro multiplicações reais. Essa decisão simplifica a validação funcional, facilita a análise temporal e reduz a complexidade do código RTL.
+
+A implementação foi organizada em estágios de processamento claramente definidos. Inicialmente são calculados os quatro produtos parciais correspondentes às combinações entre as componentes reais e imaginárias dos operandos. Em seguida, esses produtos alimentam blocos de soma e subtração responsáveis pela formação das componentes real e imaginária do resultado. Finalmente, os resultados são armazenados em registradores de pipeline para sincronização com os demais módulos da arquitetura.
+
+Outro aspecto importante refere-se ao tratamento da precisão numérica. Todos os produtos intermediários preservam sua largura expandida durante o processamento, evitando truncamentos prematuros que poderiam degradar a qualidade do algoritmo de predistorção. Apenas nas etapas posteriores da arquitetura ocorre a conversão para a largura de saída, por meio dos módulos `rounding` e `saturator`.
+
+A Figura 5.4 (a ser inserida) deverá ilustrar o datapath completo do módulo `complex_mult`, destacando os quatro multiplicadores, os somadores, os registradores intermediários e os barramentos responsáveis pela geração das componentes real e imaginária.
+
+Outro critério de projeto foi encapsular toda a operação de multiplicação complexa em um módulo independente. Essa abordagem reduz o acoplamento entre os blocos da arquitetura e permite futuras substituições ou otimizações internas sem modificar as interfaces dos módulos consumidores.
+
+Durante a etapa de verificação funcional, o módulo foi submetido a um conjunto abrangente de casos de teste, incluindo coeficientes positivos e negativos, números conjugados, entradas nulas, amplitudes próximas ao limite da representação em ponto fixo e combinações capazes de produzir crescimento máximo da largura dos sinais. Os resultados obtidos foram comparados com valores de referência calculados em alta precisão, confirmando a correção matemática da implementação.
+
+**Tabela 5.4 – Comparação entre as arquiteturas avaliadas para multiplicação complexa**
+
+| Alternativa | Vantagens | Motivo da decisão |
+|-------------|-----------|-------------------|
+| Quatro multiplicações reais | Estrutura simples, pipeline previsível, fácil inferência em DSPs | **Adotada na arquitetura DPDnano-Lite** |
+| Algoritmo de Gauss (3 multiplicações) | Redução do número de multiplicadores | Maior complexidade, mais operações de soma e caminho crítico mais longo |
+
+Em síntese, o módulo `complex_mult` representa um dos principais elementos computacionais da arquitetura DPDnano-Lite. A solução adotada prioriza precisão numérica, simplicidade estrutural, previsibilidade temporal e facilidade de síntese, características que contribuem para uma implementação confiável em FPGAs com recursos limitados e para a manutenção da qualidade do algoritmo Memory Polynomial.
+
+=================================
+A partir da próxima seção (5.6 – Módulo complex_add), manteremos esse mesmo padrão de profundidade técnica, detalhando não apenas a implementação RTL, mas também a fundamentação matemática, o crescimento da largura dos sinais, as decisões de engenharia, os impactos no pipeline, a utilização de recursos da FPGA e as justificativas que levaram à arquitetura final do DPDnano-Lite. 
+=================================
+
+============================================
+
+5.6 Módulo complex_add
+
+O módulo `complex_add` é responsável pela realização das operações de soma e subtração entre números complexos ao longo da arquitetura DPDnano-Lite. Embora a soma complexa seja matematicamente mais simples do que a multiplicação, sua implementação exerce papel decisivo na formação dos termos polinomiais, na acumulação dos resultados intermediários e na preservação da precisão numérica do sistema.
+
+No algoritmo Memory Polynomial, cada amostra de saída é obtida pela combinação de diversos termos complexos provenientes de diferentes ordens polinomiais e profundidades de memória. Consequentemente, as operações de soma representam o mecanismo responsável por integrar todas as contribuições individuais em um único resultado complexo. A qualidade dessa etapa influencia diretamente a fidelidade do sinal predistorcido, uma vez que erros acumulados durante as somas propagam-se para a saída final.
+
+Sejam dois números complexos definidos por:
+
+\[
+x=a+jb
+\]
+
+e
+
+\[
+y=c+jd
+\]
+
+A soma complexa é dada pela Equação (5.3):
+
+\[
+(a+jb)+(c+jd)=(a+c)+j(b+d)
+\]
+
+A componente real do resultado é obtida pela soma das partes reais, enquanto a componente imaginária resulta da soma das partes imaginárias. Embora essa operação seja simples do ponto de vista matemático, sua implementação em hardware requer atenção ao crescimento da largura dos sinais.
+
+Diferentemente da multiplicação, a soma preserva o número de bits fracionários dos operandos. Entretanto, pode ocorrer aumento da parte inteira devido à propagação do carry. Para evitar perda de informação, o DPDnano-Lite utiliza barramentos internos dimensionados para acomodar esse crescimento antes das etapas finais de arredondamento e saturação.
+
+Durante o desenvolvimento da arquitetura foram analisadas duas estratégias. A primeira consistia em limitar imediatamente o resultado da soma à largura final de saída. Essa abordagem reduziria o número de bits armazenados nos registradores, porém aumentaria significativamente os erros de quantização ao longo das sucessivas acumulações do algoritmo.
+
+A segunda estratégia preservava uma largura ampliada durante todas as etapas intermediárias do processamento, realizando a redução apenas ao final do datapath. Essa alternativa apresentou melhor desempenho numérico e foi adotada na arquitetura congelada do DPDnano-Lite.
+
+A implementação RTL do módulo foi mantida deliberadamente simples. As componentes real (I) e imaginária (Q) são processadas por somadores independentes que operam em paralelo. Essa organização preserva a simetria do processamento complexo, facilita o balanceamento do pipeline e simplifica a verificação funcional.
+
+Outra decisão importante foi separar completamente as funções de acumulação e limitação dinâmica. O módulo `complex_add` executa exclusivamente as operações aritméticas de soma e subtração, enquanto o controle de saturação permanece concentrado no módulo `saturator`. Essa divisão reduz o acoplamento entre os blocos e melhora a reutilização do código RTL.
+
+A Figura 5.5 (a ser inserida) deverá ilustrar o datapath interno do módulo, evidenciando os dois somadores paralelos, os registradores de sincronização e os barramentos correspondentes às componentes I e Q.
+
+Sob a perspectiva da implementação física, as operações de soma são normalmente sintetizadas utilizando as cadeias dedicadas de carry disponíveis na lógica programável da FPGA. Esse recurso permite elevada frequência de operação com reduzido consumo de LUTs e flip-flops, dispensando a utilização de blocos DSP para esse tipo de processamento.
+
+Durante a etapa de validação funcional, o módulo foi submetido a um conjunto abrangente de casos de teste envolvendo operandos positivos, negativos, sinais de polaridades opostas, valores máximos, mínimos e situações próximas aos limites da representação em ponto fixo. Esses testes confirmaram a correta propagação do carry, a consistência entre as componentes I e Q e a integração adequada com os demais módulos da arquitetura.
+
+Além de sua função aritmética, o `complex_add` desempenha papel importante na sincronização do fluxo de dados. Como diversos termos polinomiais convergem para operações de acumulação, o correto alinhamento temporal das entradas garante que todas as contribuições sejam combinadas no mesmo ciclo de processamento, preservando a coerência do pipeline global.
+
+**Tabela 5.5 – Principais decisões de projeto do módulo `complex_add`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Barramentos internos ampliados | Evitar overflow durante acumulações sucessivas |
+| Somadores independentes para I e Q | Processamento paralelo e simétrico |
+| Ausência de saturação interna | Separação clara de responsabilidades entre módulos |
+| Uso da carry chain da FPGA | Alto desempenho com baixo consumo de recursos |
+
+Em síntese, o módulo `complex_add` demonstra que operações matematicamente simples também exigem decisões criteriosas de engenharia quando implementadas em hardware digital. A solução adotada prioriza precisão numérica, modularidade, eficiência de síntese e integração com o pipeline do DPDnano-Lite, contribuindo para a robustez e a escalabilidade da arquitetura proposta.
+
+=============================
+Na próxima seção (5.7 – Módulo iq_delay), iniciaremos a descrição do mecanismo de memória do Memory Polynomial, detalhando por que a linha de atraso é indispensável para representar efeitos de memória do amplificador de potência, como a profundidade de memória foi definida na arquitetura congelada do DPDnano-Lite, quais alternativas foram consideradas e qual foi o impacto dessa decisão no consumo de registradores, latência e precisão do sistema. 
+=============================
+
+=====================================
+
+5.7 Módulo iq_delay
+
+O módulo `iq_delay` implementa a linha de atraso utilizada pelo DPDnano-Lite para representar os efeitos de memória presentes nos amplificadores de potência. Diferentemente de modelos puramente estáticos, o algoritmo Memory Polynomial considera que a saída do amplificador depende não apenas da amostra atual, mas também de amostras anteriores. Dessa forma, a existência de uma memória temporal torna-se requisito fundamental para reproduzir o comportamento dinâmico do sistema.
+
+Fisicamente, os efeitos de memória decorrem de diversos fenômenos, como variações térmicas, redes de polarização, capacitâncias parasitas, filtros de RF e elementos de casamento de impedância. Esses mecanismos fazem com que a resposta instantânea do amplificador seja influenciada pelo histórico recente do sinal de entrada. Ignorar esse comportamento reduz significativamente a eficiência da predistorção digital, principalmente em sinais de banda larga e elevada razão de potência de pico (PAPR).
+
+Sob o ponto de vista matemático, o modelo Memory Polynomial pode ser representado pela Equação (5.4):
+
+\[
+y[n]=\sum_{m=0}^{M-1}\sum_{k=1}^{K} a_{k,m}\,x[n-m]\left|x[n-m]\right|^{k-1}
+\]
+
+em que:
+
+- \(x[n]\) representa a amostra complexa de entrada;
+- \(y[n]\) corresponde ao sinal predistorcido;
+- \(a_{k,m}\) são os coeficientes complexos do modelo;
+- \(K\) é a ordem polinomial;
+- \(M\) representa a profundidade de memória.
+
+Observa-se que cada termo utiliza uma versão atrasada do sinal de entrada, indicada por \(x[n-m]\). Assim, o módulo `iq_delay` fornece ao restante da arquitetura o conjunto de amostras históricas necessário para que os blocos seguintes construam os diferentes termos do modelo polinomial.
+
+Durante a definição da arquitetura foram analisadas diferentes profundidades de memória. Valores elevados aumentam a capacidade de representar efeitos dinâmicos complexos do amplificador de potência, porém também ampliam o número de registradores, aumentam a quantidade de operações aritméticas e elevam o consumo de recursos da FPGA.
+
+Por outro lado, profundidades muito pequenas reduzem significativamente a complexidade do hardware, mas podem comprometer a capacidade do algoritmo em compensar fenômenos dependentes do histórico do sinal.
+
+Após sucessivas simulações e análises da arquitetura, foi congelada a profundidade de memória adotada no DPDnano-Lite. Essa decisão representa um compromisso entre qualidade de linearização, utilização de recursos da FPGA Tang Nano 4K e simplicidade da implementação RTL. O objetivo foi desenvolver uma arquitetura compatível com dispositivos de pequeno porte sem comprometer o desempenho esperado do predistorcedor digital.
+
+A implementação RTL do módulo baseia-se em uma cadeia de registradores sincronizados por um único sinal de clock. A cada ciclo de processamento, uma nova amostra complexa é armazenada no primeiro estágio da linha de atraso, enquanto as amostras previamente armazenadas são deslocadas sequencialmente para os estágios seguintes. Essa organização produz uma linha de atraso totalmente determinística, com latência conhecida e comportamento facilmente verificável.
+
+Uma decisão importante de engenharia foi armazenar simultaneamente as componentes I (In-Phase) e Q (Quadrature) em todos os estágios da linha de atraso. Essa abordagem garante que ambas permaneçam perfeitamente sincronizadas ao longo do processamento, preservando a coerência do sinal complexo e evitando erros de fase que poderiam degradar a eficiência do algoritmo de predistorção.
+
+A Figura 5.6 (a ser inserida) deverá apresentar a estrutura interna do módulo `iq_delay`, ilustrando os registradores em cascata, o deslocamento das amostras a cada ciclo de clock e as saídas correspondentes às diferentes posições da memória.
+
+Durante o projeto também foi considerada a utilização de memória RAM para armazenar o histórico das amostras. Entretanto, para a profundidade de memória adotada na arquitetura congelada, verificou-se que uma cadeia de registradores oferece vantagens importantes, como menor complexidade de controle, latência fixa de um ciclo por estágio, ausência de lógica de endereçamento e melhor previsibilidade durante a síntese.
+
+Outro benefício dessa abordagem é a integração natural com a arquitetura pipeline do DPDnano-Lite. Como cada estágio da linha de atraso corresponde a um conjunto de registradores sincronizados pelo mesmo clock global, o alinhamento temporal entre os módulos é preservado automaticamente, simplificando o fechamento de temporização e reduzindo a probabilidade de condições de corrida.
+
+Durante a etapa de verificação funcional, o módulo foi submetido a sequências contínuas de amostras complexas, verificando-se a correta propagação dos dados entre os diferentes estágios da memória. Também foram avaliadas as condições de inicialização após o reset, garantindo que todos os registradores fossem corretamente zerados antes do início do processamento.
+
+A parametrização da profundidade de memória também representa uma importante decisão de projeto. Embora a versão atual do DPDnano-Lite utilize uma configuração congelada, a estrutura RTL permite ampliar ou reduzir o número de estágios apenas modificando os parâmetros globais definidos em `config.vh`, sem necessidade de alterar a lógica funcional do módulo.
+
+**Tabela 5.6 – Principais decisões de projeto do módulo `iq_delay`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Linha de atraso implementada com registradores | Baixa complexidade e latência determinística |
+| Armazenamento simultâneo das componentes I e Q | Preservação da coerência temporal do sinal complexo |
+| Profundidade de memória parametrizável | Escalabilidade e reutilização da arquitetura |
+| Clock único para todos os estágios | Simplificação da sincronização do pipeline |
+
+Em síntese, o módulo `iq_delay` constitui a base temporal da arquitetura DPDnano-Lite. Sua implementação fornece ao algoritmo Memory Polynomial o histórico de amostras necessário para modelar os efeitos de memória do amplificador de potência, preservando sincronização, simplicidade estrutural, previsibilidade temporal e compatibilidade com os recursos disponíveis na FPGA Tang Nano 4K.
+
+=============================
+Na próxima seção (5.8 – Módulo poly_kernel), entraremos no núcleo matemático do DPDnano-Lite. Essa será uma das partes mais importantes do capítulo, descrevendo em profundidade como são gerados os termos ∣x∣^2, ∣x∣^4, x∣x∣^2, x∣x∣^4, o crescimento da largura de palavra em cada etapa, as otimizações implementadas, as decisões para reduzir o uso de DSPs e a relação direta entre essa implementação RTL e o modelo Memory Polynomial adotado na arquitetura congelada. 
+=============================
+
+=====================================================
+
+5.8 Módulo poly_kernel
+
+O módulo `poly_kernel` constitui o núcleo matemático da arquitetura DPDnano-Lite. É nesse bloco que são gerados os termos não lineares utilizados pelo modelo Memory Polynomial, transformando as amostras complexas provenientes do módulo `iq_delay` nas componentes polinomiais que posteriormente serão ponderadas pelos coeficientes complexos. A eficiência e a precisão dessa etapa determinam diretamente a capacidade do predistorcedor em compensar as não linearidades do amplificador de potência.
+
+Enquanto os módulos apresentados anteriormente executam operações aritméticas elementares, o `poly_kernel` implementa efetivamente a transformação não linear do sinal. Em termos conceituais, ele representa a ponte entre o modelo matemático descrito nos capítulos anteriores e sua realização em hardware RTL. Por essa razão, trata-se de um dos blocos mais importantes de toda a arquitetura DPDnano-Lite.
+
+Considerando uma amostra complexa de entrada
+
+\[
+x[n]=I[n]+jQ[n]
+\]
+
+o primeiro passo consiste na obtenção da magnitude ao quadrado do sinal, definida por:
+
+**Equação (5.5)**
+
+\[
+|x[n]|^2=I[n]^2+Q[n]^2
+\]
+
+Essa grandeza representa a potência instantânea da envoltória complexa e elimina a dependência da fase do sinal, permitindo que os termos polinomiais sejam construídos de forma computacionalmente eficiente.
+
+Na arquitetura congelada do DPDnano-Lite, a geração da magnitude foi dividida em etapas independentes para favorecer a implementação pipeline. Inicialmente são calculados os quadrados das componentes I e Q. Em seguida, esses resultados são somados para formar \(|x|^2\). A partir desse termo são produzidas as demais grandezas utilizadas pelo algoritmo Memory Polynomial.
+
+Uma característica importante do modelo adotado é que apenas potências ímpares do sinal complexo participam da expansão polinomial. Em vez de calcular diretamente \(x^3\), \(x^5\) ou ordens superiores, a arquitetura utiliza a forma:
+
+\[
+x|x|^2,\qquad x|x|^4,\qquad x|x|^6,\ldots
+\]
+
+Essa formulação preserva as propriedades matemáticas do modelo Memory Polynomial e reduz significativamente a quantidade de operações complexas necessárias para gerar os termos não lineares.
+
+Durante o desenvolvimento do DPDnano-Lite foram avaliadas duas estratégias para geração dessas grandezas.
+
+A primeira consistia em calcular cada potência de forma completamente independente. Embora essa abordagem seja conceitualmente simples, ela exige um número elevado de multiplicações, aumenta o consumo de blocos DSP e dificulta a implementação em FPGAs com recursos limitados.
+
+A segunda estratégia, adotada na arquitetura final, baseia-se na reutilização de resultados intermediários. Após calcular \(|x|^2\), esse valor passa a ser utilizado como entrada para a geração das demais potências necessárias, evitando operações redundantes e reduzindo significativamente a complexidade computacional.
+
+Essa decisão foi particularmente importante para o DPDnano-Lite, cujo objetivo é oferecer um predistorcedor digital compatível com a FPGA Tang Nano 4K. A reutilização de resultados intermediários reduz o número de multiplicadores ativos simultaneamente e melhora o aproveitamento dos recursos disponíveis.
+
+Outro aspecto analisado durante o projeto foi o crescimento da largura dos sinais internos. Cada multiplicação produz um aumento natural do número de bits necessários para representar o resultado sem perda de precisão. Por esse motivo, o `poly_kernel` utiliza barramentos internos com largura expandida, conforme definido no arquivo `config.vh`, preservando toda a informação gerada durante as operações intermediárias.
+
+A redução da largura dos sinais é realizada apenas nas etapas finais da arquitetura, após o processamento completo dos termos polinomiais. Essa estratégia reduz o erro acumulado de quantização e mantém a coerência numérica entre todos os módulos do DPDnano-Lite.
+
+A implementação RTL foi organizada em múltiplos estágios de pipeline. Cada estágio executa uma operação aritmética específica e registra seus resultados antes de encaminhá-los ao estágio seguinte. Essa organização reduz o comprimento do caminho crítico, aumenta a frequência máxima de operação e permite que, após o enchimento do pipeline, uma nova amostra seja processada a cada ciclo de clock.
+
+A Figura 5.7 (a ser inserida) deverá ilustrar o fluxo interno do módulo `poly_kernel`, destacando o cálculo de \(I^2\), \(Q^2\), \(|x|^2\), a reutilização das grandezas intermediárias e a geração dos termos enviados ao módulo `poly_branch`.
+
+Durante a etapa de verificação funcional, os resultados produzidos pelo módulo foram comparados com modelos de referência em alta precisão, verificando-se a correta geração dos termos polinomiais para diferentes amplitudes de entrada. Também foram avaliadas condições de entrada nula, valores próximos ao limite da representação em ponto fixo e sequências contínuas de amostras, confirmando a estabilidade do pipeline e a consistência dos resultados.
+
+**Tabela 5.7 – Principais decisões de projeto do módulo `poly_kernel`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Reutilização de resultados intermediários | Redução do número de multiplicações e do uso de DSPs |
+| Pipeline em múltiplos estágios | Aumento da frequência máxima de operação |
+| Barramentos internos com largura expandida | Preservação da precisão numérica |
+| Geração baseada em \(x|x|^2\), \(x|x|^4\) | Implementação eficiente do modelo Memory Polynomial |
+
+Em síntese, o módulo `poly_kernel` representa o centro de processamento matemático da arquitetura DPDnano-Lite. As decisões adotadas durante seu desenvolvimento buscaram equilibrar precisão numérica, eficiência computacional, utilização de recursos da FPGA e simplicidade estrutural, permitindo implementar o modelo Memory Polynomial em um dispositivo de recursos limitados sem comprometer sua fidelidade matemática.
+
+======================================
+A próxima seção (5.9 – Módulo poly_branch) será uma das mais importantes do capítulo. Nela será detalhado como o DPDnano-Lite organiza os ramos polinomiais, como os termos gerados pelo poly_kernel são selecionados e combinados, por que a arquitetura foi projetada para suportar diferentes ordens polinomiais por parametrização e quais decisões de engenharia permitiram manter baixo consumo de DSPs sem alterar a arquitetura congelada
+======================================
+
+================================================
+
+5.9 Módulo poly_branch
+
+O módulo `poly_branch` é responsável por organizar e disponibilizar os termos polinomiais gerados pelo módulo `poly_kernel` para as etapas seguintes da arquitetura. Enquanto o `poly_kernel` produz as grandezas não lineares fundamentais, o `poly_branch` estrutura essas informações de acordo com a ordem polinomial configurada e prepara cada termo para a multiplicação pelos respectivos coeficientes complexos.
+
+Dentro do modelo Memory Polynomial, cada ramo polinomial representa uma contribuição específica para a construção do sinal predistorcido. A arquitetura do DPDnano-Lite foi concebida para separar claramente a geração dos termos da aplicação dos coeficientes, reduzindo o acoplamento entre os módulos, facilitando a reutilização do hardware e simplificando futuras evoluções da arquitetura.
+
+De forma geral, os termos utilizados pelo modelo podem ser representados por:
+
+\[
+x[n-m]\,|x[n-m]|^{k-1}
+\]
+
+em que:
+
+- \(x[n-m]\) representa a amostra complexa atrasada;
+- \(m\) corresponde à profundidade de memória;
+- \(k\) representa a ordem polinomial considerada.
+
+Essa formulação permite que cada ramo seja tratado como uma contribuição independente, posteriormente ponderada por um coeficiente complexo específico e acumulada ao resultado final.
+
+Durante o desenvolvimento do DPDnano-Lite foram analisadas duas estratégias de implementação.
+
+A primeira consistia em criar um bloco dedicado para cada ordem polinomial. Embora essa solução apresente simplicidade conceitual, ela implica duplicação de lógica, aumento da área ocupada na FPGA, maior esforço de manutenção e necessidade de criar novos módulos sempre que a ordem do modelo fosse alterada.
+
+A segunda estratégia, adotada na arquitetura congelada, consiste na utilização de um núcleo único e parametrizado. Nessa abordagem, a quantidade de termos polinomiais é determinada pelos parâmetros definidos em `config.vh`, enquanto a estrutura RTL permanece inalterada.
+
+Essa decisão traz vantagens importantes para a escalabilidade do projeto. Alterações futuras na ordem polinomial podem ser realizadas por parametrização, preservando a organização do código, os testbenches existentes e a interface dos demais módulos da arquitetura.
+
+Outro aspecto relevante foi a reutilização dos resultados produzidos pelo `poly_kernel`. Em vez de recalcular grandezas intermediárias para cada ramo polinomial, o `poly_branch` recebe os termos já calculados e apenas realiza sua organização, seleção e encaminhamento para os blocos responsáveis pela multiplicação pelos coeficientes complexos.
+
+Essa estratégia reduz significativamente o número de operações aritméticas redundantes, diminui a demanda por blocos DSP e melhora a eficiência global da arquitetura, fator particularmente importante para a FPGA Tang Nano 4K, que possui recursos computacionais limitados.
+
+A implementação RTL foi organizada de forma totalmente síncrona, utilizando registradores de pipeline entre os estágios de processamento. Todos os ramos permanecem alinhados temporalmente, garantindo que os coeficientes correspondentes sejam aplicados à mesma amostra de entrada durante a etapa seguinte do processamento.
+
+A Figura 5.8 (a ser inserida) deverá apresentar a organização interna do módulo `poly_branch`, ilustrando a distribuição dos termos polinomiais provenientes do `poly_kernel`, os registradores intermediários e o encaminhamento para os módulos `coeff_bank` e `complex_mult`.
+
+Sob o ponto de vista numérico, o módulo preserva integralmente as larguras de palavra definidas pelo `poly_kernel`. Nenhuma operação de arredondamento ou saturação é realizada nessa etapa, evitando perda prematura de precisão. Essa decisão mantém a consistência da estratégia numérica adotada em toda a arquitetura, concentrando a redução de largura apenas nas etapas finais do datapath.
+
+Durante a verificação funcional foram executados testes com diferentes configurações de ordem polinomial e diferentes conjuntos de termos habilitados. Os resultados confirmaram que a parametrização produz o encaminhamento correto dos sinais, preserva o sincronismo entre todos os ramos do pipeline e mantém compatibilidade com os módulos consumidores.
+
+**Tabela 5.8 – Principais decisões de projeto do módulo `poly_branch`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Núcleo parametrizado | Permite diferentes ordens polinomiais sem alterar a estrutura RTL |
+| Reutilização dos termos do `poly_kernel` | Redução de operações redundantes e menor utilização de DSPs |
+| Pipeline sincronizado | Alinhamento temporal entre todos os ramos polinomiais |
+| Preservação da largura interna dos sinais | Maior precisão numérica e menor erro de quantização |
+
+Em síntese, o módulo `poly_branch` atua como elemento organizador do processamento não linear da arquitetura DPDnano-Lite. Sua implementação privilegia modularidade, escalabilidade, reutilização de hardware, sincronização temporal e preservação da precisão numérica, estabelecendo a interface entre a geração dos termos polinomiais e a etapa de ponderação pelos coeficientes complexos.
+
+=============================================
+A próxima seção (5.10 – Módulo coeff_bank) detalhará a organização dos coeficientes complexos do DPDnano-Lite, incluindo a estrutura de armazenamento, o formato numérico adotado, a justificativa para o uso de coeficientes estáticos nesta versão da arquitetura, as alternativas consideradas (ROM, RAM e atualização dinâmica) e a relação desse bloco com a escalabilidade para futuras versões do projeto. 
+=============================================
+
+============================================================
+
+5.10 Módulo coeff_bank
+
+O módulo `coeff_bank` é responsável pelo armazenamento e fornecimento dos coeficientes complexos utilizados pelo algoritmo Memory Polynomial. Cada termo polinomial gerado pelos módulos anteriores deve ser ponderado por um coeficiente específico antes de participar da acumulação final. Dessa forma, o banco de coeficientes estabelece a ligação entre o modelo matemático identificado para o amplificador de potência e sua implementação em hardware digital.
+
+Sob a perspectiva do algoritmo Memory Polynomial, os coeficientes representam os parâmetros responsáveis por ajustar a contribuição individual de cada termo polinomial. Embora a estrutura do modelo determine quais operações devem ser realizadas, são os coeficientes que definem quantitativamente o comportamento do predistorcedor, permitindo aproximar a característica inversa do amplificador de potência.
+
+A Equação (5.6) representa genericamente a contribuição de um termo polinomial:
+
+\[
+y_k[n]=a_{k,m}\,x[n-m]\left|x[n-m]\right|^{k-1}
+\]
+
+na qual:
+
+- \(a_{k,m}\) representa o coeficiente complexo associado ao termo;
+- \(x[n-m]\) corresponde à amostra complexa atrasada;
+- \(k\) indica a ordem polinomial;
+- \(m\) representa a profundidade de memória.
+
+Observa-se que cada termo do modelo necessita de um coeficiente específico. Consequentemente, a organização do armazenamento desses parâmetros exerce influência direta sobre a simplicidade da arquitetura RTL e sobre a facilidade de expansão do sistema.
+
+Durante o desenvolvimento do DPDnano-Lite foram analisadas três alternativas para implementação do banco de coeficientes.
+
+A primeira consistia em declarar os coeficientes diretamente como constantes distribuídas ao longo dos módulos RTL. Embora essa solução seja simples para projetos muito pequenos, ela dificulta significativamente a manutenção, aumenta a duplicação de código e torna qualquer alteração de coeficientes uma tarefa trabalhosa e sujeita a inconsistências.
+
+A segunda alternativa foi baseada em uma memória ROM contendo todos os coeficientes previamente definidos. Essa abordagem centraliza os parâmetros em um único bloco e reduz a duplicação de informações, além de apresentar excelente compatibilidade com a filosofia de uma arquitetura de coeficientes estáticos.
+
+A terceira alternativa consistia na utilização de uma memória RAM com capacidade de atualização durante a operação do sistema. Essa solução permitiria implementar algoritmos adaptativos capazes de recalcular os coeficientes em tempo real. Entretanto, ela exigiria lógica adicional de controle, interface de comunicação, mecanismos de sincronização e procedimentos para evitar inconsistências durante a atualização dos parâmetros.
+
+Considerando que o objetivo principal desta versão do DPDnano-Lite é validar a arquitetura RTL, a implementação em FPGA e o processamento digital do modelo Memory Polynomial, optou-se pela utilização de coeficientes estáticos organizados em um banco centralizado. Essa decisão reduz significativamente a complexidade do hardware e facilita tanto a verificação funcional quanto a síntese.
+
+Todos os coeficientes são representados em formato complexo de ponto fixo, utilizando exatamente a mesma representação numérica definida no arquivo `config.vh`. Essa padronização elimina conversões adicionais entre módulos, preserva a consistência numérica do datapath e simplifica a integração com o módulo `complex_mult`.
+
+Outra decisão importante foi desacoplar completamente o armazenamento dos coeficientes da lógica matemática do algoritmo. O módulo `coeff_bank` possui como única responsabilidade disponibilizar os coeficientes corretos para cada ramo polinomial. Toda a lógica de geração dos termos permanece concentrada nos módulos `poly_kernel` e `poly_branch`, enquanto a multiplicação propriamente dita é realizada pelo `complex_mult`. Essa separação de responsabilidades reduz o acoplamento entre os blocos e melhora a reutilização da arquitetura.
+
+A interface RTL do módulo foi mantida propositalmente simples. As componentes real e imaginária dos coeficientes são fornecidas de forma sincronizada com o pipeline global, garantindo que cada termo polinomial seja multiplicado pelo coeficiente correspondente no mesmo ciclo de processamento.
+
+A Figura 5.9 (a ser inserida) deverá apresentar a organização interna do banco de coeficientes, destacando a estrutura de armazenamento, os barramentos correspondentes às componentes I e Q e sua conexão com os módulos `poly_branch` e `complex_mult`.
+
+Durante a etapa de verificação funcional foram realizados testes envolvendo leitura de todos os coeficientes armazenados, validação das componentes real e imaginária, conferência dos formatos numéricos e sincronização temporal com os demais módulos da arquitetura. Esses ensaios confirmaram que o banco de coeficientes fornece corretamente todos os parâmetros necessários para o processamento do modelo Memory Polynomial.
+
+Embora a versão atual utilize coeficientes estáticos, a organização do módulo foi planejada considerando futuras evoluções da arquitetura. A interface foi mantida suficientemente genérica para permitir a incorporação de mecanismos de adaptação automática sem necessidade de alterar os demais módulos do datapath, preservando assim a escalabilidade do projeto.
+
+**Tabela 5.9 – Principais decisões de projeto do módulo `coeff_bank`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Coeficientes estáticos | Redução da complexidade da arquitetura RTL |
+| Formato complexo em ponto fixo (Q1.15) | Padronização da representação numérica |
+| Banco centralizado de coeficientes | Facilidade de manutenção e atualização |
+| Interface preparada para expansão | Compatibilidade com futuras técnicas adaptativas |
+
+Em síntese, o módulo `coeff_bank` estabelece a ligação entre os parâmetros identificados do modelo Memory Polynomial e a implementação RTL do DPDnano-Lite. Sua organização privilegia simplicidade, modularidade, consistência numérica e escalabilidade, permitindo que futuras versões incorporem algoritmos adaptativos sem comprometer a arquitetura congelada desenvolvida neste trabalho.
+
+===============================
+A partir da próxima seção (5.11 – Módulo rounding), começaremos a descrever as decisões de engenharia relacionadas ao tratamento da precisão numérica, incluindo a escolha do método de arredondamento, a análise dos erros de quantização, o impacto na EVM, a preservação da fidelidade do modelo Memory Polynomial e as razões para separar o arredondamento da saturação em módulos independentes na arquitetura do DPDnano-Lite.
+===============================
+
+=========================================
+
+5.11 Módulo rounding
+
+O módulo `rounding` é responsável pela conversão controlada da precisão numérica entre os estágios internos de processamento e a interface de saída da arquitetura DPDnano-Lite. Embora essa operação seja frequentemente tratada como um detalhe de implementação, ela exerce influência direta sobre a qualidade do sinal predistorcido, pois define como os bits excedentes produzidos pelas operações aritméticas serão tratados antes da redução da largura dos barramentos.
+
+Durante o processamento do modelo Memory Polynomial, sucessivas multiplicações complexas, cálculos de magnitude e acumulações provocam um crescimento natural da largura das palavras internas. Essa expansão foi deliberadamente preservada ao longo da arquitetura para minimizar os erros de quantização e evitar perdas prematuras de informação. Entretanto, ao final do processamento torna-se necessário converter esses resultados para o formato de saída especificado pela arquitetura.
+
+Do ponto de vista matemático, seja um valor interno representado por:
+
+\[
+X = X_{MSB}\;X_{LSB}
+\]
+
+onde \(X_{MSB}\) representa os bits que serão preservados e \(X_{LSB}\) corresponde aos bits excedentes. O processo de arredondamento consiste em adicionar meia unidade do menor peso que permanecerá na representação final antes da remoção dos bits menos significativos.
+
+Durante o desenvolvimento do DPDnano-Lite foram avaliadas duas estratégias principais para essa conversão de precisão.
+
+A primeira consistia na utilização de truncamento simples. Essa abordagem elimina diretamente os bits menos significativos sem qualquer compensação adicional. Embora apresente implementação extremamente simples e reduzido consumo de recursos, ela introduz um erro sistemático de quantização, deslocando estatisticamente os resultados e aumentando o ruído introduzido pelo processamento em ponto fixo.
+
+A segunda estratégia consistia na utilização de arredondamento antes da redução da largura dos barramentos. Nessa abordagem, o resultado é ajustado considerando o valor do primeiro bit descartado, produzindo uma aproximação significativamente mais fiel ao valor originalmente calculado.
+
+Após análises de precisão numérica e sucessivas simulações, optou-se pela segunda alternativa. Essa decisão reduz o erro médio de quantização e melhora a fidelidade dos resultados produzidos pelo algoritmo Memory Polynomial, contribuindo para preservar indicadores de desempenho como a Magnitude do Vetor de Erro (EVM).
+
+Outra decisão importante foi implementar o arredondamento como um módulo totalmente independente. Essa separação evita que a lógica de conversão de escala seja distribuída pelos diferentes módulos aritméticos da arquitetura, melhora a reutilização do código RTL e simplifica tanto a manutenção quanto a verificação funcional.
+
+Em conformidade com a filosofia arquitetural adotada no DPDnano-Lite, o módulo `rounding` possui responsabilidade exclusiva sobre a conversão de precisão. Nenhum mecanismo de saturação é executado nessa etapa. Caso o resultado convertido ultrapasse a faixa dinâmica permitida pelo formato de saída, o tratamento será realizado posteriormente pelo módulo `saturator`. Essa divisão reduz o acoplamento entre os blocos e mantém cada módulo responsável por uma única função.
+
+A Figura 5.10 (a ser inserida) deverá apresentar o processo de arredondamento implementado, ilustrando a palavra interna expandida, o bit utilizado para a decisão de arredondamento e o resultado obtido após a conversão para a largura final.
+
+Durante a etapa de verificação funcional foram executados testes envolvendo valores localizados exatamente nos limites entre dois níveis de quantização, entradas positivas e negativas, amplitudes próximas aos limites da faixa dinâmica e resultados provenientes de diferentes estágios do pipeline. Os ensaios confirmaram que o arredondamento reduz significativamente o erro médio quando comparado ao truncamento simples.
+
+Além da melhoria imediata na precisão numérica, a implementação modular também facilita futuras evoluções da arquitetura. Métodos alternativos, como arredondamento convergente (round-to-even) ou arredondamento estocástico, poderão ser incorporados sem necessidade de modificar os módulos responsáveis pelo processamento matemático principal.
+
+**Tabela 5.10 – Principais decisões de projeto do módulo `rounding`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Arredondamento em vez de truncamento | Redução do erro médio de quantização |
+| Módulo independente | Separação entre processamento matemático e conversão de precisão |
+| Ausência de saturação | Tratamento de overflow concentrado no módulo `saturator` |
+| Estrutura parametrizada | Facilidade para adoção de futuras políticas de quantização |
+
+Em síntese, o módulo `rounding` representa um componente fundamental da estratégia numérica adotada no DPDnano-Lite. Sua implementação preserva a fidelidade dos resultados produzidos pelo algoritmo Memory Polynomial, reduz os efeitos da quantização inerentes ao processamento em ponto fixo e contribui para que a arquitetura mantenha elevada precisão mesmo quando implementada em uma FPGA com recursos limitados.
+
+==============================================
+Na próxima seção (5.12 – Módulo saturator), será apresentada a etapa final do tratamento numérico da arquitetura, abordando a detecção de overflow, os limites de saturação, as alternativas analisadas (wrap-around versus saturação), o impacto na estabilidade do predistorcedor e as razões que levaram à separação entre arredondamento e saturação na arquitetura congelada do DPDnano-Lite.
+==============================================
+
+=============================================================
+
+5.12 Módulo saturator
+
+O módulo `saturator` constitui a etapa final do processamento numérico da arquitetura DPDnano-Lite. Sua função é garantir que os resultados produzidos pelo datapath permaneçam dentro da faixa dinâmica suportada pela interface de saída, evitando que valores excedentes provoquem comportamento incorreto após a conversão para a largura final dos barramentos.
+
+Durante o processamento em ponto fixo, multiplicações, acumulações e operações de arredondamento podem produzir resultados superiores ao intervalo representável. Caso esses valores sejam simplesmente truncados, ocorre o fenômeno conhecido como *wrap-around*, no qual um valor positivo pode ser interpretado como negativo, ou vice-versa, introduzindo distorções severas no sinal predistorcido.
+
+Matematicamente, a saturação limita o resultado ao intervalo definido pelo formato numérico adotado. Para um número em complemento de dois com largura **W**, os limites podem ser expressos por:
+
+\[
+MAX = 2^{W-1}-1
+\]
+
+\[
+MIN = -2^{W-1}
+\]
+
+Sempre que o resultado excede esses limites, o módulo substitui automaticamente o valor calculado pelo limite correspondente, preservando a coerência da representação numérica.
+
+Durante o desenvolvimento da arquitetura foram avaliadas duas abordagens principais.
+
+A primeira consistia em permitir o *wrap-around* natural da aritmética em complemento de dois. Embora essa solução não acrescente lógica adicional e utilize menos recursos de hardware, ela produz grandes erros quando ocorre overflow, degradando significativamente a qualidade do sinal e comprometendo a eficiência da predistorção digital.
+
+A segunda alternativa, adotada na arquitetura congelada do DPDnano-Lite, consiste na saturação explícita dos resultados. Essa estratégia preserva a estabilidade do processamento e evita que pequenos excessos de amplitude produzam inversões abruptas no sinal de saída.
+
+Outra decisão importante foi separar completamente as funções de arredondamento e saturação. O módulo `rounding` executa exclusivamente a conversão de precisão, enquanto o `saturator` realiza apenas a limitação da amplitude. Essa divisão reduz o acoplamento entre os blocos, facilita a verificação funcional e melhora a reutilização dos módulos em futuras versões da arquitetura.
+
+A implementação RTL realiza comparações entre o valor recebido e os limites máximo e mínimo previamente definidos. Caso nenhuma condição de overflow seja detectada, o resultado é encaminhado diretamente à saída. Quando ocorre extrapolação da faixa dinâmica, o valor correspondente ao limite superior ou inferior é registrado como resultado final.
+
+A Figura 5.11 (a ser inserida) deverá ilustrar o fluxo interno do módulo `saturator`, apresentando os comparadores de limite, a lógica de decisão, o multiplexador de seleção e o registrador de saída sincronizado com o clock do sistema.
+
+Durante a etapa de verificação funcional foram executados testes utilizando amplitudes máximas positivas, máximas negativas, valores imediatamente abaixo dos limites de saturação e casos sem overflow. Também foram avaliadas sequências contínuas de amostras para verificar a estabilidade do comportamento durante longos períodos de operação.
+
+Os resultados demonstraram que a estratégia de saturação elimina os efeitos indesejados do *wrap-around* e mantém a coerência da representação numérica mesmo sob condições extremas de processamento. Essa característica é particularmente importante em aplicações de predistorção digital, nas quais erros de grande magnitude podem comprometer significativamente a linearização do amplificador de potência.
+
+**Tabela 5.11 – Principais decisões de projeto do módulo `saturator`**
+
+| Decisão de projeto | Justificativa técnica |
+|--------------------|-----------------------|
+| Saturação explícita | Evita erros provocados por *wrap-around* |
+| Módulo dedicado | Separação entre limitação de amplitude e arredondamento |
+| Comparação com limites máximo e mínimo | Implementação simples, previsível e determinística |
+| Saída registrada | Sincronização com o pipeline global da arquitetura |
+
+Em síntese, o módulo `saturator` encerra o fluxo de processamento do DPDnano-Lite garantindo que o sinal entregue à interface de saída permaneça compatível com o formato numérico especificado. Sua implementação privilegia robustez, previsibilidade e simplicidade, concluindo a estratégia de tratamento numérico adotada em toda a arquitetura.
+
+============================
+A próxima seção (5.13 – Módulo dpd_core) será a mais extensa de todo o Capítulo 5. Ela integrará todos os módulos apresentados anteriormente, descrevendo a arquitetura completa do DPDnano-Lite, o fluxo de dados entre os blocos, o pipeline global, a sincronização, a latência total, o consumo estimado de recursos da FPGA Tang Nano 4K, além das decisões de engenharia que levaram à arquitetura final congelada. 
+============================
+
+===================================================
+
+5.13 Módulo dpd_core
+
+O módulo `dpd_core` representa o núcleo central da arquitetura DPDnano-Lite e integra todos os blocos RTL desenvolvidos ao longo deste trabalho. Enquanto os módulos anteriores executam funções específicas, como multiplicação complexa, geração dos termos polinomiais, armazenamento de coeficientes, arredondamento e saturação, o `dpd_core` coordena o fluxo completo de processamento do algoritmo Memory Polynomial, constituindo a implementação final do predistorcedor digital.
+
+Do ponto de vista arquitetural, o `dpd_core` pode ser interpretado como um sistema composto por diversos estágios especializados, interligados por uma estrutura pipeline totalmente síncrona. Essa organização permite que diferentes amostras sejam processadas simultaneamente em diferentes estágios da arquitetura, aumentando significativamente a vazão do sistema sem elevar proporcionalmente a frequência de operação.
+
+O fluxo de processamento inicia-se com o recebimento das componentes I (In-Phase) e Q (Quadrature) do sinal complexo de entrada. Essas amostras são inicialmente encaminhadas ao módulo `iq_delay`, responsável por disponibilizar o histórico temporal necessário ao modelo Memory Polynomial.
+
+As amostras atrasadas alimentam o módulo `poly_kernel`, no qual são calculadas as grandezas não lineares, incluindo a magnitude ao quadrado e os termos polinomiais utilizados pelo algoritmo. Em seguida, o módulo `poly_branch` organiza esses termos de acordo com a configuração da arquitetura e os encaminha para as operações de ponderação.
+
+Os coeficientes complexos são fornecidos pelo módulo `coeff_bank`, que disponibiliza os parâmetros previamente definidos para cada ramo polinomial. Cada termo gerado é então multiplicado pelo respectivo coeficiente por meio do módulo `complex_mult`, produzindo as contribuições individuais do modelo.
+
+As parcelas resultantes são acumuladas utilizando o módulo `complex_add`, formando progressivamente o sinal predistorcido em alta precisão. Durante todo esse processamento, as larguras internas dos barramentos permanecem expandidas para preservar a precisão numérica e minimizar os efeitos da quantização.
+
+Somente após a conclusão das operações matemáticas o resultado é encaminhado ao módulo `rounding`, responsável pela conversão controlada da largura das palavras. Na sequência, o módulo `saturator` verifica possíveis condições de overflow e garante que o valor final permaneça dentro da faixa dinâmica especificada para a interface de saída.
+
+Essa organização evidencia um importante princípio de engenharia adotado no DPDnano-Lite: cada módulo possui responsabilidade única e bem definida. Essa separação reduz o acoplamento entre os blocos, facilita a reutilização do código RTL, simplifica a verificação funcional e melhora a manutenção da arquitetura.
+
+Durante a definição do `dpd_core` foram avaliadas arquiteturas monolíticas e arquiteturas modulares. Uma implementação monolítica concentraria toda a lógica em um único módulo, reduzindo o número de interfaces internas. Entretanto, essa abordagem dificultaria a depuração, reduziria a reutilização dos componentes e aumentaria significativamente a complexidade da síntese.
+
+Por essa razão, foi adotada uma arquitetura modular hierárquica. Cada bloco foi desenvolvido, validado e sintetizado individualmente antes da integração completa. Essa metodologia reduziu o risco de propagação de erros entre módulos e permitiu a construção incremental da arquitetura.
+
+Outro aspecto importante refere-se à sincronização temporal. Todos os módulos compartilham o mesmo sinal de clock e o mesmo mecanismo de reset, garantindo alinhamento entre os diferentes estágios do pipeline. A utilização de registradores entre os blocos reduz o caminho crítico e favorece o fechamento de temporização durante a implementação na FPGA.
+
+A Figura 5.12 (a ser inserida) deverá apresentar o diagrama completo do `dpd_core`, destacando o fluxo de dados entre os módulos `iq_delay`, `poly_kernel`, `poly_branch`, `coeff_bank`, `complex_mult`, `complex_add`, `rounding` e `saturator`.
+
+A organização modular também favorece a escalabilidade da arquitetura. Futuras versões poderão incorporar maior profundidade de memória, ordens polinomiais superiores ou algoritmos adaptativos de atualização de coeficientes sem necessidade de reestruturar completamente o datapath principal.
+
+Durante a etapa de verificação funcional, o `dpd_core` foi submetido a uma bateria completa de testbenches cobrindo condições de reset, entradas nulas, funcionamento linear, processamento polinomial, sincronização do pipeline, saturação positiva, saturação negativa, sequência contínua de amostras e validação temporal dos sinais de controle. Esses ensaios confirmaram o correto funcionamento da arquitetura integrada e a consistência dos resultados produzidos.
+
+**Tabela 5.12 – Integração dos módulos do `dpd_core`**
+
+| Módulo | Função principal |
+|--------|------------------|
+| `iq_delay` | Geração da memória temporal |
+| `poly_kernel` | Cálculo dos termos polinomiais |
+| `poly_branch` | Organização dos ramos do modelo |
+| `coeff_bank` | Fornecimento dos coeficientes complexos |
+| `complex_mult` | Multiplicação pelos coeficientes |
+| `complex_add` | Acumulação das contribuições |
+| `rounding` | Conversão de precisão |
+| `saturator` | Limitação da faixa dinâmica |
+
+Em síntese, o módulo `dpd_core` consolida todas as decisões arquiteturais adotadas no desenvolvimento do DPDnano-Lite. Sua estrutura modular, pipeline sincronizado, estratégia numérica em ponto fixo e organização hierárquica permitem implementar um predistorcedor digital baseado no modelo Memory Polynomial em uma FPGA Tang Nano 4K, conciliando precisão, baixo consumo de recursos e facilidade de expansão para futuras versões da arquitetura.
+
+=================================
+
+=================================
+
+=================================================
+
+
+
+
+
+
+          *************************************
+            ATENÇÃO!!! FALTOU A SEÇÃO 5.1
+            COPIAR DO ARQUIVO DOCX CORRESPONDENTE....
+          *************************************
+
+
+
+
+
+============================
+Na sequência, desenvolveremos a Seção 5.15 – Considerações de Síntese, que será mais voltada à engenharia da implementação. Ela incluirá, entre outros pontos:
+
+objetivos da síntese para a FPGA Tang Nano 4K;
+impacto das decisões arquiteturais no uso de LUTs, flip-flops e DSPs;
+influência do pipeline no fechamento de temporização;
+escolhas para reduzir área e consumo de recursos;
+portabilidade da arquitetura;
+escalabilidade para versões futuras;
+limitações da implementação atual e possíveis otimizações.
+
+Essa seção fará a transição natural entre a implementação RTL (Capítulo 5) e os resultados experimentais apresentados no Capítulo 6.
+=============================
+
+====================================================
+
+5.15 – Considerações de Síntese
+
+A implementação de arquiteturas de Processamento Digital de Sinais em FPGAs exige que as decisões adotadas durante a fase de projeto considerem não apenas a corretude funcional do algoritmo, mas também aspectos relacionados à síntese lógica, ao consumo de recursos, ao desempenho temporal e à escalabilidade da solução. No desenvolvimento do DPDnano-Lite, esses fatores foram considerados desde as primeiras etapas da definição arquitetural, buscando estabelecer um equilíbrio entre desempenho de processamento e simplicidade de implementação.
+
+O principal objetivo desta arquitetura foi demonstrar a viabilidade de um predistorcedor digital baseado no modelo Memory Polynomial em uma FPGA de recursos limitados, tendo como plataforma de referência a Tang Nano 4K. Essa restrição influenciou diretamente diversas decisões de engenharia, incluindo a definição da profundidade de memória, da ordem polinomial, da representação numérica em ponto fixo e da organização modular do sistema.
+
+Uma das decisões mais relevantes foi a adoção exclusiva de aritmética em ponto fixo. Embora implementações em ponto flutuante ofereçam maior faixa dinâmica e reduzam a necessidade de escalonamento numérico, elas demandam quantidade significativamente superior de recursos lógicos e blocos DSP, tornando sua utilização pouco adequada para dispositivos FPGA de pequeno porte. A utilização de formatos fixos permitiu reduzir a complexidade do hardware sem comprometer os objetivos deste trabalho.
+
+Outro aspecto importante refere-se à organização modular da arquitetura. Em vez de concentrar toda a lógica em um único bloco RTL, o processamento foi dividido em módulos especializados, cada um responsável por uma função bem definida. Essa abordagem facilita a síntese incremental, melhora a reutilização de componentes, simplifica a depuração durante a simulação e reduz o impacto de futuras modificações na arquitetura.
+
+A utilização de pipeline em praticamente todos os blocos representa outra decisão fundamental para a implementação em FPGA. A inserção de registradores entre os estágios reduz o comprimento do caminho crítico, melhora o fechamento de temporização e permite aumentar a frequência máxima de operação. Embora essa estratégia introduza latência adicional, seu impacto é compensado pela possibilidade de processar uma nova amostra a cada ciclo de clock após o preenchimento inicial do pipeline.
+
+A estratégia adotada para o tratamento numérico também contribui diretamente para a eficiência da síntese. As larguras internas dos barramentos são ampliadas durante as operações de multiplicação e acumulação, preservando a precisão dos resultados intermediários. Somente ao final do processamento são executadas as etapas de arredondamento e saturação, reduzindo o erro acumulado de quantização sem aumentar desnecessariamente a complexidade dos módulos intermediários.
+
+A reutilização de resultados intermediários durante a geração dos termos polinomiais constitui outra otimização importante. Em vez de recalcular grandezas já disponíveis, a arquitetura reutiliza valores previamente obtidos pelo módulo `poly_kernel`, reduzindo o número de multiplicações necessárias. Essa decisão contribui diretamente para diminuir a utilização de blocos DSP, recurso particularmente valioso em dispositivos FPGA de pequeno porte.
+
+A centralização dos coeficientes complexos no módulo `coeff_bank` também favorece a síntese. Além de simplificar a organização do código RTL, essa estratégia reduz a duplicação de constantes, melhora a legibilidade da implementação e facilita futuras atualizações do conjunto de coeficientes sem modificar os demais módulos do datapath.
+
+Outro aspecto considerado durante o desenvolvimento foi a compatibilidade com ferramentas convencionais de síntese para Verilog-2001. A arquitetura foi implementada utilizando construções amplamente suportadas pelos sintetizadores, evitando recursos específicos de fabricantes ou extensões proprietárias da linguagem. Essa decisão amplia a portabilidade do projeto e facilita sua adaptação para diferentes famílias de FPGA.
+
+Do ponto de vista da utilização de recursos, a arquitetura foi concebida para priorizar o uso eficiente de blocos DSP, registradores e LUTs. Embora a quantificação exata desses recursos dependa da ferramenta de síntese, da versão do compilador e das opções de otimização selecionadas, a organização modular e a reutilização de operações matemáticas reduzem naturalmente a demanda por hardware quando comparadas a implementações equivalentes sem essas otimizações.
+
+Outro benefício da organização adotada é a escalabilidade da arquitetura. Alterações futuras, como aumento da ordem polinomial, ampliação da profundidade de memória ou incorporação de algoritmos adaptativos para atualização dos coeficientes, poderão ser realizadas preservando a estrutura geral do sistema. Essa característica reduz o esforço de manutenção e amplia a vida útil do projeto.
+
+É importante destacar que o objetivo deste trabalho não foi maximizar o desempenho absoluto da implementação, mas desenvolver uma arquitetura compatível com dispositivos FPGA de recursos limitados, preservando fidelidade ao modelo Memory Polynomial e mantendo uma organização RTL clara, modular e facilmente verificável.
+
+A Figura 5.15 (a ser inserida) poderá apresentar a relação entre as principais decisões arquiteturais e seus impactos sobre o processo de síntese, evidenciando como modularização, pipeline, reutilização de operações e representação em ponto fixo contribuem para a redução da complexidade da implementação.
+
+**Tabela 5.15 – Relação entre decisões de projeto e impactos na síntese**
+
+| Decisão de projeto | Impacto esperado na síntese |
+|--------------------|-----------------------------|
+| Representação em ponto fixo | Redução da utilização de recursos lógicos e DSPs |
+| Arquitetura modular | Melhor organização, reutilização e manutenção |
+| Pipeline | Redução do caminho crítico e aumento da frequência máxima |
+| Reutilização de resultados intermediários | Menor quantidade de multiplicações |
+| Separação entre arredondamento e saturação | Simplificação funcional dos módulos |
+| Banco centralizado de coeficientes | Redução da duplicação de lógica e maior escalabilidade |
+
+Em síntese, as decisões adotadas durante o desenvolvimento do DPDnano-Lite demonstram que a implementação de um predistorcedor digital baseado no modelo Memory Polynomial pode ser realizada de forma eficiente em uma FPGA de pequeno porte quando aspectos de síntese são considerados desde a definição da arquitetura. A combinação entre modularização, pipeline, representação em ponto fixo e reutilização de recursos permitiu obter uma implementação coerente com os objetivos deste trabalho, estabelecendo uma base sólida para a etapa de validação experimental apresentada no capítulo seguinte.
+
+===============================
+
+Na próxima etapa vamos finalizar o capítulo com a Seção 5.16 – Considerações Finais do Capítulo.
+===============================
+
+=================================================
+
+5.16 – Considerações Finais do Capítulo
+
+Este capítulo apresentou a implementação completa da arquitetura DPDnano-Lite em Verilog-2001, descrevendo desde a organização hierárquica do projeto até a integração dos módulos que compõem o núcleo do predistorcedor digital. Ao longo das seções, buscou-se estabelecer uma relação direta entre o modelo matemático Memory Polynomial e sua realização em hardware, evidenciando como as decisões de engenharia adotadas influenciam a estrutura RTL e o desempenho esperado da arquitetura.
+
+A organização modular constituiu um dos principais pilares do desenvolvimento. A divisão da arquitetura em módulos especializados permitiu isolar responsabilidades, facilitar a validação funcional, aumentar a reutilização de componentes e reduzir o acoplamento entre as diferentes partes do sistema. Essa estratégia também favorece futuras evoluções da arquitetura, permitindo incorporar novos recursos com impacto mínimo sobre os blocos já consolidados.
+
+Outro aspecto relevante foi a adoção da representação em ponto fixo. A definição dos formatos numéricos, o controle do crescimento das larguras internas, a utilização de arredondamento antes da redução de precisão e a aplicação de saturação apenas na etapa final permitiram preservar a fidelidade dos cálculos ao longo do datapath, mantendo a implementação compatível com os recursos disponíveis na FPGA Tang Nano 4K.
+
+A utilização de uma organização pipeline ao longo da arquitetura mostrou-se adequada para reduzir o caminho crítico e melhorar o potencial de fechamento de temporização. Embora a introdução de registradores aumente a latência total do processamento, essa decisão permite que novas amostras sejam aceitas continuamente após o enchimento do pipeline, aumentando significativamente a vazão do sistema e tornando a arquitetura apropriada para aplicações de processamento digital em tempo real.
+
+Também foram discutidos os principais aspectos relacionados à síntese lógica da arquitetura. A utilização de Verilog-2001, a organização hierárquica dos módulos, a reutilização de resultados intermediários e a centralização dos coeficientes complexos contribuem para uma implementação clara, portátil e compatível com ferramentas convencionais de síntese, preservando a possibilidade de adaptação para outras famílias de FPGA.
+
+A integração dos módulos `iq_delay`, `poly_kernel`, `poly_branch`, `coeff_bank`, `complex_mult`, `complex_add`, `rounding`, `saturator` e `dpd_core` demonstrou que a arquitetura proposta atende aos objetivos estabelecidos para este trabalho, conciliando modularidade, precisão numérica e baixo consumo de recursos computacionais.
+
+Embora a versão desenvolvida utilize coeficientes estáticos e uma configuração fixa do modelo Memory Polynomial, sua estrutura foi concebida de forma escalável. A parametrização da arquitetura possibilita futuras extensões, incluindo o aumento da ordem polinomial, da profundidade de memória e a incorporação de algoritmos adaptativos para atualização automática dos coeficientes, preservando a organização geral do projeto.
+
+Tabela 5.16 – Síntese das principais características da arquitetura DPDnano-Lite
+
+| Característica | Resultado obtido |
+|----------------|------------------|
+| Organização da arquitetura | Modular e hierárquica |
+| Modelo implementado | Memory Polynomial |
+| Representação numérica | Ponto fixo |
+| Estratégia de processamento | Pipeline síncrono |
+| Linguagem de descrição | Verilog-2001 |
+| Plataforma de referência | FPGA Tang Nano 4K |
+| Estratégia de verificação | Testbenches funcionais no ModelSim |
+
+Em síntese, o Capítulo 5 consolidou a implementação da arquitetura DPDnano-Lite, apresentando as decisões de engenharia que fundamentam sua organização RTL e demonstrando a coerência entre o modelo matemático, a estrutura de hardware e os requisitos de implementação em uma FPGA de recursos limitados. Com a arquitetura definida, implementada e documentada, o trabalho avança para o Capítulo 6, no qual serão apresentados os procedimentos de simulação, os casos de teste desenvolvidos e a análise dos resultados obtidos durante a verificação funcional do sistema.
+
+===============================
+O próximo passo será iniciar o Capítulo 6 – Simulações e Resultados, documentando a metodologia de verificação, 
+o ambiente de simulação no ModelSim e os casos de teste TC001 a TC008, que validam funcionalmente a arquitetura DPDnano-Lite. 
+===============================
+
+===============================================================
+
+CONSIDERAÇÕES FINAIS PARA REDAÇÃO DO CAPITULO 5 DO TCC 
+
+
+MELHOR FAZER A CORREÇÃO ABAIXO:
+
+--------------------------------------------------
+
+Pelas últimas validações do projeto, o conjunto de verificação não terminou em TC008. A arquitetura foi validada também com o TC009, correspondente ao ensaio de Continuous Stress, no qual foi verificado o funcionamento contínuo do pipeline com transmissão de 200 vetores, obtendo:
+
+Vetores enviados: 200
+Vetores recebidos: 200
+Perda de dados: 0
+Sincronização do out_valid: correta
+Resultado: PASS
+
+Assim, sempre que o Capítulo 5 ou o Capítulo 6 fizer referência aos testes realizados, devemos atualizar o texto para indicar que a validação foi composta pelos casos de teste TC001 a TC009.
+
+Em particular, na última frase da Seção 5.16, onde está escrito:
+
+"...os casos de teste desenvolvidos e a análise dos resultados obtidos durante a verificação funcional do sistema."
+
+Podemos torná-la mais específica:
+
+"...os procedimentos de simulação, os casos de teste TC001 a TC009 e a análise dos resultados obtidos durante a verificação funcional da arquitetura DPDnano-Lite."
+
+Da mesma forma, no início do Capítulo 6, faremos uma tabela resumindo todos os testes executados:
+
+Caso de Teste	Objetivo	Resultado
+TC001	Reset	PASS
+TC002	Pipeline Alignment	PASS
+TC003	Linear Path	PASS
+TC004	Polynomial Path	PASS
+TC005	Complex IQ Processing	PASS
+TC006	Null Coefficients	PASS
+TC007	Positive Saturation	PASS
+TC008	Negative Saturation	PASS
+TC009	Continuous Stress	PASS
+
+Isso deixará a documentação consistente com a versão congelada da arquitetura e com os resultados efetivamente obtidos durante a verificação funcional.
+
+================================ FIM ==================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

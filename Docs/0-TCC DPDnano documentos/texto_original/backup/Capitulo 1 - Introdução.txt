@@ -1,0 +1,238 @@
+
+CAPITULO 1
+
+1.1 Contextualização
+
+O avanço das tecnologias de comunicação sem fio nas últimas décadas impulsionou uma transformação significativa na forma como informações são transmitidas e compartilhadas. A crescente demanda por serviços de banda larga móvel, aplicações em tempo real, dispositivos conectados e sistemas de comunicação de alta capacidade tem exigido taxas de transmissão cada vez maiores, maior eficiência espectral e melhor aproveitamento dos recursos disponíveis do espectro de radiofrequência.
+
+Nesse cenário, padrões modernos de comunicação, como 4G LTE, 5G NR e futuras gerações de redes móveis, empregam técnicas de modulação de elevada eficiência espectral, incluindo esquemas baseados em OFDM e modulações QAM de alta ordem. Embora essas técnicas aumentem significativamente a capacidade de transmissão, elas também produzem sinais com elevada razão entre potência de pico e potência média (PAPR), tornando o sistema mais sensível às não linearidades introduzidas pelos amplificadores de potência (Power Amplifiers – PAs).
+
+Os amplificadores de potência constituem um dos principais blocos da cadeia de transmissão em sistemas de radiofrequência, sendo responsáveis por fornecer potência suficiente para que o sinal alcance o meio de propagação. Entretanto, quando operam próximos da região de saturação para maximizar a eficiência energética, apresentam comportamento não linear, provocando distorções tanto na amplitude quanto na fase do sinal transmitido. Essas distorções degradam métricas importantes de desempenho, como a Magnitude do Vetor de Erro (EVM) e a potência emitida em canais adjacentes (ACPR), além de comprometerem a qualidade da comunicação e o atendimento aos requisitos estabelecidos pelos padrões internacionais.
+
+Diversas técnicas de linearização foram propostas para reduzir esses efeitos, destacando-se a Predistorção Digital (Digital Predistortion – DPD), amplamente adotada por sua capacidade de compensar as características não lineares do amplificador de potência sem reduzir significativamente sua eficiência operacional. O princípio da DPD consiste em aplicar ao sinal uma distorção controlada antes da amplificação, de forma que a resposta combinada entre o predistorcedor e o amplificador resulte em um comportamento aproximadamente linear.
+
+Apesar da ampla utilização da DPD em estações rádio-base e equipamentos de alto desempenho, sua implementação em plataformas embarcadas de baixo custo ainda representa um desafio. Modelos comportamentais complexos frequentemente demandam grande quantidade de multiplicadores, memória e recursos lógicos, tornando sua implementação inviável em FPGAs compactos.
+
+Diante desse contexto, este trabalho propõe a arquitetura DPDnano-Lite, desenvolvida especificamente para implementação em FPGAs com recursos limitados. A arquitetura emprega um modelo polinomial simplificado aliado a técnicas de pipeline, aritmética em ponto fixo e organização modular, buscando um equilíbrio entre desempenho, utilização de recursos e facilidade de implementação. Essa abordagem permite explorar os benefícios da Predistorção Digital em plataformas de baixo custo, mantendo compatibilidade com aplicações acadêmicas, de pesquisa e de prototipagem rápida.
+
+A contextualização apresentada nesta seção estabelece os fundamentos necessários para compreender a motivação do trabalho e os desafios abordados nos capítulos seguintes, nos quais serão discutidos os modelos de predistorção, a arquitetura proposta, sua implementação em Verilog e os resultados obtidos por meio das simulações.
+
+===========================
+
+A evolução dos sistemas de comunicação móveis modificou profundamente a forma como pessoas, empresas e equipamentos trocam informações. Aplicações como transmissão de vídeo em alta definição, computação em nuvem, Internet das Coisas (IoT), comunicação veículo-a-veículo e serviços baseados em inteligência artificial passaram a exigir redes com maior capacidade de transmissão, menor latência e elevada confiabilidade. Como consequência, os sistemas de comunicação modernos utilizam técnicas cada vez mais sofisticadas para aumentar a eficiência espectral e maximizar o aproveitamento do espectro de radiofrequência, considerado um recurso limitado e de elevado valor econômico.
+
+Para atender a essas exigências, os padrões de comunicação evoluíram de arquiteturas relativamente simples para sistemas capazes de transmitir grandes quantidades de informação utilizando múltiplas portadoras, altas ordens de modulação e múltiplas antenas. Embora essas tecnologias proporcionem ganhos significativos de desempenho, elas aumentam a complexidade dos transmissores e tornam o comportamento dos circuitos analógicos um fator determinante para a qualidade do sinal transmitido.
+
+Entre os blocos presentes na cadeia de transmissão, o amplificador de potência destaca-se por ser responsável pela maior parcela do consumo de energia do transmissor. Seu funcionamento influencia diretamente a eficiência energética do sistema e a qualidade do sinal irradiado. Em aplicações práticas, busca-se operar o amplificador próximo de sua região de máxima eficiência. Entretanto, nessa condição surgem efeitos não lineares capazes de provocar compressão de ganho, distorção de fase e crescimento espectral do sinal, reduzindo o desempenho global do enlace de comunicação.
+
+Uma solução frequentemente empregada consiste em reduzir a potência média de operação do amplificador, mantendo-o distante da região de saturação. Embora essa estratégia reduza as distorções, ela diminui significativamente a eficiência energética, tornando-se pouco atrativa em sistemas modernos, especialmente em estações rádio-base e equipamentos alimentados por bateria. Dessa forma, técnicas capazes de preservar simultaneamente a linearidade e a eficiência tornaram-se fundamentais para os sistemas de comunicação atuais.
+
+Nesse contexto, a Predistorção Digital consolidou-se como uma das principais técnicas de linearização devido à sua elevada capacidade de compensar as características não lineares do amplificador por meio de processamento digital. A crescente disponibilidade de dispositivos programáveis, como FPGAs, permitiu que algoritmos de DPD fossem implementados em hardware dedicado, oferecendo elevado desempenho e flexibilidade de atualização.
+
+Entretanto, grande parte das arquiteturas descritas na literatura foi desenvolvida considerando dispositivos de grande capacidade lógica e abundância de recursos computacionais. Essa característica dificulta sua utilização em FPGAs compactos, nos quais o número de blocos lógicos, memórias embarcadas e multiplicadores DSP é significativamente reduzido. Esse cenário evidencia a necessidade de arquiteturas simplificadas, capazes de preservar os benefícios da Predistorção Digital sem exceder as limitações de plataformas de baixo custo.
+
+É justamente nesse contexto que se insere a arquitetura DPDnano-Lite apresentada neste trabalho. O projeto foi concebido para implementar um predistorcedor digital baseado em modelo polinomial utilizando uma organização modular, aritmética em ponto fixo e uso racional dos recursos de hardware disponíveis. O objetivo é demonstrar que uma arquitetura cuidadosamente projetada pode fornecer uma solução tecnicamente consistente e compatível com FPGAs de recursos limitados, servindo como plataforma para estudos acadêmicos e futuras evoluções da arquitetura DPDnano.
+
+
+================================================
+
+O crescimento contínuo do tráfego de dados nas redes de comunicação impulsiona a evolução dos sistemas sem fio em direção a arquiteturas cada vez mais eficientes. A expansão dos serviços digitais, associada ao aumento do número de dispositivos conectados, exige equipamentos capazes de transmitir grandes volumes de informação mantendo elevados níveis de confiabilidade e disponibilidade. Paralelamente, aspectos relacionados ao consumo de energia, ao custo de implantação e ao uso eficiente do espectro de radiofrequência tornaram-se fatores determinantes no desenvolvimento de novos transmissores.
+
+Nesse cenário, os amplificadores de potência desempenham um papel fundamental, pois constituem o estágio responsável por fornecer a energia necessária para que o sinal seja irradiado pela antena. Entretanto, esse componente representa uma das principais fontes de consumo energético do transmissor e, simultaneamente, um dos maiores responsáveis pela degradação da qualidade do sinal quando submetido a condições de operação próximas da saturação. Em virtude desse comportamento, o projeto de transmissores modernos busca conciliar dois objetivos naturalmente conflitantes: maximizar a eficiência energética e preservar a linearidade do sinal transmitido.
+
+A operação em regiões não lineares provoca diferentes fenômenos físicos que comprometem o desempenho do sistema. Entre os principais efeitos observam-se a compressão de ganho, a conversão AM/AM, a conversão AM/PM e o crescimento espectral decorrente da geração de componentes de intermodulação. Como consequência, parte da energia originalmente concentrada na banda de interesse passa a ocupar canais adjacentes, aumentando o nível de interferência sobre outros sistemas de comunicação e reduzindo a qualidade do enlace estabelecido.
+
+Além da degradação espectral, a não linearidade influencia diretamente a integridade das constelações digitais utilizadas em esquemas modernos de modulação. Em sistemas baseados em OFDM e modulações QAM de elevada ordem, pequenas variações de amplitude e fase podem provocar aumento significativo da Magnitude do Vetor de Erro (Error Vector Magnitude – EVM), elevando a probabilidade de erro de símbolo e reduzindo a eficiência global da transmissão. Dessa forma, o comportamento do amplificador deixa de ser apenas uma característica do circuito eletrônico e passa a representar um fator determinante para o desempenho de todo o sistema de comunicação.
+
+Historicamente, diversas estratégias foram propostas para minimizar esses efeitos. Técnicas como operação com back-off de potência, arquiteturas Doherty, Feedforward, Feedback, Envelope Tracking e Predistorção Digital apresentam diferentes níveis de complexidade, custo e desempenho. Entre essas alternativas, a Predistorção Digital consolidou-se como uma das soluções mais eficientes por permitir compensar matematicamente as não linearidades do amplificador antes da etapa de amplificação, preservando elevados níveis de eficiência energética sem comprometer significativamente a qualidade do sinal transmitido.
+
+A implementação prática de algoritmos de Predistorção Digital depende diretamente da plataforma de processamento empregada. Em sistemas comerciais de grande porte, normalmente estão disponíveis dispositivos com elevada capacidade computacional, ampla quantidade de memória e grande número de multiplicadores dedicados. Entretanto, esse cenário difere substancialmente das plataformas FPGA de pequeno porte, nas quais os recursos lógicos disponíveis são limitados e precisam ser utilizados de forma criteriosa. Essa limitação torna inviável a implementação direta de muitos modelos encontrados na literatura, motivando o desenvolvimento de arquiteturas simplificadas e otimizadas para esse ambiente.
+
+Nesse contexto, o desenvolvimento de arquiteturas específicas para dispositivos FPGA compactos representa uma importante contribuição para a área de processamento digital aplicado às comunicações. Além de possibilitar a utilização da Predistorção Digital em plataformas de menor custo, essas arquiteturas contribuem para aplicações acadêmicas, pesquisa experimental, prototipagem rápida e sistemas embarcados, ampliando o acesso a técnicas tradicionalmente restritas a equipamentos de maior capacidade computacional.
+
+Com base nessas necessidades, este trabalho apresenta a arquitetura DPDnano-Lite, desenvolvida para implementar um predistorcedor digital baseado em modelo polinomial utilizando aritmética em ponto fixo, organização modular e pipeline de processamento, priorizando a utilização racional dos recursos disponíveis em FPGAs de baixo custo. A arquitetura proposta busca estabelecer um equilíbrio entre desempenho, consumo de recursos e facilidade de implementação, constituindo uma alternativa prática para aplicações que demandam processamento digital de sinais em ambientes com restrições de hardware.
+
+4 ===========================================
+
+A adoção de FPGAs como plataforma de implementação para algoritmos de processamento digital de sinais tem crescido significativamente em razão da elevada capacidade de paralelismo, da baixa latência e da flexibilidade oferecida por esses dispositivos. Diferentemente de processadores de propósito geral, nos quais as operações são executadas predominantemente de forma sequencial, as FPGAs permitem que múltiplos blocos de processamento operem simultaneamente, característica particularmente importante em aplicações que exigem processamento em tempo real.
+
+Entretanto, a diversidade de dispositivos disponíveis no mercado impõe diferentes restrições de projeto. Enquanto FPGAs de alto desempenho oferecem milhares de blocos lógicos, grande quantidade de memória embarcada e centenas de multiplicadores dedicados, dispositivos de menor custo apresentam recursos significativamente mais limitados. Nesses casos, cada registrador, bloco lógico e multiplicador DSP passa a representar um recurso valioso, exigindo decisões criteriosas durante o desenvolvimento da arquitetura.
+
+Esse cenário torna inadequada a simples adaptação de arquiteturas desenvolvidas para plataformas de grande porte. Em muitos casos, modelos matemáticos sofisticados apresentam excelente desempenho computacional, porém demandam quantidade de operações incompatível com dispositivos compactos. Consequentemente, torna-se necessário buscar soluções que conciliem desempenho, simplicidade estrutural e utilização eficiente dos recursos disponíveis.
+
+A arquitetura DPDnano-Lite foi concebida considerando exatamente essas restrições. Desde as etapas iniciais do projeto foram adotadas decisões voltadas à redução da complexidade de hardware, incluindo a utilização de representação em ponto fixo, organização modular dos blocos funcionais, pipeline de processamento e simplificação do modelo polinomial empregado na Predistorção Digital. Essas escolhas permitem reduzir a utilização de recursos sem comprometer a consistência matemática da solução proposta.
+
+Outro aspecto relevante consiste na modularidade da arquitetura. A divisão do sistema em blocos independentes facilita tanto o processo de verificação quanto futuras evoluções do projeto, permitindo que novos modelos comportamentais ou técnicas de otimização sejam incorporados sem a necessidade de reestruturar completamente o sistema. Essa característica também favorece sua utilização como plataforma didática para estudos relacionados ao processamento digital de sinais e à implementação de algoritmos em FPGA.
+
+Ao longo deste trabalho serão apresentados os fundamentos teóricos que justificam a adoção da Predistorção Digital, a descrição detalhada da arquitetura DPDnano-Lite, sua implementação em linguagem Verilog e os resultados obtidos durante o processo de verificação funcional. O conjunto dessas etapas demonstra que é possível desenvolver uma arquitetura compacta, organizada e compatível com FPGAs de recursos limitados, preservando as principais características necessárias para aplicações de processamento digital em sistemas modernos de comunicação.
+
+5 ==================================
+
+A escolha de uma plataforma FPGA de baixo custo para o desenvolvimento deste trabalho não está relacionada apenas à redução do investimento em hardware, mas também à possibilidade de democratizar o acesso às técnicas de Predistorção Digital. Em ambientes acadêmicos e de pesquisa, a disponibilidade de dispositivos compactos e economicamente acessíveis permite que estudantes e pesquisadores desenvolvam, validem e aperfeiçoem algoritmos de processamento digital sem a necessidade de equipamentos de elevado custo ou infraestrutura especializada.
+
+Dentro desse contexto, a FPGA Tang Nano 4K foi adotada como plataforma de referência para a implementação da arquitetura proposta. Apesar de suas limitações em quantidade de blocos lógicos, memória interna e multiplicadores dedicados, esse dispositivo oferece recursos suficientes para a implementação de arquiteturas digitais otimizadas, desde que o projeto seja desenvolvido considerando cuidadosamente as restrições impostas pelo hardware. Essa característica torna a plataforma especialmente adequada para validar a proposta apresentada neste trabalho.
+
+O desenvolvimento da arquitetura DPDnano-Lite foi orientado pelo princípio de que a eficiência de uma solução não depende exclusivamente da complexidade do algoritmo empregado, mas também da forma como esse algoritmo é organizado e implementado em hardware. Dessa maneira, decisões relacionadas ao pipeline de processamento, ao compartilhamento de recursos, à organização modular e à definição dos formatos numéricos em ponto fixo foram consideradas desde as primeiras etapas do projeto, buscando reduzir o consumo de recursos sem comprometer a precisão necessária para o processamento dos sinais.
+
+Além do desenvolvimento da arquitetura propriamente dita, este trabalho contempla a implementação completa dos módulos em linguagem Verilog, a elaboração de um ambiente de verificação funcional baseado em testbenches autoconsistentes e a validação da arquitetura por meio de simulações em ambiente ModelSim. Essa abordagem permite avaliar não apenas os aspectos conceituais da solução proposta, mas também sua viabilidade prática de implementação em dispositivos programáveis.
+
+Dessa forma, a arquitetura DPDnano-Lite representa uma contribuição voltada ao desenvolvimento de soluções compactas para Predistorção Digital, conciliando fundamentação teórica, organização arquitetural e implementação em hardware reconfigurável. A contextualização apresentada nesta seção estabelece as bases necessárias para a compreensão dos objetivos deste trabalho. Na próxima seção serão discutidas as motivações que conduziram ao desenvolvimento da arquitetura proposta, destacando os desafios encontrados nas implementações convencionais e as oportunidades oferecidas por uma abordagem otimizada para FPGAs com recursos limitados.
+
+===========================================
+
+1.2 Motivação
+
+O desenvolvimento de técnicas de Predistorção Digital tornou-se uma das principais estratégias para melhorar o desempenho de transmissores de radiofrequência sem comprometer a eficiência energética dos amplificadores de potência. Entretanto, a maior parte das soluções apresentadas na literatura foi concebida para equipamentos de elevada capacidade computacional, nos quais a disponibilidade de recursos de hardware permite a implementação de modelos matemáticos complexos e algoritmos adaptativos de alta ordem.
+
+Embora essas abordagens apresentem excelentes resultados em aplicações comerciais, sua utilização em plataformas FPGA de pequeno porte é frequentemente limitada pelo elevado consumo de recursos lógicos, memória embarcada e multiplicadores dedicados. Em muitos casos, a implementação integral desses modelos exige dispositivos de maior capacidade, aumentando significativamente o custo da solução e restringindo sua aplicação em ambientes acadêmicos, sistemas embarcados e projetos de pesquisa.
+
+Nos últimos anos observou-se um crescimento expressivo da disponibilidade de FPGAs compactos e de baixo custo, permitindo que atividades de pesquisa, desenvolvimento e ensino fossem realizadas em plataformas cada vez mais acessíveis. Entretanto, esse avanço não foi acompanhado por uma quantidade equivalente de arquiteturas de Predistorção Digital especificamente projetadas para operar sob restrições severas de hardware. Essa lacuna evidencia a necessidade de soluções capazes de conciliar eficiência de processamento, organização arquitetural e reduzida utilização de recursos.
+
+Além da limitação física imposta pelo hardware, outro fator motivador deste trabalho está relacionado à necessidade de desenvolver uma arquitetura cuja implementação seja facilmente compreendida, verificada e expandida. Em muitos projetos encontrados na literatura, a elevada complexidade estrutural dificulta a compreensão do fluxo interno de processamento e limita sua utilização como base para novos estudos. Uma arquitetura modular, organizada e documentada favorece tanto o processo de aprendizagem quanto futuras evoluções tecnológicas.
+
+Nesse contexto, surgiu a motivação para o desenvolvimento da arquitetura DPDnano-Lite. O projeto foi concebido com o objetivo de demonstrar que uma arquitetura baseada em um modelo polinomial simplificado, implementada em linguagem Verilog utilizando aritmética em ponto fixo e técnicas de pipeline, pode atender aos requisitos de processamento digital de sinais em FPGAs de recursos limitados. A proposta busca estabelecer um equilíbrio entre desempenho, simplicidade de implementação e consumo de recursos, tornando-se uma alternativa adequada para aplicações acadêmicas, prototipagem rápida e pesquisas relacionadas à Predistorção Digital.
+
+Assim, a principal motivação deste trabalho consiste em contribuir para o desenvolvimento de uma arquitetura de DPD compacta, modular e eficiente, capaz de servir tanto como plataforma experimental quanto como base para futuras pesquisas envolvendo otimização arquitetural, adaptação de coeficientes e implementação em dispositivos FPGA de diferentes capacidades.
+
+=====================================
+
+1.3 Problema de Pesquisa
+
+A crescente utilização de técnicas de modulação de elevada eficiência espectral, aliada à necessidade de maximizar a eficiência energética dos transmissores, tornou a linearização dos amplificadores de potência um dos principais desafios dos sistemas modernos de comunicação. Embora a Predistorção Digital tenha se consolidado como uma solução eficaz para compensar as não linearidades desses dispositivos, a implementação prática de seus algoritmos continua sendo fortemente dependente da disponibilidade de recursos computacionais.
+
+Grande parte das arquiteturas descritas na literatura utiliza modelos comportamentais de elevada complexidade, frequentemente associados a algoritmos adaptativos, profundidades de memória elevadas e operações matemáticas intensivas. Como consequência, essas soluções demandam quantidade significativa de blocos lógicos, memória embarcada e multiplicadores dedicados, características normalmente disponíveis apenas em FPGAs de médio e grande porte. Essa realidade dificulta a adoção dessas arquiteturas em plataformas compactas e de baixo custo.
+
+Ao mesmo tempo, observa-se a crescente disponibilidade de FPGAs acessíveis para aplicações acadêmicas, pesquisa e sistemas embarcados. Apesar desse avanço, ainda existe uma lacuna entre os modelos de Predistorção Digital tradicionalmente empregados e as limitações impostas por esses dispositivos. Em muitos casos, a redução da complexidade do algoritmo compromete a capacidade de compensação das não linearidades, enquanto a manutenção de modelos completos inviabiliza sua implementação em razão da limitação de recursos de hardware.
+
+Diante desse cenário, o problema de pesquisa deste trabalho pode ser formulado da seguinte maneira:
+
+"É possível desenvolver uma arquitetura de Predistorção Digital baseada em modelo polinomial, capaz de ser implementada em uma FPGA de recursos limitados, preservando uma organização modular, baixo consumo de recursos e desempenho compatível com aplicações de processamento digital de sinais?"
+
+A resposta a essa questão exige a definição de uma arquitetura que considere simultaneamente os aspectos matemáticos do modelo de predistração e as restrições físicas impostas pelo hardware de implementação. Dessa forma, torna-se necessário estabelecer critérios de projeto que envolvam a escolha do modelo comportamental, da representação numérica, da organização dos módulos, da estratégia de pipeline e da utilização eficiente dos recursos disponíveis na FPGA.
+
+Neste trabalho, essas questões são abordadas por meio do desenvolvimento da arquitetura DPDnano-Lite, concebida especificamente para operar em dispositivos FPGA compactos. A proposta busca demonstrar que uma arquitetura cuidadosamente planejada pode reduzir significativamente a complexidade de implementação sem descaracterizar os princípios fundamentais da Predistorção Digital, constituindo uma alternativa viável para aplicações acadêmicas e futuras evoluções da arquitetura.
+
+
+==================================
+
+1.4 Hipótese
+
+A hipótese que norteia este trabalho baseia-se na premissa de que é possível desenvolver uma arquitetura de Predistorção Digital adequada para FPGAs de recursos limitados sem recorrer a modelos excessivamente complexos ou a uma quantidade elevada de recursos de hardware. Assume-se que, por meio da combinação de um modelo polinomial simplificado, representação em ponto fixo, organização modular e pipeline de processamento, é possível obter uma implementação eficiente, compatível com dispositivos compactos e adequada para aplicações acadêmicas e de pesquisa.
+
+Parte-se da hipótese de que a redução da complexidade arquitetural não implica, necessariamente, perda significativa da capacidade de processamento quando as decisões de projeto são tomadas de forma integrada. A escolha criteriosa do formato numérico, da profundidade de memória, da ordem do modelo polinomial e da organização dos módulos pode proporcionar uma utilização mais eficiente dos recursos da FPGA, mantendo o funcionamento correto da arquitetura e sua escalabilidade.
+
+Adicionalmente, considera-se que uma arquitetura desenvolvida com foco em modularidade facilita as etapas de verificação funcional, manutenção e evolução do projeto. A separação das funções em blocos independentes permite validar individualmente cada módulo, reduzindo a complexidade do processo de desenvolvimento e favorecendo futuras extensões, como a inclusão de novos termos polinomiais, algoritmos de adaptação de coeficientes e suporte a dispositivos FPGA de maior capacidade.
+
+Outra hipótese importante é que a utilização de linguagem Verilog associada a uma metodologia estruturada de desenvolvimento, incluindo testbenches autoconsistentes e simulações funcionais, possibilita validar a arquitetura antes da implementação física, reduzindo riscos de integração e aumentando a confiabilidade do projeto.
+
+Assim, admite-se que a arquitetura DPDnano-Lite seja capaz de demonstrar a viabilidade técnica de uma implementação compacta de Predistorção Digital em FPGA, conciliando baixo consumo de recursos, organização arquitetural, facilidade de implementação e potencial para futuras evoluções, constituindo uma contribuição relevante para o desenvolvimento de sistemas digitais de comunicação baseados em hardware reconfigurável.
+
+====================================
+
+1.5 Objetivos
+
+1.5.1 Objetivo Geral
+
+Desenvolver uma arquitetura de Predistorção Digital denominada DPDnano-Lite, baseada em modelo polinomial e implementada em linguagem Verilog, otimizada para FPGAs com recursos limitados, buscando conciliar baixo consumo de recursos, organização modular, facilidade de implementação e viabilidade de utilização em aplicações acadêmicas e de pesquisa.
+
+1.5.2 Objetivos Específicos
+
+• Estudar os fundamentos da Predistorção Digital e os principais modelos comportamentais empregados na literatura.
+
+• Analisar as limitações de implementação de arquiteturas de Predistorção Digital em FPGAs de pequeno porte.
+
+• Definir uma arquitetura modular baseada em modelo polinomial adequada à FPGA Tang Nano 4K.
+
+• Implementar os módulos da arquitetura utilizando a linguagem Verilog e representação em ponto fixo.
+
+• Empregar técnicas de pipeline e organização modular visando reduzir o consumo de recursos de hardware.
+
+• Desenvolver testbenches autoconsistentes para verificar individualmente os módulos e a integração completa do sistema.
+
+• Validar funcionalmente a arquitetura por meio de simulações utilizando o ModelSim.
+
+• Demonstrar a viabilidade da arquitetura DPDnano-Lite como plataforma compacta para estudos, prototipagem e futuras evoluções em Predistorção Digital.
+
+
+===================================
+
+1.6 Metodologia
+
+A pesquisa desenvolvida neste trabalho possui natureza aplicada, uma vez que busca propor, implementar e validar uma arquitetura de Predistorção Digital destinada à utilização em FPGAs de recursos limitados. Quanto aos objetivos, caracteriza-se como uma pesquisa de caráter exploratório e descritivo, fundamentada em revisão bibliográfica e desenvolvimento experimental.
+
+A primeira etapa consistiu na revisão da literatura sobre amplificadores de potência, técnicas de linearização e modelos de Predistorção Digital. Foram analisadas diferentes abordagens, incluindo modelos polinomiais, Memory Polynomial, Generalized Memory Polynomial e outras arquiteturas amplamente utilizadas, identificando suas vantagens, limitações e requisitos computacionais.
+
+Na etapa seguinte foi definida a arquitetura DPDnano-Lite. O projeto arquitetural contemplou a escolha do modelo matemático, a organização modular, a representação em ponto fixo, a definição do pipeline de processamento e a especificação das interfaces entre os módulos, sempre considerando as limitações de recursos da FPGA Tang Nano 4K.
+
+Após a definição da arquitetura, realizou-se a implementação dos módulos em linguagem Verilog. Cada bloco funcional foi desenvolvido de forma independente, permitindo validação incremental e facilitando a integração do sistema completo. Essa estratégia reduziu a complexidade do processo de desenvolvimento e tornou a arquitetura mais facilmente reutilizável.
+
+Em seguida foram elaborados testbenches autoconsistentes para verificar o funcionamento individual dos módulos e posteriormente do sistema integrado. As simulações foram executadas no ambiente ModelSim, permitindo validar a funcionalidade da arquitetura, identificar inconsistências durante o desenvolvimento e confirmar o atendimento aos requisitos definidos para o projeto.
+
+Por fim, os resultados obtidos durante as simulações foram analisados qualitativamente, verificando a consistência funcional da arquitetura proposta e sua adequação para implementação em FPGA de baixo custo. A metodologia adotada fornece uma base organizada para futuras extensões, incluindo adaptação automática de coeficientes, expansão da ordem polinomial e implementação em dispositivos de maior capacidade.
+
+
+==================================================================
+
+1.7 Organização do Trabalho
+
+Este trabalho está estruturado em sete capítulos, organizados de forma a conduzir o leitor desde os fundamentos teóricos da Predistorção Digital até a implementação e validação da arquitetura DPDnano-Lite.
+
+O Capítulo 1 apresenta a contextualização do tema, a motivação da pesquisa, o problema investigado, a hipótese adotada, os objetivos do trabalho, a metodologia empregada e a organização geral do documento.
+
+O Capítulo 2 reúne a fundamentação teórica necessária para a compreensão do problema, abordando os conceitos relacionados aos amplificadores de potência, às não linearidades, às métricas de desempenho utilizadas em sistemas de comunicação e às principais técnicas de linearização descritas na literatura.
+
+No Capítulo 3 são apresentados os fundamentos da Predistorção Digital e os principais modelos comportamentais empregados para compensação das não linearidades, incluindo modelos polinomiais, Memory Polynomial, Generalized Memory Polynomial e outras arquiteturas relevantes. Ao final do capítulo é apresentada a justificativa para a adoção do modelo utilizado na arquitetura DPDnano-Lite.
+
+O Capítulo 4 descreve detalhadamente a arquitetura proposta, contemplando a organização modular, a representação numérica em ponto fixo, o pipeline de processamento, a estrutura dos módulos internos e as decisões de projeto adotadas para reduzir a utilização de recursos em FPGA.
+
+O Capítulo 5 apresenta a implementação da arquitetura em linguagem Verilog, descrevendo os principais módulos desenvolvidos, sua integração e os aspectos relacionados ao fluxo de implementação.
+
+O Capítulo 6 apresenta o ambiente de verificação, os testbenches desenvolvidos, as simulações realizadas no ModelSim e a análise dos resultados obtidos durante a validação funcional da arquitetura.
+
+Por fim, o Capítulo 7 reúne as conclusões do trabalho, destacando as principais contribuições alcançadas, as limitações identificadas e as possibilidades de continuidade da pesquisa por meio da evolução da arquitetura DPDnano-Lite.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

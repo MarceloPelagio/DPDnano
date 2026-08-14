@@ -1,0 +1,45 @@
+Capítulo 6.3 – Métricas Avançadas TMQ011 a TMQ013
+
+6.5 Sensibilidade a coeficientes e limites operacionais
+
+Os testes TMQ011, TMQ012 e TMQ013 representam a camada mais analítica da campanha experimental. Eles foram criados para responder a perguntas que extrapolam a validação funcional imediata: qual é a região segura de coeficientes sem saturação? Como essa região muda quando coeficientes e entradas são complexos? Em que ponto a arquitetura começa a entrar de forma persistente em saturação quando a amplitude cresce? Essas perguntas são particularmente relevantes porque conectam a implementação digital concreta aos limites matemáticos e operacionais do sistema.
+
+6.5.1 TMQ011 – Sensibilidade aos coeficientes reais
+
+O TMQ011 foi proposto para demonstrar matematicamente e experimentalmente a região válida de coeficientes reais sem saturação. O “por que” desse teste nasce da necessidade de transformar uma percepção qualitativa em um mapa operacional objetivo: dado um intervalo de entrada, quais combinações de `coef1` e `coef3` ainda mantêm a saída dentro da faixa representável?
+
+O teste percorreu 4225 combinações de coeficientes reais e classificou cada combinação como segura ou insegura. A métrica principal foi a incidência de saturação sob os vetores de excitação definidos no ensaio. O resultado mostrou 3105 combinações seguras e 1120 inseguras, com razão de segurança de aproximadamente 73,49%.
+
+Esse teste é cientificamente importante por dois motivos. Primeiro, ele mostra que a região segura não é trivial nem marginal; há espaço operacional significativo para escolha dos coeficientes. Segundo, ele demonstra que esse espaço não cobre todo o domínio nominalmente representável, o que significa que a arquitetura impõe restrições reais sobre a parametrização admissível quando se deseja evitar saturação.
+
+O melhor caso seguro registrado apresentou `coef1 = -1,0` e `coef3 ≈ 0,99997`, com margem de 20153 LSB, o que sugere que certas combinações extremas ainda podem permanecer seguras dependendo da interação entre os termos do modelo e do conjunto de estímulos adotado. Isso é um resultado interessante, porque mostra que a noção intuitiva de “coeficiente grande implica necessariamente saturação” não é universal; o sinal, a fase e a estrutura do termo polinomial importam.
+
+6.5.2 TMQ012 – Sensibilidade a coeficientes complexos
+
+O TMQ012 estende a ideia do TMQ011 para o domínio complexo. Aqui, o “por que” do teste é ainda mais forte: em uma arquitetura I/Q, não basta conhecer limites em coeficientes reais; é necessário verificar como magnitudes e fases complexas modificam a região segura. O “para quê” é mapear a admissibilidade operacional quando linear e ramo cúbico possuem coeficientes complexos e quando as entradas também percorrem diferentes fases.
+
+O ensaio avaliou 81 combinações principais de magnitudes, 5184 pares de fase de coeficientes e mais de 1,4 milhão de vetores de entrada. O resultado final apontou 42 combinações seguras e 39 inseguras, com razão de segurança de cerca de 51,85%. Esse número é particularmente revelador: ao migrar do caso real para o complexo, a fronteira entre seguro e inseguro torna-se mais estreita e dependente da geometria fasorial do problema.
+
+O melhor caso seguro encontrado correspondeu a `|c1| = 0,125` e `|c3| = 0,875`, com margem zero em LSB, isto é, exatamente na fronteira observável da região sem saturação. Cientificamente, esse ponto é rico em significado, porque evidencia que a arquitetura pode operar no limite da faixa sem ainda apresentar saturação formal, mas sem margem adicional. Isso oferece uma interpretação muito útil para o TCC: o limite operacional não é apenas uma linha de “passa/falha”, mas uma fronteira com graus de folga distintos.
+
+6.5.3 TMQ013 – Estresse de limite operacional
+
+O TMQ013 foi concebido como teste de estresse em amplitude para identificar, de forma progressiva, o ponto em que a arquitetura deixa a região segura e entra em saturação. Diferentemente dos testes anteriores, que mapeiam regiões de coeficientes, o TMQ013 fixa os coeficientes e varre amplitudes crescentes. O “por que” desse teste é traduzir a noção de limite operacional em um critério experimental diretamente legível.
+
+Foram utilizados 48 níveis de amplitude com 256 amostras por nível. Os coeficientes aplicados foram complexos moderadamente agressivos, compatíveis com um cenário realista de estresse. O resumo do teste mostrou taxa de segurança de 88,54%, primeira saturação no nível 41, primeira saturação persistente no nível 44, pior nível ainda seguro igual a 40 e amplitude segura máxima de aproximadamente `0,828125`, enquanto a primeira saturação apareceu em aproximadamente `0,845703125`.
+
+Esse resultado é extremamente útil do ponto de vista científico e didático. Em vez de apenas dizer que “a arquitetura satura em níveis altos”, o TMQ013 fornece um limiar observável e quantificado. Mais ainda, ele distingue entre saturação pontual e saturação persistente. Essa distinção é importante porque um sistema pode tolerar eventos isolados de clip sem necessariamente entrar em regime crônico de distorção severa. Ao separar a primeira saturação da primeira saturação persistente, o teste introduz uma leitura mais madura do comportamento do sistema.
+
+O `stress_score = 31,25` e o comprimento máximo de sequência persistente de saturação igual a 1024 amostras reforçam que, acima de certo patamar de entrada, o sistema deixa de operar em região confortável e passa a regime de compressão severa. Para fins de redação do Capítulo 6, esse teste será especialmente útil para discutir limites do projeto e margens práticas de operação.
+
+6.5.4 Interpretação conjunta dos testes avançados
+
+Tomados em conjunto, TMQ011, TMQ012 e TMQ013 fornecem uma visão de segunda ordem sobre a arquitetura. Os testes funcionais TCxxx e as métricas qualitativas TMQ001–TMQ010 demonstram que a arquitetura é correta, estável e previsível. Os testes TMQ011–TMQ013 acrescentam algo diferente: eles mostram onde essa previsibilidade começa a encontrar fronteiras impostas pela faixa dinâmica, pela escolha dos coeficientes e pela natureza complexa do sinal.
+
+Essa camada de análise é particularmente valiosa para um trabalho acadêmico, porque transforma a avaliação do DPDnano-Lite de mera demonstração de funcionamento em investigação de limites. Isso eleva a qualidade científica do capítulo, pois passa-se a discutir não apenas desempenho nominal, mas também margem operacional, sensibilidade paramétrica e transição entre região segura e região de saturação.
+
+6.5.5 Encaminhamento para a consolidação do capítulo
+
+Os resultados dos testes TMQ011 a TMQ013 deverão ser apresentados no Capítulo 6 final com apoio de gráficos de região segura, mapas de sensibilidade e dashboards de limite operacional. Esses elementos visuais terão papel importante porque o conteúdo desses ensaios é intrinsecamente geométrico e limiar, beneficiando-se fortemente de representação gráfica para complementar a análise textual.
+
+Em termos de argumentação do TCC, esses ensaios avançados consolidam a conclusão de que o DPDnano-Lite é uma arquitetura compacta, verificável e bem caracterizada, mas não arbitrariamente ilimitada. Como todo sistema real em ponto fixo e recursos finitos, ele possui regiões de operação mais e menos favoráveis. A capacidade de identificar e documentar essas regiões constitui, por si só, uma contribuição relevante do presente trabalho.

@@ -1,0 +1,50 @@
+# do {.\compile_dpd_core.do}
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 10:44:02 on Jul 17,2026
+# vlog -reportprogress 300 "+incdir+../rtl" ../rtl/coeff_bank.v ../rtl/complex_add.v ../rtl/complex_mult.v ../rtl/dpd_core.v ../rtl/fixed_mult.v ../rtl/iq_delay.v ../rtl/mult_generic.v ../rtl/poly_branch.v ../rtl/poly_kernel.v ../rtl/rounding.v ../rtl/saturator.v 
+# -- Compiling module coeff_bank
+# -- Compiling module complex_add
+# -- Compiling module complex_mult
+# -- Compiling module dpd_core
+# -- Compiling module fixed_mult
+# -- Compiling module iq_delay
+# -- Compiling module mult_generic
+# -- Compiling module poly_branch
+# -- Compiling module poly_kernel
+# -- Compiling module rounding
+# -- Compiling module saturator
+# 
+# Top level modules:
+# 	coeff_bank
+# 	complex_add
+# 	dpd_core
+# 	fixed_mult
+# 	iq_delay
+# 	mult_generic
+# End time: 10:44:02 on Jul 17,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 10:44:02 on Jul 17,2026
+# vlog -reportprogress 300 "+incdir+../rtl" ../sim/tb_dpd_core.v 
+# -- Compiling module tb_dpd_core
+# 
+# Top level modules:
+# 	tb_dpd_core
+# End time: 10:44:02 on Jul 17,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+do run_dpd_core.do
+# vsim work.tb_dpd_core 
+# Start time: 10:44:10 on Jul 17,2026
+# Loading work.tb_dpd_core
+# Loading work.dpd_core
+# Loading work.complex_mult
+# Loading work.poly_kernel
+# Loading work.poly_branch
+# Loading work.rounding
+# Loading work.saturator
+# [PASS] TC1
+# ** Note: $stop    : ../sim/tb_dpd_core.v(34)
+#    Time: 85 ns  Iteration: 2  Instance: /tb_dpd_core
+# Break in Module tb_dpd_core at ../sim/tb_dpd_core.v line 34
+# End time: 10:44:33 on Jul 17,2026, Elapsed time: 0:00:23
+# Errors: 0, Warnings: 0

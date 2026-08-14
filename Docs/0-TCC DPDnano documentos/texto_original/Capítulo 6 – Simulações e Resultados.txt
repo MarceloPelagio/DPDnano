@@ -1,0 +1,335 @@
+Capítulo 6 – Simulações e Resultados
+
+6.1 Introdução
+
+Este capítulo apresenta o ambiente de verificação utilizado no desenvolvimento do DPDnano-Lite, os testbenches elaborados para validação funcional da arquitetura congelada e os ensaios complementares de caracterização qualitativa destinados a examinar propriedades numéricas, temporais e operacionais do sistema. Ao contrário dos capítulos anteriores, nos quais o foco recaiu sobre a fundamentação teórica, a definição arquitetural e a implementação RTL, o presente capítulo ocupa-se da etapa experimental do trabalho, isto é, da demonstração sistemática de que a arquitetura proposta não apenas existe como descrição em Verilog, mas também opera de forma coerente, previsível e mensurável sob um conjunto amplo de estímulos de teste. Essa abordagem é coerente com práticas consolidadas de verificação funcional em hardware digital e com a exigência de rastreabilidade experimental em sistemas implementados em FPGA (BERGERON, 2000; BHASKER; CHADHA, 2009).
+
+O objetivo central deste capítulo é estabelecer, com rigor científico, a relação entre a arquitetura descrita no Capítulo 5 e os comportamentos observados durante a simulação. Para isso, a verificação foi organizada em duas frentes complementares. A primeira frente corresponde aos testes funcionais TC001 a TC010, diretamente associados à validação do comportamento lógico e temporal da arquitetura congelada. Esses ensaios verificam, entre outros aspectos, a resposta ao reset, a propagação correta do caminho linear, a ativação do ramo cúbico, o comportamento sob saturação, a coerência das flags de overflow, a latência efetiva do pipeline e a capacidade de entrega contínua de amostras. A segunda frente corresponde aos testes TMQ001 a TMQ013, concebidos para caracterizar qualitativamente a arquitetura sob óticas mais amplas, incluindo faixa dinâmica, linearidade, resposta polinomial, erro de quantização, precisão numérica, estabilidade temporal, comportamento estatístico, simetria, repetibilidade, sensibilidade aos coeficientes e limites operacionais.
+
+Essa separação entre validação funcional e caracterização qualitativa não é apenas organizacional. Do ponto de vista metodológico, ela distingue dois níveis de investigação. No primeiro nível, pergunta-se se a arquitetura faz corretamente aquilo que foi projetada para fazer. No segundo nível, investiga-se como a arquitetura se comporta quando estimulada de forma sistemática sob diferentes regimes de operação, quais propriedades mensuráveis emergem desse comportamento e quais limites podem ser inferidos a partir dos resultados. Em outras palavras, os testes TCxxx respondem predominantemente à pergunta “a arquitetura está correta?”, enquanto os testes TMQxxx respondem predominantemente à pergunta “como essa arquitetura se comporta e quais são suas características observáveis?”.
+
+O ambiente experimental foi desenvolvido no ModelSim, com testbenches autoavaliáveis escritos em Verilog e organizados de modo a produzir critérios explícitos de aprovação ou reprovação. Sempre que pertinente, os testbenches também geram artefatos auxiliares, como arquivos resumo, mapas de sensibilidade, amostras CSV e gráficos SVG, os quais ampliam a capacidade de análise para além do simples resultado PASS/FAIL. Essa estratégia é particularmente importante em um trabalho de pós-graduação em engenharia eletrônica, pois permite documentar não apenas a existência de um comportamento correto, mas também a qualidade e a previsibilidade desse comportamento (BERGERON, 2000; BHASKER; CHADHA, 2009).
+
+Outro aspecto essencial da metodologia adotada é a fidelidade à versão congelada da arquitetura. O texto deste capítulo considera como referência principal os testbenches localizados em `versao_v3_1_congelada/tb_v3_1`, no caso da validação funcional TCxxx, e os testbenches localizados em `tb_v3_2`, no caso da suíte TMQxxx. Essa escolha é coerente com o Capítulo 5, no qual se consolidou a distinção entre o caminho ativo efetivamente validado e outros blocos preservados no repositório como infraestrutura de suporte ou base para futuras expansões.
+
+Em termos de organização, o capítulo foi estruturado de modo a partir do geral para o específico. Inicialmente descreve-se o ambiente de simulação e o plano geral de verificação. Em seguida, analisa-se a suíte funcional TC001 a TC010, enfatizando a motivação de cada teste, sua formulação, o comportamento esperado e a interpretação dos resultados. Na sequência, discutem-se os testes TMQ001 a TMQ013, agrupados conforme a natureza da métrica analisada. Por fim, apresenta-se uma síntese crítica dos resultados, destacando o que eles revelam sobre a robustez da arquitetura, sobre seus limites operacionais e sobre sua adequação aos objetivos definidos neste trabalho.
+
+6.2 Ambiente de simulação e plano de verificação
+
+O ambiente de verificação do DPDnano-Lite foi construído em torno do simulador ModelSim, adotando-se uma estratégia de validação hierárquica e progressiva. Em primeiro lugar, os módulos RTL foram verificados individualmente ou em pequenos conjuntos funcionais durante o desenvolvimento da arquitetura. Em segundo lugar, o módulo `dpd_core`, que representa a integração da versão congelada do DPDnano-Lite, foi submetido a uma bateria estruturada de testbenches funcionais. Em terceiro lugar, uma suíte adicional de ensaios de caracterização qualitativa foi utilizada para medir propriedades mais refinadas do comportamento da arquitetura.
+
+O plano de verificação partiu de uma premissa simples, porém metodologicamente importante: um predistorcedor digital em FPGA não deve ser considerado validado apenas porque compila ou porque produz uma saída aparentemente coerente em poucos vetores de teste. É necessário demonstrar, de forma reprodutível, que a arquitetura responde corretamente a condições de inicialização, sinais nulos, excitações lineares, estímulos não lineares, limites de faixa dinâmica, eventos de overflow e transmissões prolongadas de vetores. Além disso, é necessário mostrar que sua latência é previsível, que sua vazão é compatível com a estrutura pipeline adotada e que seu comportamento numérico permanece consistente quando observado sob critérios quantitativos.
+
+Sob esse ponto de vista, a suíte funcional TC001 a TC010 foi concebida para validar a corretude operacional mínima da arquitetura congelada. Cada teste possui uma motivação precisa e examina um aspecto funcional específico do sistema. Já a suíte TMQ001 a TMQ013 foi formulada para produzir uma camada adicional de conhecimento experimental, mais adequada à análise científica do comportamento do DPDnano-Lite. Embora os TMQ não substituam os testes funcionais clássicos, eles ampliam substancialmente a capacidade de interpretação dos resultados, permitindo discutir não apenas se a arquitetura funciona, mas também com que nível de previsibilidade, linearidade, estabilidade e margem operacional ela funciona. A Tabela 6.1 sintetiza o plano geral de verificação, distinguindo explicitamente os testes funcionais dos ensaios de caracterização qualitativa.
+
+Tabela 6.1 – Estrutura geral do plano de verificação do DPDnano-Lite
+
+| Grupo | Faixa de testes | Objetivo principal | Tipo de evidência produzida |
+|-------|------------------|--------------------|-----------------------------|
+| Validação funcional básica | TC001–TC005 | Verificar reset, entrada nula, regime linear e ativação do ramo cúbico | Aprovação funcional direta por comparação com comportamento esperado |
+| Robustez funcional | TC006–TC008 | Verificar saturação positiva, saturação negativa e sinalização de overflow | Confirmação do comportamento em condições extremas de faixa dinâmica |
+| Temporalidade e vazão | TC009–TC010 | Medir latência pipeline e entrega sustentada de vetores | Evidência temporal e operacional da arquitetura congelada |
+| Caracterização nominal | TMQ001–TMQ005 | Mapear faixa dinâmica, linearidade, resposta polinomial e erros numéricos | Métricas quantitativas e curvas de resposta |
+| Caracterização temporal e estatística | TMQ006–TMQ010 | Medir latência, estabilidade, estatística de saída, simetria e repetibilidade | Indicadores de previsibilidade, estabilidade e determinismo |
+| Limites operacionais | TMQ011–TMQ013 | Determinar regiões seguras de coeficientes e limiares de saturação | Mapas de sensibilidade e fronteiras operacionais |
+
+6.2.1 Elementos visuais previstos para o capítulo
+
+Além das tabelas-resumo, o Capítulo 6 será complementado por um conjunto de figuras derivadas diretamente dos artefatos produzidos pelos testbenches TMQ. A adoção desses elementos visuais tem dupla finalidade. Em primeiro lugar, ela melhora a legibilidade dos resultados, convertendo grandezas numéricas em formas gráficas de interpretação imediata. Em segundo lugar, ela reforça a rastreabilidade entre o texto analítico e os arquivos efetivamente gerados durante a campanha experimental, preservando o caráter documental do capítulo.
+
+Os elementos visuais atualmente previstos são os seguintes:
+
+Tabela 6.3 – Mapeamento dos elementos visuais do Capítulo 6
+
+| Elemento | Conteúdo científico principal | Arquivo-fonte |
+|----------|-------------------------------|---------------|
+| Figura 6.1 | Curva de ganho em função da amplitude de entrada no ensaio TMQ002 | `tb_v3_2/results/TMQ002/tmq002_gain_vs_input.svg` |
+| Figura 6.2 | Comparação entre contribuição linear, contribuição cúbica e resposta total no ensaio TMQ003 | `tb_v3_2/results/TMQ003/tmq003_polynomial_response.svg` |
+| Figura 6.3 | Histograma do erro de quantização observado no ensaio TMQ004 | `tb_v3_2/results/TMQ004/tmq004_quantization_histogram.svg` |
+| Figura 6.4 | Dashboard de repetibilidade e saturação do ensaio TMQ010 | `tb_v3_2/results/TMQ010/tmq010_repeatability_dashboard.svg` |
+| Figura 6.5 | Região segura de coeficientes reais sem saturação no ensaio TMQ011 | `tb_v3_2/results/TMQ011/tmq011_safe_region.svg` |
+| Figura 6.6 | Região segura de coeficientes complexos sem saturação no ensaio TMQ012 | `tb_v3_2/results/TMQ012/tmq012_complex_safe_region.svg` |
+| Figura 6.7 | Dashboard de limite operacional, saturação inicial e saturação persistente no ensaio TMQ013 | `tb_v3_2/results/TMQ013/tmq013_operational_limit_dashboard.svg` |
+
+Essa seleção é suficiente para a primeira versão ilustrada do capítulo. Caso, na etapa de acabamento final do TCC, se julgue necessário aprofundar algum aspecto específico, poderão ser acrescentadas figuras complementares derivadas dos relatórios `TMQxxx_final_report.md`, dos arquivos CSV de apoio ou dos dashboards já existentes em `tb_v3_2/results`.
+
+As figuras selecionadas foram associadas diretamente às subseções em que sua interpretação científica é desenvolvida. Dessa forma, a curva de ganho do TMQ002, a resposta polinomial do TMQ003, o histograma de quantização do TMQ004, o dashboard de repetibilidade do TMQ010, os mapas de região segura dos TMQ011 e TMQ012 e o dashboard de limite operacional do TMQ013 passam a atuar como extensões naturais da análise, e não como anexos gráficos desconectados do texto. Essa integração fortalece a rastreabilidade entre cada argumento técnico e a evidência visual correspondente, mantendo o capítulo mais coeso do ponto de vista científico.
+
+6.3 Suíte funcional da arquitetura congelada
+
+Os testes funcionais TC001 a TC010 constituem a base de validação lógica do DPDnano-Lite congelado. Eles foram escritos para responder a uma questão fundamental: a arquitetura implementada em RTL realiza corretamente, no domínio temporal e numérico, o comportamento que lhe foi atribuído durante a etapa de projeto? Para que essa pergunta pudesse ser respondida com rigor, a suíte foi organizada de forma incremental, partindo de cenários elementares de inicialização e avançando em direção a casos progressivamente mais exigentes, incluindo operação não linear, saturação, monitoramento de overflow, estresse contínuo e benchmark de vazão.
+
+Do ponto de vista metodológico, a grande virtude dessa suíte é a rastreabilidade. Cada teste possui uma hipótese operacional simples e diretamente interpretável. Quando um caso passa, sabe-se precisamente qual propriedade funcional foi confirmada; quando falha, sabe-se em qual parte do contrato da arquitetura deve concentrar-se a investigação. Isso torna os TCxxx especialmente adequados para um capítulo de verificação funcional em um TCC, porque permite construir a argumentação experimental de forma cumulativa.
+
+6.3.1 TC001 – Sequência de reset
+
+O teste TC001 foi concebido para verificar o comportamento da arquitetura durante e imediatamente após a condição de reset. A motivação desse ensaio decorre do fato de que, em sistemas síncronos pipeline, o reset não exerce apenas a função de inicialização; ele define a condição de referência a partir da qual todo o comportamento subsequente será interpretado. Caso a arquitetura apresente saídas válidas indevidas, estados residuais ou propagação espúria de dados durante o reset, qualquer resultado posterior torna-se metodologicamente suspeito.
+
+No TC001, o sinal `rst` é mantido ativo por alguns ciclos de clock, enquanto `in_valid` permanece em zero e as entradas de dados são anuladas. Os coeficientes são fixados em uma configuração linear simples, mas nenhum vetor válido é efetivamente injetado no sistema. O que se espera observar é, portanto, a ausência de atividade de saída: `out_valid` deve permanecer inativo e não deve haver indícios de produção indevida de amostras.
+
+Esse teste responde ao “por que” mais básico da verificação: é impossível confiar nos resultados de uma arquitetura pipeline sem antes comprovar que o sistema parte de um estado conhecido. O “para quê” do TC001 é garantir que a linha de base temporal do DPDnano-Lite seja corretamente estabelecida. O “como” é propositalmente simples: a ausência de estímulo válido é usada como filtro para qualquer atividade residual que pudesse denunciar inicialização incorreta.
+
+O resultado esperado é a manutenção de `out_valid = 0` durante o período de observação após a liberação do reset. A passagem desse teste indica que os registradores críticos do pipeline não estão liberando lixo lógico, que o controle de validade não é indevidamente ativado e que a arquitetura respeita a condição de silêncio funcional quando nenhum dado foi aceito. Em termos científicos, TC001 não demonstra desempenho, mas demonstra confiabilidade de inicialização, sem a qual nenhuma outra medida seria interpretável.
+
+6.3.2 TC002 – Entrada nula
+
+O teste TC002 verifica a resposta do sistema quando a entrada válida aplicada à arquitetura é nula. A motivação desse ensaio é confirmar a preservação do ponto de equilíbrio do sistema. Em um predistorcedor digital corretamente implementado, a amostra nula deve permanecer nula ao longo de todo o caminho de processamento, desde que não haja offset, erro de arredondamento acumulado ou comportamento indevido introduzido pelas etapas internas.
+
+Nesse teste, os coeficientes lineares são configurados em uma condição nominal simples, enquanto a entrada complexa é explicitamente definida como zero. Após o enchimento do pipeline, aguarda-se a saída válida correspondente e compara-se o resultado obtido com o vetor de referência `[0, 0]`.
+
+O “por que” do TC002 está na necessidade de demonstrar que a arquitetura não cria energia artificial. O “para quê” é verificar que o datapath não introduz offset digital, vazamento numérico ou assimetria básica no tratamento de zeros. O “como” utiliza exatamente um vetor nulo com `in_valid` ativo, de forma que a arquitetura execute de fato o processamento completo sem que o teste se confunda com a condição de reset do TC001.
+
+Espera-se que a saída permaneça exatamente nula. Quando esse comportamento é confirmado, demonstra-se que a arquitetura preserva coerentemente a origem do espaço de sinais. Essa propriedade é importante não apenas do ponto de vista matemático, mas também de integração sistêmica: um transmissor que injeta componentes espúrias na ausência de estímulo comprometeria qualquer cadeia subsequente de processamento.
+
+6.3.3 TC003 – Ganho linear positivo
+
+O teste TC003 valida o caminho linear principal da arquitetura sob uma excitação de pequena amplitude e polaridade mista entre as componentes I e Q. A motivação desse ensaio é confirmar que o ramo linear implementado por `complex_mult` e integrado ao `dpd_core` preserva corretamente a relação entre entrada e saída quando a contribuição cúbica está desabilitada.
+
+Para isso, o coeficiente linear é fixado em valor unitário aproximado no formato da arquitetura, enquanto os coeficientes cúbicos são anulados. A entrada é composta por uma amostra complexa com parte real positiva e parte imaginária negativa. O teste espera que a saída replique esse vetor dentro de tolerância mínima compatível com a representação Q1.15.
+
+O “por que” do TC003 é simples: antes de validar a não linearidade compensatória, é indispensável demonstrar que a arquitetura se comporta corretamente no regime linear. O “para quê” consiste em comprovar que a contribuição de primeira ordem foi integrada corretamente e que o processamento complexo mantém coerência de sinal entre I e Q. O “como” utiliza uma comparação com tolerância de 1 LSB, o que já incorpora o fato de que o caminho real contém etapas de arredondamento e normalização.
+
+O resultado esperado é a reprodução quase exata da amostra de entrada. A aprovação do TC003 indica que o ramo linear opera corretamente, que a combinação entre coeficiente complexo e amostra complexa não introduz erro macroscópico e que a arquitetura já atende ao contrato mínimo de transmissão linear em pequena escala.
+
+6.3.4 TC004 – Ganho linear com sinal negativo
+
+O TC004 é complementar ao TC003, mas com polaridade invertida na entrada. Sua motivação é verificar se o caminho linear preserva corretamente a aritmética em complemento de dois, especialmente em sinais negativos. Esse teste é importante porque falhas de sinal costumam revelar problemas sutis de extensão de sinal, truncamento inadequado ou interpretação incorreta da largura de palavra.
+
+Os coeficientes permanecem em configuração linear simples, enquanto a entrada é escolhida com parte real negativa e parte imaginária positiva. O comportamento esperado é a reprodução fiel da amostra, novamente dentro de tolerância de 1 LSB.
+
+O “por que” desse teste reside no fato de que arquiteturas em ponto fixo devem ser validadas tanto em magnitude quanto em polaridade. O “para quê” é comprovar que o ramo linear não é apenas numericamente correto para sinais positivos, mas também simétrico quanto ao tratamento de sinais negativos. O “como” retoma a mesma estrutura do TC003, alterando apenas o quadrante do vetor de entrada.
+
+O resultado observado, quando compatível com o esperado, mostra que a aritmética assinada da arquitetura permanece correta em regime linear e que o comportamento do caminho principal não depende artificialmente do sinal do estímulo.
+
+6.3.5 TC005 – Ativação do ramo cúbico
+
+O TC005 é um dos testes conceitualmente mais importantes da suíte funcional, porque ele deixa o domínio puramente linear e exercita explicitamente o termo não linear da arquitetura congelada. A motivação desse ensaio é verificar se o ramo cúbico implementado por `poly_kernel` e `poly_branch` participa corretamente da formação da saída quando o caminho linear é desativado.
+
+No teste, os coeficientes lineares são anulados e o coeficiente cúbico real é configurado em valor máximo positivo. Aplica-se então uma entrada real de amplitude controlada. A saída esperada não é a própria entrada, mas um valor de referência congelado, extraído do comportamento validado da RTL v3.1. Isso é metodologicamente relevante: o teste não compara a arquitetura com uma idealização genérica, mas com um golden reference coerente com a implementação efetivamente congelada.
+
+O “por que” do TC005 está na necessidade de demonstrar que o DPDnano-Lite não é apenas um caminho linear com saturador, mas um sistema que efetivamente gera e pondera termos não lineares. O “para quê” é confirmar a integridade do ramo cúbico como contribuição funcional autônoma. O “como” consiste em isolar esse ramo, removendo a contribuição linear, e comparar a saída com um valor conhecido.
+
+Espera-se que a saída coincida com a referência congelada. Quando isso ocorre, tem-se uma evidência forte de que a geração de `|x|^2`, a formação de `x|x|^2`, a ponderação pelo coeficiente cúbico e a reescala do ramo foram integradas corretamente. Em termos científicos, esse teste é o primeiro a provar que a arquitetura implementa de fato a lógica polinomial que a fundamenta.
+
+6.3.6 TC006 – Saturação positiva
+
+O TC006 verifica o comportamento da arquitetura quando a saída tende a ultrapassar o limite superior da faixa dinâmica representável. A motivação desse teste está na necessidade de confirmar a ação coordenada entre `rounding` e `saturator`, sobretudo em um cenário extremo no qual linear e ramo cúbico contribuem simultaneamente para aumentar a amplitude da saída.
+
+Nesse ensaio, a entrada é colocada próxima ao máximo positivo e os coeficientes linear e cúbico são configurados em valores elevados. O objetivo não é observar uma resposta “natural” do sistema, mas deliberadamente forçá-lo à região de clip. O resultado esperado é que a saída real seja limitada ao maior valor representável em Q1.15, sem wrap-around e sem corrupção da componente imaginária.
+
+O “por que” do TC006 é garantir segurança numérica. O “para quê” é comprovar que excessos de amplitude não se transformam em inversões espúrias de sinal. O “como” utiliza uma configuração agressiva de entrada e coeficientes, precisamente para tornar inevitável a condição de saturação.
+
+Quando a saída é limitada corretamente em `0x7FFF`, demonstra-se que a política de saturação superior foi implementada com correção. Esse resultado é central para a robustez do DPDnano-Lite, pois mostra que a arquitetura permanece operacional mesmo quando submetida a estímulos além da faixa segura.
+
+6.3.7 TC007 – Saturação negativa
+
+O TC007 é o análogo do TC006 para a região inferior da faixa dinâmica. Sua motivação é verificar se a limitação inferior em complemento de dois é realizada com a mesma robustez observada no clip positivo. Em sistemas fixos assinados, o extremo negativo frequentemente exige atenção especial, pois sua representação assimétrica pode revelar defeitos que não aparecem no extremo positivo.
+
+O teste aplica uma entrada fortemente negativa, mantendo coeficientes elevados para estimular a extrapolação inferior. O resultado esperado é a saturação da componente real em `-0x8000`, preservando coerência com a política de limitação definida na arquitetura.
+
+O “por que” é demonstrar robustez bilateral da estratégia de saturação. O “para quê” é garantir que o sistema permaneça previsível em ambos os extremos da representação numérica. O “como” reproduz a estrutura do TC006, porém deslocando o cenário para o limite inferior.
+
+Quando aprovado, o TC007 mostra que a arquitetura trata de forma correta o pior caso negativo da aritmética assinada. Isso fortalece a confiança nos resultados obtidos nos testes seguintes, nos quais eventos de overflow e saturação podem surgir em contexto dinâmico mais complexo.
+
+6.3.8 TC008 – Flags de overflow
+
+Embora documentos auxiliares antigos tenham associado o TC008 a “IQ simultaneous”, o testbench efetivamente utilizado na versão congelada valida as flags de overflow. Esse ponto é importante para a fidelidade documental do Capítulo 6. O ensaio injeta simultaneamente entradas e coeficientes agressivos nas duas componentes I/Q, forçando a arquitetura a operar em uma condição propensa a saturação e verificando se os sinais `overflow`, `overflow_re` e `overflow_im` refletem corretamente o evento.
+
+O “por que” do TC008 está no fato de que, em arquiteturas fixas, a observabilidade do overflow é uma propriedade de verificação tão importante quanto a própria saturação da saída. O “para quê” é assegurar que o sistema não apenas limita a amplitude final, mas também informa de maneira rastreável que a limitação ocorreu. O “como” emprega uma configuração extrema de entrada e coeficientes complexos, seguida da checagem explícita das flags.
+
+O resultado esperado é a ativação coerente da flag global de overflow e das flags por componente de acordo com o padrão imposto pelo caso de teste. Esse ensaio acrescenta um nível de diagnóstica à validação da arquitetura, pois confirma que condições de extrapolação de faixa podem ser monitoradas de forma objetiva durante a simulação e em futuras variantes instrumentadas do sistema.
+
+6.3.9 TC009 – Campanha incremental de estresse funcional
+
+O TC009 deve ser compreendido como uma campanha incremental de estresse funcional composta por quatro testbenches complementares: `TC009A_CONT_STRESS_REGRESS`, `TC009B_TORTURE`, `TC009C_NIGHTMARE` e `TC009D_APOCALYPSE`. Em conjunto, esses ensaios fazem a transição entre a validação funcional convencional e a investigação de robustez temporal e operacional do pipeline sob condições progressivamente mais severas.
+
+O “por que” dessa campanha é particularmente forte. Uma arquitetura pipeline pode passar em testes pontuais e ainda assim falhar quando submetida a fluxo contínuo, duração prolongada, saturação extrema ou mudanças agressivas de regime operacional. O “para quê” do conjunto TC009 é demonstrar que o DPDnano-Lite preserva integridade de fluxo, coerência temporal, ausência de estados ilegais e rastreabilidade de overflow mesmo quando o cenário experimental ultrapassa o regime funcional básico. O “como” consiste em aumentar gradualmente a severidade dos estímulos, mantendo como critérios centrais a correspondência entre vetores transmitidos e recebidos, a medição da latência e a ausência de X/Z nos sinais de saída.
+
+O `TC009A - Continuous Stress Regression` constitui a base dessa campanha. Ele injeta 200 vetores pseudoaleatórios consecutivos e mede diretamente a latência observada entre a primeira aceitação de entrada e a primeira saída válida. Além disso, contabiliza vetores transmitidos, vetores recebidos, eventos de overflow e possíveis anomalias lógicas na saída. Seu papel metodológico é verificar se o pipeline se mantém íntegro sob transmissão contínua curta, porém suficiente para revelar desalinhamentos, perda de amostras ou bolhas indevidas.
+
+O `TC009B_TORTURE - Long Duration Stress Test` eleva o nível de exigência ao prolongar significativamente a duração da campanha e observar se a estabilidade temporal permanece preservada ao longo de grande número de ciclos. Aqui, a ênfase deixa de ser apenas a latência inicial e passa a incluir a sustentabilidade do funcionamento contínuo sem degradação lógica acumulada. Esse ensaio é importante porque certas falhas de sincronismo ou controle só emergem depois de longas sequências de operação.
+
+O `TC009C_NIGHTMARE - Maximum Saturation Stress Test` avança mais um passo ao combinar transmissão contínua com cenário de saturação máxima. Nesse caso, a pergunta experimental deixa de ser apenas se o pipeline entrega todas as amostras e passa a incluir se ele continua determinístico e livre de estados inválidos mesmo sob regime extremo de excursão numérica. Trata-se, portanto, de um teste que aproxima a validação funcional de uma leitura de robustez numérica e operacional.
+
+Por fim, o `TC009D_APOCALYPSE` representa o grau máximo de severidade dentro da família TC009. O testbench trabalha com campanha massiva, acompanhamento explícito de rajadas de overflow e mudanças mais agressivas nas condições de operação, funcionando como um estresse sistêmico de fronteira para a arquitetura congelada. Seu valor científico reside em mostrar que a robustez do DPDnano-Lite não foi inferida apenas a partir de campanhas curtas, mas também confrontada com regimes experimentais muito mais duros.
+
+Dentro dessa campanha incremental, o resultado funcional mínimo esperado é sempre a recepção integral dos vetores transmitidos, a ausência de X/Z na saída e a preservação da latência fixa prevista pela arquitetura, ao menos nas variantes diretamente dedicadas à sua medição. Quando esse comportamento é confirmado, obtém-se uma evidência experimental de que o pipeline foi corretamente fechado não apenas em regime nominal, mas também sob uma família crescente de testes de estresse.
+
+6.3.10 TC010 – Benchmark de throughput
+
+O TC010 fecha a suíte funcional observando a arquitetura sob a ótica de desempenho de entrega sustentada. Seu foco não é a corretude de um vetor específico, mas a capacidade do pipeline de aceitar e produzir grande número de amostras em fluxo contínuo. No testbench congelado, um milhão de amostras é transmitido, e o critério essencial é a equivalência entre o número de vetores enviados e recebidos.
+
+O “por que” do TC010 é separar a noção de corretude da noção de capacidade operacional. Uma arquitetura pode estar logicamente correta e ainda assim apresentar gargalos sob carga prolongada. O “para quê” é demonstrar que o DPDnano-Lite mantém vazão efetiva compatível com sua filosofia pipeline. O “como” utiliza uma longa sequência determinística de vetores, contadores de transmissão e recepção e uma condição final de aprovação baseada na taxa de entrega.
+
+Espera-se entrega integral dos vetores transmitidos. Quando o teste passa, demonstra-se que a organização pipeline não apenas define uma latência estável, mas também sustenta vazão próxima de uma amostra por ciclo após o enchimento inicial. Isso é altamente relevante para aplicações em processamento digital em tempo real.
+
+6.3.11 Síntese crítica da suíte TCxxx
+
+Em conjunto, os testes TC001 a TC010 formam uma narrativa experimental coerente. Os primeiros casos asseguram inicialização e linearidade básica; os casos intermediários demonstram ativação da não linearidade e robustez sob saturação; os casos mais avançados comprovam observabilidade de overflow, latência determinística e capacidade de transmissão contínua em larga escala. A passagem dessa suíte não significa que toda propriedade concebível da arquitetura tenha sido exaurida, mas significa que o contrato funcional da versão congelada foi coberto de forma abrangente e rastreável.
+
+Sob a perspectiva científica do trabalho, a principal contribuição dessa suíte é estabelecer a confiabilidade comportamental da arquitetura congelada. Em vez de depender de observações isoladas em formas de onda, a validação funcional passa a ser apoiada em casos de teste objetivos, autoavaliáveis e mutuamente complementares. Isso fortalece a argumentação do TCC e fornece a base necessária para interpretar os resultados das métricas qualitativas apresentadas nas seções seguintes.
+
+6.4 Caracterização qualitativa da arquitetura
+
+Enquanto a suíte TCxxx demonstra a corretude funcional mínima da arquitetura congelada, a suíte TMQ001 a TMQ010 amplia substancialmente o alcance da análise experimental. Esses testes foram concebidos para examinar propriedades de natureza qualitativa e quantitativa que não aparecem de forma explícita em verificações clássicas PASS/FAIL. Em vez de perguntar apenas se a arquitetura funciona, esses ensaios investigam como ela funciona ao longo da faixa dinâmica, qual o comportamento do ganho, quão grande é o erro numérico introduzido pelo ponto fixo, quão estável é sua temporização, quão repetível é a resposta sob estresse e quão simétrica é a transformação complexa implementada.
+
+6.4.1 TMQ001 – Caracterização da faixa dinâmica
+
+O TMQ001 tem como finalidade mapear a resposta global da arquitetura ao longo de ampla faixa de amplitudes de entrada. O “por que” desse teste está no fato de que um predistorcedor digital não deve ser analisado apenas em poucos pontos discretos de operação, mas em uma faixa suficientemente extensa para revelar tanto o comportamento em baixa amplitude quanto a aproximação dos limites superiores do sistema.
+
+O ensaio utiliza 131072 amostras, com coeficientes reais `coef1 = 0,5` e `coef3 = 0,125`, e mede simultaneamente latência, taxa de entrega e incidência de overflow. O resultado obtido foi particularmente importante: taxa de entrega de 100%, latência observada de 5 ciclos e zero eventos de overflow ao longo de toda a campanha. Isso mostra que, para essa configuração nominal, a arquitetura opera integralmente dentro de uma região segura de faixa dinâmica.
+
+Do ponto de vista científico, esse teste revela que o DPDnano-Lite possui comportamento estável e previsível em ampla excursão de amplitudes quando excitado em regime moderado. Ele também serve como base para comparar testes posteriores de linearidade, resposta polinomial e limites operacionais.
+
+6.4.2 TMQ002 – Linearidade de ganho
+
+O TMQ002 foi formulado para avaliar especificamente o comportamento do ganho quando o ramo cúbico é desabilitado. Com `coef1 = 0,5` e `coef3 = 0`, o ensaio examina 512 níveis de amplitude, repetidos 8 vezes cada, totalizando 4096 amostras. O propósito é verificar se a arquitetura responde como um bloco essencialmente linear, com erro desprezível ao longo da faixa testada.
+
+O “por que” desse teste está em separar, metodologicamente, o comportamento linear do comportamento não linear. O “para quê” é comprovar que a contribuição de primeira ordem não apresenta distorções espúrias. O “como” consiste em varrer sistematicamente a amplitude de entrada e comparar o ganho observado com o ganho teórico esperado.
+
+Os resultados indicaram 512 saídas estáveis, 512 pontos aprovados quanto ao ganho, zero falhas, erro absoluto máximo nulo e nenhuma ocorrência de overflow. Isso demonstra que a arquitetura reproduz de forma extremamente fiel o regime linear imposto pelo teste. Tal evidência é importante porque mostra que a base linear do predistorcedor não introduz anomalias por si só; eventuais comportamentos não lineares observados em outros testes podem, portanto, ser atribuídos deliberadamente ao ramo cúbico ou a condições de saturação. A Figura 6.1 reúne a curva de ganho em função da amplitude de entrada para esse ensaio.
+
+[Inserir Figura 6.1 aqui: `tb_v3_2/results/TMQ002/tmq002_gain_vs_input.svg`]
+Figura 6.1 – Ganho medido em função da amplitude de entrada no ensaio TMQ002, evidenciando preservação do regime linear com ganho constante.
+
+6.4.3 TMQ003 – Resposta polinomial
+
+O TMQ003 investiga a manifestação explícita do termo polinomial quando o coeficiente cúbico é habilitado em intensidade significativa. Com `coef1 = 0,5` e `coef3 = 0,25`, o teste percorre 512 níveis de amplitude, novamente com 8 repetições por nível. O objetivo é observar a superposição entre a contribuição linear e a contribuição cúbica e medir como essa combinação se traduz na amplitude de saída.
+
+O “por que” do TMQ003 é fundamental para um trabalho sobre DPD: não basta provar que o ramo cúbico existe em um ponto isolado, como no TC005; é necessário demonstrar como sua contribuição cresce ao longo da faixa de operação. O “para quê” é caracterizar a resposta não linear dominante da arquitetura congelada. O “como” utiliza a varredura de amplitude e contabiliza as magnitudes máximas das parcelas linear, polinomial e total.
+
+Os resultados mostraram `max_linear_abs = 12288`, `max_poly_abs = 3456` e `max_output_abs = 15744`, sem qualquer overflow. Isso revela que, nas condições de teste, o termo cúbico acrescenta parcela observável e relevante à resposta total, porém ainda dentro de uma região segura da faixa dinâmica. Em termos científicos, o TMQ003 quantifica a intensidade relativa do ramo não linear e confirma que ele não é meramente nominal, mas efetivamente capaz de modificar o sinal de saída de modo mensurável. A Figura 6.2 compara visualmente as parcelas linear, cúbica e total da resposta.
+
+[Inserir Figura 6.2 aqui: `tb_v3_2/results/TMQ003/tmq003_polynomial_response.svg`]
+Figura 6.2 – Separação entre contribuição linear, contribuição cúbica e saída total no ensaio TMQ003, evidenciando a ação do ramo polinomial ao longo da variação de amplitude.
+
+6.4.4 TMQ004 – Erro de quantização
+
+O TMQ004 foi concebido para medir o impacto da quantização no comportamento da arquitetura. Seu “por que” decorre do fato de que a implementação em ponto fixo é uma decisão central do DPDnano-Lite; portanto, é necessário avaliar explicitamente quanto erro ela introduz em relação a uma referência idealizada. O “para quê” é quantificar o erro médio, o erro quadrático acumulado e o erro máximo em unidades de LSB.
+
+O teste utiliza 2048 níveis com 4 repetições cada, totalizando 8192 amostras. Os coeficientes foram escolhidos em valores fracionários representativos (`coef1 ≈ 0,37`, `coef3 ≈ 0,11`), precisamente para expor efeitos de arredondamento. O resumo do ensaio mostrou erro máximo absoluto de aproximadamente 0,499 LSB, concentração dominante do histograma no bin central e ausência completa de overflow.
+
+Esse resultado é muito expressivo do ponto de vista científico. Um erro máximo abaixo de 0,5 LSB indica que a política de arredondamento e reescala da arquitetura é compatível com o comportamento esperado de um sistema fixo bem projetado. O teste, portanto, não apenas confirma a existência de erro de quantização, mas demonstra que ele se mantém dentro de patamar compatível com uma implementação numérica disciplinada. A Figura 6.3 apresenta o histograma do erro de quantização, evidenciando sua concentração ao redor do bin central.
+
+[Inserir Figura 6.3 aqui: `tb_v3_2/results/TMQ004/tmq004_quantization_histogram.svg`]
+Figura 6.3 – Histograma do erro de quantização em LSB no ensaio TMQ004, mostrando a concentração estatística do erro em torno do centro da distribuição.
+
+6.4.5 TMQ005 – Precisão numérica complexa
+
+O TMQ005 aprofunda a análise do TMQ004, agora considerando coeficientes complexos e métricas de erro separadas para as componentes real, imaginária e magnitude. O “por que” desse teste é que uma arquitetura de DPD complexa não pode ser julgada apenas por erros em um eixo escalar; é necessário quantificar seu comportamento bidimensional.
+
+O teste foi realizado com 3072 níveis e 4 repetições por nível, totalizando 12288 amostras. Os coeficientes complexos escolhidos ativam simultaneamente contribuições real e imaginária no ramo linear e no cúbico. Os resultados mostraram erro máximo de aproximadamente 1,5 LSB por componente, erro máximo em magnitude de cerca de 1,57 LSB e erro RMS percentual em magnitude inferior a 0,007%.
+
+Isso revela que, mesmo sob interação complexa entre coeficientes reais e imaginários, a arquitetura preserva alta fidelidade numérica. Em termos de engenharia eletrônica, esse resultado é particularmente importante porque mostra que a simplificação da arquitetura para FPGA compacta não implicou degradação numérica incompatível com o uso prático do sistema.
+
+6.4.6 TMQ006 – Caracterização temporal do pipeline
+
+O TMQ006 mede quantitativamente a latência e a vazão do pipeline. Embora a latência de 5 ciclos já apareça nos testes funcionais, aqui ela é tratada como métrica sistematicamente caracterizada, e não apenas como condição de aprovação pontual. O “por que” do teste é transformar uma propriedade arquitetural prevista em uma grandeza estatisticamente observada.
+
+O ensaio utilizou 16384 amostras com coeficientes complexos moderados. Os resultados confirmaram `latency_min = 5`, `latency_max = 5`, `latency_avg = 5`, além de espaçamento unitário entre amostras na entrada e na saída. A vazão observada foi de aproximadamente `0,99939` vetores por ciclo, o que, na prática, corresponde à operação contínua com uma amostra entregue a cada ciclo após o enchimento do pipeline.
+
+Esse resultado é de grande valor para o Capítulo 6 porque conecta diretamente a estrutura pipeline discutida no Capítulo 4 à evidência experimental. A previsibilidade temporal deixa de ser apenas argumento arquitetural e passa a ser propriedade efetivamente medida. A Tabela 6.2 resume as métricas temporais mais relevantes observadas em TC009, TC010 e TMQ006.
+
+Tabela 6.2 – Resumo das principais métricas temporais e de vazão
+
+| Teste | Amostras transmitidas | Amostras recebidas | Latência observada | Taxa de entrega | Interpretação principal |
+|-------|------------------------|--------------------|--------------------|-----------------|-------------------------|
+| TC009A – Continuous Stress Regression | 200 | 200 | 5 ciclos | 100% | Confirma latência fixa e integridade do fluxo contínuo na entrada da campanha incremental TC009 |
+| TC010 – Performance Benchmark | 1000000 | 1000000 | Fluxo contínuo sustentado | 100% | Demonstra capacidade de entrega sustentada em campanha massiva |
+| TMQ006 – Pipeline Timing Characterization | 16384 | 16384 | mínima = 5, máxima = 5, média = 5 | 100% | Quantifica formalmente latência fixa e vazão próxima de uma amostra por ciclo |
+
+6.4.7 TMQ007 – Estabilidade
+
+O TMQ007 foi concebido para investigar a estabilidade operacional do sistema sob longa sequência de amostras. O “por que” desse ensaio está em reconhecer que arquiteturas síncronas podem exibir falhas raras, glitches, travamentos ou repetições indevidas apenas após grande número de ciclos. O “para quê” é verificar se o DPDnano-Lite preserva coerência lógica durante execução prolongada.
+
+Com 100000 amostras e coeficientes complexos moderados, o teste monitorou explicitamente `xz_errors`, `logical_nan_errors`, `glitch_errors`, `stall_errors`, `oscillation_flags` e o comprimento máximo de sequências idênticas na saída. Todos esses indicadores permaneceram nulos, e o maior comprimento de repetição de saída foi igual a 1.
+
+Esse resultado mostra que a arquitetura não apresenta indícios de oscilação interna, travamento, metastabilidade observável em simulação ou repetição artificial de amostras. Para um sistema pipeline em FPGA, isso constitui uma evidência forte de robustez temporal e operacional.
+
+6.4.8 TMQ008 – Caracterização estatística
+
+O TMQ008 desloca o foco da análise para estatísticas globais do sinal de saída. Seu “por que” é que um predistorcedor digital não deve ser analisado apenas vetorialmente, mas também como transformador estatístico de processos de entrada. O “para quê” é investigar média, variância, desvio padrão, amplitude mínima e máxima e distribuição aproximada das amostras de saída.
+
+Em 100000 amostras, o teste produziu médias próximas de zero, variâncias praticamente iguais entre as componentes real e imaginária e histogramas equilibrados. A semelhança entre estatísticas de I e Q é relevante porque sugere que a arquitetura preserva simetria global entre as componentes do processamento complexo.
+
+Do ponto de vista científico, esse ensaio é importante porque reforça a interpretação de que o DPDnano-Lite não introduz viés estatístico relevante nem assimetria macroscópica entre os canais I/Q em regime nominal.
+
+6.4.9 TMQ009 – Simetria
+
+O TMQ009 examina a resposta da arquitetura a pares de estímulos simétricos. O “por que” desse teste está na necessidade de verificar se a implementação em ponto fixo preserva, com erro controlado, relações de simetria esperadas do modelo matemático. O “para quê” é quantificar o afastamento dessa simetria em LSB e em unidades reais.
+
+Com 8192 pares de amostras, os resultados mostraram erro máximo absoluto de simetria de apenas 1 LSB por componente, equivalente a cerca de `3,05e-5` em valor real. Isso indica que a arquitetura preserva a simetria esperada com erro mínimo, compatível com os limites da quantização.
+
+Em termos de análise qualitativa, o TMQ009 é particularmente valioso porque demonstra que o DPDnano-Lite não apresenta assimetria estrutural significativa escondida pelo simples resultado PASS/FAIL.
+
+6.4.10 TMQ010 – Repetibilidade sob saturação e estresse
+
+O TMQ010 avalia repetibilidade da resposta em regime severo, incluindo saturação. O “por que” desse teste é verificar se a arquitetura, quando submetida repetidamente ao mesmo padrão exigente, produz sempre exatamente a mesma sequência de saída. O “para quê” é demonstrar determinismo forte, mesmo quando o sistema opera próximo ou além da faixa linear.
+
+O ensaio executou 1000 repetições de uma sequência de 1024 amostras, totalizando 1024000 vetores. Os resultados foram particularmente robustos: `mismatch_count = 0`, repetibilidade de 100%, embora com 409000 saídas saturadas e taxa de overflow próxima de 40%.
+
+Essa combinação é cientificamente muito significativa. Ela mostra que saturação frequente não implica comportamento errático. Ao contrário, mesmo em regime severo, a arquitetura permaneceu completamente determinística. Isso fornece forte argumento a favor da previsibilidade do DPDnano-Lite. A Figura 6.4 sintetiza os resultados de repetibilidade e taxa de saturação desse ensaio.
+
+[Inserir Figura 6.4 aqui: `tb_v3_2/results/TMQ010/tmq010_repeatability_dashboard.svg`]
+Figura 6.4 – Dashboard do ensaio TMQ010, reunindo repetibilidade, ocorrência de saturação e estatísticas de overflow sob estresse repetitivo.
+
+6.4.11 Síntese crítica da suíte TMQ001–TMQ010
+
+Em conjunto, os testes TMQ001 a TMQ010 demonstram que a arquitetura congelada do DPDnano-Lite não é apenas funcionalmente correta, mas também numericamente disciplinada, temporalmente estável, estatisticamente coerente e deterministicamente repetível. Esses resultados fornecem base sólida para afirmar que a proposta não se limita a um protótipo lógico, mas alcança um nível de verificabilidade compatível com um estudo experimental sério em FPGA.
+
+6.5 Sensibilidade a coeficientes e limites operacionais
+
+Os testes TMQ011, TMQ012 e TMQ013 representam a camada mais analítica da campanha experimental. Eles foram criados para responder a perguntas que extrapolam a validação funcional imediata: qual é a região segura de coeficientes sem saturação? Como essa região muda quando coeficientes e entradas são complexos? Em que ponto a arquitetura começa a entrar de forma persistente em saturação quando a amplitude cresce? Essas perguntas são particularmente relevantes porque conectam a implementação digital concreta aos limites matemáticos e operacionais do sistema.
+
+6.5.1 TMQ011 – Sensibilidade aos coeficientes reais
+
+O TMQ011 foi proposto para demonstrar matematicamente e experimentalmente a região válida de coeficientes reais sem saturação. O “por que” desse teste nasce da necessidade de transformar uma percepção qualitativa em um mapa operacional objetivo: dado um intervalo de entrada, quais combinações de `coef1` e `coef3` ainda mantêm a saída dentro da faixa representável?
+
+O teste percorreu 4225 combinações de coeficientes reais e classificou cada combinação como segura ou insegura. A métrica principal foi a incidência de saturação sob os vetores de excitação definidos no ensaio. O resultado mostrou 3105 combinações seguras e 1120 inseguras, com razão de segurança de aproximadamente 73,49%.
+
+Esse teste é cientificamente importante por dois motivos. Primeiro, ele mostra que a região segura não é trivial nem marginal; há espaço operacional significativo para escolha dos coeficientes. Segundo, ele demonstra que esse espaço não cobre todo o domínio nominalmente representável, o que significa que a arquitetura impõe restrições reais sobre a parametrização admissível quando se deseja evitar saturação.
+
+O melhor caso seguro registrado apresentou `coef1 = -1,0` e `coef3 ≈ 0,99997`, com margem de 20153 LSB, o que sugere que certas combinações extremas ainda podem permanecer seguras dependendo da interação entre os termos do modelo e do conjunto de estímulos adotado. Isso é um resultado interessante, porque mostra que a noção intuitiva de “coeficiente grande implica necessariamente saturação” não é universal; o sinal, a fase e a estrutura do termo polinomial importam.
+
+6.5.2 TMQ012 – Sensibilidade a coeficientes complexos
+
+O TMQ012 estende a ideia do TMQ011 para o domínio complexo. Aqui, o “por que” do teste é ainda mais forte: em uma arquitetura I/Q, não basta conhecer limites em coeficientes reais; é necessário verificar como magnitudes e fases complexas modificam a região segura. O “para quê” é mapear a admissibilidade operacional quando linear e ramo cúbico possuem coeficientes complexos e quando as entradas também percorrem diferentes fases.
+
+O ensaio avaliou 81 combinações principais de magnitudes, 5184 pares de fase de coeficientes e mais de 1,4 milhão de vetores de entrada. O resultado final apontou 42 combinações seguras e 39 inseguras, com razão de segurança de cerca de 51,85%. Esse número é particularmente revelador: ao migrar do caso real para o complexo, a fronteira entre seguro e inseguro torna-se mais estreita e dependente da geometria fasorial do problema. As Figuras 6.5 e 6.6 explicitam visualmente essa transição, comparando o mapa de região segura do TMQ011 com o mapa correspondente ao TMQ012.
+
+[Inserir Figura 6.5 aqui: `tb_v3_2/results/TMQ011/tmq011_safe_region.svg`]
+Figura 6.5 – Região observada de coeficientes reais sem saturação no ensaio TMQ011, para entrada real em varredura completa na faixa Q1.15.
+
+[Inserir Figura 6.6 aqui: `tb_v3_2/results/TMQ012/tmq012_complex_safe_region.svg`]
+Figura 6.6 – Região observada de coeficientes complexos sem saturação no ensaio TMQ012, considerando varredura geométrica de magnitudes e fases.
+
+O melhor caso seguro encontrado correspondeu a `|c1| = 0,125` e `|c3| = 0,875`, com margem zero em LSB, isto é, exatamente na fronteira observável da região sem saturação. Cientificamente, esse ponto é rico em significado, porque evidencia que a arquitetura pode operar no limite da faixa sem ainda apresentar saturação formal, mas sem margem adicional. Isso oferece uma interpretação muito útil para o TCC: o limite operacional não é apenas uma linha de “passa/falha”, mas uma fronteira com graus de folga distintos.
+
+6.5.3 TMQ013 – Estresse de limite operacional
+
+O TMQ013 foi concebido como teste de estresse em amplitude para identificar, de forma progressiva, o ponto em que a arquitetura deixa a região segura e entra em saturação. Diferentemente dos testes anteriores, que mapeiam regiões de coeficientes, o TMQ013 fixa os coeficientes e varre amplitudes crescentes. O “por que” desse teste é traduzir a noção de limite operacional em um critério experimental diretamente legível.
+
+Foram utilizados 48 níveis de amplitude com 256 amostras por nível. Os coeficientes aplicados foram complexos moderadamente agressivos, compatíveis com um cenário realista de estresse. O resumo do teste mostrou taxa de segurança de 88,54%, primeira saturação no nível 41, primeira saturação persistente no nível 44, pior nível ainda seguro igual a 40 e amplitude segura máxima de aproximadamente `0,828125`, enquanto a primeira saturação apareceu em aproximadamente `0,845703125`.
+
+Esse resultado é extremamente útil do ponto de vista científico e didático. Em vez de apenas dizer que “a arquitetura satura em níveis altos”, o TMQ013 fornece um limiar observável e quantificado. Mais ainda, ele distingue entre saturação pontual e saturação persistente. Essa distinção é importante porque um sistema pode tolerar eventos isolados de clip sem necessariamente entrar em regime crônico de distorção severa. Ao separar a primeira saturação da primeira saturação persistente, o teste introduz uma leitura mais madura do comportamento do sistema. A Figura 6.7 apresenta o dashboard do TMQ013, destacando o pior nível seguro, a primeira saturação e a primeira saturação persistente.
+
+[Inserir Figura 6.7 aqui: `tb_v3_2/results/TMQ013/tmq013_operational_limit_dashboard.svg`]
+Figura 6.7 – Dashboard do ensaio TMQ013, destacando o pior nível ainda seguro, a primeira saturação e o início da saturação persistente.
+
+O `stress_score = 31,25` e o comprimento máximo de sequência persistente de saturação igual a 1024 amostras reforçam que, acima de certo patamar de entrada, o sistema deixa de operar em região confortável e passa a regime de compressão severa. Para fins de redação do Capítulo 6, esse teste será especialmente útil para discutir limites do projeto e margens práticas de operação.
+
+6.5.4 Interpretação conjunta dos testes avançados
+
+Tomados em conjunto, TMQ011, TMQ012 e TMQ013 fornecem uma visão de segunda ordem sobre a arquitetura. Os testes funcionais TCxxx e as métricas qualitativas TMQ001–TMQ010 demonstram que a arquitetura é correta, estável e previsível. Os testes TMQ011–TMQ013 acrescentam algo diferente: eles mostram onde essa previsibilidade começa a encontrar fronteiras impostas pela faixa dinâmica, pela escolha dos coeficientes e pela natureza complexa do sinal.
+
+Essa camada de análise é particularmente valiosa para um trabalho acadêmico, porque transforma a avaliação do DPDnano-Lite de mera demonstração de funcionamento em investigação de limites. Isso eleva a qualidade científica do capítulo, pois passa-se a discutir não apenas desempenho nominal, mas também margem operacional, sensibilidade paramétrica e transição entre região segura e região de saturação.
+
+6.6 Síntese crítica dos resultados
+
+Os resultados obtidos ao longo deste capítulo permitem concluir que a arquitetura DPDnano-Lite apresenta coerência experimental em múltiplos níveis. No nível funcional, a suíte TC001 a TC010 demonstrou que o sistema inicializa corretamente, preserva a resposta esperada em regime linear, ativa adequadamente o ramo cúbico, responde de forma robusta a condições de saturação, sinaliza overflow de maneira rastreável e mantém latência e vazão compatíveis com a estratégia pipeline adotada. No nível qualitativo, a suíte TMQ001 a TMQ010 mostrou que essa corretude funcional é acompanhada por disciplina numérica, estabilidade temporal, coerência estatística, simetria adequada e repetibilidade completa, inclusive sob condições severas.
+
+Os testes avançados TMQ011 a TMQ013 acrescentaram uma dimensão adicional à análise, ao revelar que o comportamento previsível da arquitetura se mantém dentro de regiões operacionais identificáveis e quantificáveis, mas encontra fronteiras concretas quando coeficientes e amplitudes se aproximam dos limites impostos pela implementação em ponto fixo. Essa constatação é particularmente importante porque desloca a discussão do simples “funciona” para uma interpretação mais madura, centrada em margens de segurança, sensibilidade paramétrica e critérios de operação admissível.
+
+Sob a ótica de um trabalho de engenharia eletrônica, essa combinação entre validação funcional, caracterização qualitativa e investigação de limites representa um resultado sólido. Ela demonstra que o DPDnano-Lite não é apenas uma arquitetura conceitualmente plausível, mas um sistema efetivamente implementado, verificável e suficientemente bem caracterizado para sustentar conclusões técnicas consistentes. Ao mesmo tempo, os resultados deixam claro que a simplicidade e o foco em FPGA compacta, que constituem virtudes centrais da proposta Lite, também definem o contorno dentro do qual a arquitetura opera com maior conforto.
+
+Em síntese, o Capítulo 6 consolida a evidência experimental do trabalho. A articulação entre os testes TCxxx e TMQxxx mostra que a proposta atende aos objetivos estabelecidos para esta pesquisa: desenvolver uma arquitetura compacta de predistorção digital, compatível com FPGA de recursos limitados, verificável com rigor e capaz de apresentar comportamento funcional e numérico coerente. A partir dessa base, o capítulo seguinte poderá concentrar-se nas conclusões finais do trabalho, nas limitações remanescentes e nas possibilidades de evolução futura da arquitetura DPDnano-Lite.
