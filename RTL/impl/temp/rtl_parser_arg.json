@@ -1,0 +1,132 @@
+{
+    "Device": "GW1NSR-4C",
+    "Files": [
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/command_cdc_hw_dpd.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/input_dual_clock_bsram.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/input_memory_dualread_256x32.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/output_dual_clock_bsram.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/output_memory_dualport_256x32.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/protocol_controller_hw009_dpd.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/status_cdc_hw_dpd.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/uart_rx_27m_115200.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/uart_tx_27m_115200.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/coeff_bank.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/coeff_pkg.vh",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/complex_add.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/complex_mult.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/config.vh",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/fixed_mult.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/iq_delay.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/mult_generic.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/poly_branch.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/poly_kernel.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/rounding.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/saturator.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/saturator2.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/gowin_pllvr/gowin_pllvr.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/checkpoint_cdc_hw024_dpd.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/command_cdc_hw024_dpd.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpd_stress_engine_hw024.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/protocol_controller_hw024_dpd.v",
+            "Type": "verilog"
+        },
+        {
+            "Path": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/status_cdc_hw024_dpd.v",
+            "Type": "verilog"
+        }
+    ],
+    "IncludePath": [
+    ],
+    "LoopLimit": 2000,
+    "ResultFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/impl/temp/rtl_parser.result",
+    "Top": "dpdnano_hw024_dpd_top",
+    "VerilogStd": "verilog_2001",
+    "VhdlStd": "vhdl_93"
+}

@@ -1,0 +1,277 @@
+`timescale 1ns/1ps
+`include "../rtl_v3_1/config.vh"
+
+module tb_dpdnano_lite_TC009_Apocalypse;
+
+// ============================================================
+// TC009D - Apocalypse test - DPDnano-Lite RTL Validation Suite
+// ============================================================
+
+localparam integer NUM_SAMPLES = 300000;
+localparam integer TIMEOUT_CYCLES = NUM_SAMPLES*20;
+
+reg clk=0;
+always #5 clk=~clk;
+
+reg rst,in_valid;
+reg signed [`DATA_WIDTH-1:0] din_re,din_im;
+reg signed [`COEF_WIDTH-1:0] coef1_re,coef1_im,coef3_re,coef3_im;
+
+wire out_valid;
+wire signed [`DATA_WIDTH-1:0] dout_re,dout_im;
+wire overflow,overflow_re,overflow_im;
+
+integer tx,rx;
+integer ovf,ovfr,ovfi;
+integer cycle_cnt,timeout;
+integer first_input_cycle,first_output_cycle,pipeline_latency;
+reg first_input_seen,first_output_seen;
+
+reg [31:0] lfsr;
+
+// Statistics
+integer coef_updates;
+integer coef_set0;
+integer coef_set1;
+integer coef_set2;
+integer coef_random;
+
+integer overflow_burst;
+integer max_overflow_burst;
+
+real delivery_rate;
+real overflow_rate;
+
+dpd_core dut(
+ .clk(clk),.rst(rst),.in_valid(in_valid),
+ .din_re(din_re),.din_im(din_im),
+ .coef1_re(coef1_re),.coef1_im(coef1_im),
+ .coef3_re(coef3_re),.coef3_im(coef3_im),
+ .overflow(overflow),.overflow_re(overflow_re),.overflow_im(overflow_im),
+ .out_valid(out_valid),.dout_re(dout_re),.dout_im(dout_im));
+
+always @(posedge clk) begin
+
+  cycle_cnt <= cycle_cnt + 1;
+
+  if(in_valid && !first_input_seen) begin
+      first_input_seen <= 1;
+      first_input_cycle <= cycle_cnt;
+  end
+
+  if(out_valid) begin
+      rx <= rx + 1;
+
+      if(!first_output_seen) begin
+          first_output_seen <= 1;
+          first_output_cycle <= cycle_cnt;
+      end
+
+      if(^dout_re===1'bx || ^dout_im===1'bx) begin
+          $display("[FAIL] X/Z detected");
+          $finish;
+      end
+  end
+
+  if(overflow) begin
+      ovf <= ovf + 1;
+      overflow_burst <= overflow_burst + 1;
+
+      if((overflow_burst+1)>max_overflow_burst)
+          max_overflow_burst <= overflow_burst+1;
+  end
+  else
+      overflow_burst <= 0;
+
+  if(overflow_re) ovfr <= ovfr + 1;
+  if(overflow_im) ovfi <= ovfi + 1;
+
+end
+
+initial begin
+
+ rst=1;
+ in_valid=0;
+
+ tx=0;
+ rx=0;
+
+ ovf=0;
+ ovfr=0;
+ ovfi=0;
+
+ timeout=0;
+ cycle_cnt=0;
+
+ first_input_seen=0;
+ first_output_seen=0;
+
+ first_input_cycle=-1;
+ first_output_cycle=-1;
+ pipeline_latency=-1;
+
+ overflow_burst=0;
+ max_overflow_burst=0;
+
+ coef_updates=0;
+ coef_set0=0;
+ coef_set1=0;
+ coef_set2=0;
+ coef_random=0;
+
+ lfsr=32'hA5A55A5A;
+
+ coef1_re=0;
+ coef1_im=0;
+ coef3_re=0;
+ coef3_im=0;
+
+ repeat(4) @(posedge clk);
+ rst=0;
+
+ $display("");
+ $display("======================================================================");
+ $display("                 DPDnano-Lite RTL Validation Suite");
+ $display("======================================================================");
+ $display("TEST         : TC009_Apocalypse");
+ $display("Description  : Dynamic Coefficient Stress Test");
+ $display("Samples      : %0d",NUM_SAMPLES);
+ $display("======================================================================");
+ $display("");
+
+ for(tx=0; tx<NUM_SAMPLES; tx=tx+1) begin
+
+   @(posedge clk);
+   in_valid=1;
+
+   lfsr={lfsr[30:0],lfsr[31]^lfsr[21]^lfsr[1]^lfsr[0]};
+
+   if(tx[7:0]==8'h00) begin
+
+      coef_updates=coef_updates+1;
+
+      case(tx[15:8])
+
+        8'd0: begin
+          coef_set0=coef_set0+1;
+          coef1_re=16'sh2000;
+          coef1_im=16'sh0000;
+          coef3_re=16'sh0800;
+          coef3_im=16'sh0000;
+        end
+
+        8'd1: begin
+          coef_set1=coef_set1+1;
+          coef1_re=16'sh4000;
+          coef1_im=16'sh1000;
+          coef3_re=16'sh3000;
+          coef3_im=16'sh1000;
+        end
+
+        8'd2: begin
+          coef_set2=coef_set2+1;
+          coef1_re=16'sh6000;
+          coef1_im=16'sh2000;
+          coef3_re=16'sh5000;
+          coef3_im=16'sh2000;
+        end
+
+        default: begin
+          coef_random=coef_random+1;
+          coef1_re=lfsr[15:0];
+          coef1_im=lfsr[31:16];
+          coef3_re={lfsr[7:0],lfsr[15:8]};
+          coef3_im={lfsr[23:16],lfsr[31:24]};
+        end
+
+      endcase
+
+   end
+
+   case(tx[2:0])
+
+     3'd0: begin
+        din_re=16'sh7FFF;
+        din_im=16'sh7FFF;
+     end
+
+     3'd1: begin
+        din_re=16'sh8000;
+        din_im=16'sh8000;
+     end
+
+     default: begin
+        din_re=lfsr[15:0];
+        din_im=lfsr[31:16];
+     end
+
+   endcase
+
+ end
+
+ @(posedge clk);
+ in_valid=0;
+
+ while((rx<NUM_SAMPLES)&&(timeout<TIMEOUT_CYCLES)) begin
+    @(posedge clk);
+    timeout=timeout+1;
+ end
+
+ pipeline_latency=first_output_cycle-first_input_cycle;
+
+ delivery_rate=(100.0*rx)/NUM_SAMPLES;
+ overflow_rate=(100.0*ovf)/NUM_SAMPLES;
+
+ $display("");
+ $display("Execution");
+ $display("----------------------------------------------");
+ $display("Vectors TX               : %0d",tx);
+ $display("Vectors RX               : %0d",rx);
+ $display("Delivery Rate            : %0.2f %%",delivery_rate);
+
+ $display("");
+ $display("Pipeline");
+ $display("----------------------------------------------");
+ $display("Expected Latency         : 5");
+ $display("Measured Latency         : %0d",pipeline_latency);
+
+ $display("");
+ $display("Coefficient Statistics");
+ $display("----------------------------------------------");
+ $display("Coefficient Updates      : %0d",coef_updates);
+ $display("Set 0                    : %0d",coef_set0);
+ $display("Set 1                    : %0d",coef_set1);
+ $display("Set 2                    : %0d",coef_set2);
+ $display("Random Sets              : %0d",coef_random);
+
+ $display("");
+ $display("Overflow Statistics");
+ $display("----------------------------------------------");
+ $display("Overflow Events          : %0d",ovf);
+ $display("Overflow RE              : %0d",ovfr);
+ $display("Overflow IM              : %0d",ovfi);
+ $display("Overflow Rate            : %0.2f %%",overflow_rate);
+ $display("Max Overflow Burst       : %0d",max_overflow_burst);
+
+ $display("");
+ $display("Simulation");
+ $display("----------------------------------------------");
+ $display("Simulation Cycles        : %0d",cycle_cnt);
+ $display("Simulation Time          : %0d ns",cycle_cnt*10);
+
+ $display("");
+ $display("Overall Result");
+ $display("----------------------------------------------");
+
+ if((rx==tx) &&
+    (pipeline_latency==5) &&
+    (timeout<TIMEOUT_CYCLES))
+      $display("PASS");
+ else
+      $display("FAIL");
+
+ $finish;
+
+end
+
+endmodule

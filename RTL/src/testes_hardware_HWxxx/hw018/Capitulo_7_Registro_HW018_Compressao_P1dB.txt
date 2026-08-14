@@ -1,0 +1,81 @@
+HW018 - Registro tecnico para o Capitulo 7
+==========================================
+
+Objetivo experimental
+---------------------
+
+O HW018 foi planejado para demonstrar, em FPGA real, uma caracteristica AM/AM
+compressiva controlada, obtida pela combinacao:
+
+- `coef1 = 0x7333` aproximadamente `+0,90`
+- `coef3 = 0xA667` aproximadamente `-0,70`
+
+O foco do ensaio e identificar:
+
+- ganho de pequeno sinal
+- ponto de compressao de 1 dB
+- entrada correspondente ao pico de saida
+- valor maximo de saida
+- comportamento da curva apos o pico
+
+Configuracao ensaiada
+---------------------
+
+- clock interno do DPD: `60 MHz`
+- 256 pontos por curva
+- amplitude maxima de entrada: `30000`
+- aquisicao realizada por UART em hardware real
+
+Resultados principais
+---------------------
+
+O resultado consolidado do teste indicou:
+
+- overflow: `NAO`
+- ganho de pequeno sinal: `0,898961`
+- ponto de compressao de 1 dB: `12353`
+- saida no ponto de compressao de 1 dB: `9889`
+- entrada no pico de saida: `21412`
+- valor maximo de saida: `12871`
+
+Interpretacao fisica
+--------------------
+
+Os resultados sao coerentes com uma curva compressiva classica:
+
+1. O ganho de pequeno sinal ficou muito proximo de `0,90`, em concordancia com
+   o termo linear configurado.
+
+2. O ponto de compressao de 1 dB foi identificado em `12353`, mostrando que a
+   nao linearidade cubica negativa ja afeta a resposta bem antes da extremidade
+   superior da faixa de entrada.
+
+3. Mesmo apos o `P1dB`, a curva continua crescente ate atingir um pico em
+   `21412`. Isso e importante: o inicio da compressao nao implica perda
+   imediata de monotonicidade.
+
+4. O pico de saida medido foi `12871`, consideravelmente abaixo da saturacao
+   total em `32767`. Portanto, neste ensaio, a limitacao observada e de
+   compressao do modelo, e nao de saturacao numerica do formato de saida.
+
+Significado para o DPDnano-Lite
+-------------------------------
+
+O HW018 fornece uma evidencia importante de que o DPDnano-Lite consegue
+reproduzir, de forma controlada, uma curva compressiva com `P1dB` observavel em
+hardware. Essa observacao e relevante para o capitulo 7 porque:
+
+- valida a sensibilidade do nucleo a escolhas de coeficientes reais;
+- mostra que o modelo pode ser deslocado para um regime compressivo sem gerar
+  overflow;
+- estabelece uma curva experimental adequada para estudos derivados, como o
+  calculo do ganho incremental no HW019.
+
+Conclusao sugerida
+------------------
+
+O HW018 mostra que a combinacao `coef1 = +0,90` e `coef3 = -0,70` produz uma
+resposta AM/AM tipicamente compressiva, com ganho de pequeno sinal coerente,
+`P1dB` claramente identificavel e ausencia de overflow. Trata-se, portanto, de
+um caso experimental adequado para analisar o limite entre compressao utilizavel
+e o inicio da degradacao estrutural da monotonicidade.

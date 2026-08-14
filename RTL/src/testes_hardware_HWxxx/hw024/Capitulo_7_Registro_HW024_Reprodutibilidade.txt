@@ -1,0 +1,97 @@
+HW024_dpd - Registro tecnico para o Capitulo 7
+
+Objetivo do ensaio
+------------------
+
+O teste HW024 foi definido como uma campanha de reprodutibilidade estatistica
+executada sobre o mesmo bitstream dinamico utilizado no HW023, mantendo o
+nucleo DPDnano-Lite congelado em `rtl_v3_1`, clock interno de 60 MHz gerado
+por PLL e comunicacao UART em 115200 bps. O objetivo principal foi verificar
+se repeticoes sucessivas do mesmo processamento preservariam a estabilidade
+temporal e funcional do sistema em FPGA real.
+
+Configuracao executada
+----------------------
+
+- Numero de execucoes: 10
+- Amostras por execucao: 1.000.000
+- Total de amostras processadas: 10.000.000
+- Clock interno do DPD: 60 MHz
+- Bitstream utilizado: base dinamica equivalente ao ensaio HW023
+- Atualizacao de coeficientes: a cada 256 amostras
+- Perfis dinamicos ativos: 5 perfis
+
+Resultados consolidados
+-----------------------
+
+Os arquivos `hw024_dpd_reproducibility_runs.csv`,
+`hw024_dpd_reproducibility_checkpoints.csv` e
+`hw024_dpd_reproducibility_summary.csv` indicaram comportamento plenamente
+estavel para as metricas temporais e de integridade do fluxo:
+
+- 10 execucoes aprovadas individualmente
+- 10 execucoes sem perdas de amostras
+- 10 execucoes sem duplicacoes
+- 10 execucoes sem reordenacao
+- 10 execucoes sem erros de fila
+- latencia minima, maxima e media iguais a 6 ciclos em todas as execucoes
+- jitter nulo em todas as execucoes
+- throughput identico em todas as execucoes: 59,999400 MS/s
+- 3906 atualizacoes de coeficientes por execucao, exatamente como esperado para
+  1.000.000 de amostras com troca a cada 256 amostras
+- 102044 amostras de alta amplitude em todas as execucoes
+
+Os checkpoints tambem permaneceram invariantes entre execucoes. Em todas as
+dez repeticoes, o primeiro checkpoint foi registrado no ciclo 100009 e o ultimo
+checkpoint no ciclo 1000009, confirmando comportamento temporal repetitivo e
+monotonicamente consistente durante todo o fluxo de 1.000.000 de amostras.
+
+Variacao estatistica observada
+------------------------------
+
+As metricas agregadas de saturacao e overflow apresentaram pequena dispersao
+entre execucoes:
+
+- overflow medio: 44249 eventos
+- desvio padrao do overflow: 183,389 eventos
+- overflow minimo: 44054 eventos
+- overflow maximo: 44633 eventos
+- saturacao media total: 46271,5 eventos
+- desvio padrao das saturacoes: 183,301 eventos
+
+Essa variacao foi considerada baixa frente ao volume total de dados
+processados, correspondendo a uma oscilacao relativa pequena sobre um ensaio de
+10.000.000 de amostras. Em contrapartida, as assinaturas agregadas de entrada
+permaneceram identicas em todas as execucoes, enquanto as assinaturas
+agregadas de saida variaram entre runs.
+
+Interpretacao tecnica
+---------------------
+
+Os CSVs mostram que o HW024 validou a reprodutibilidade estatistica do
+DPDnano-Lite em 60 MHz, pois o sistema manteve:
+
+- integridade completa do fluxo de dados;
+- latencia deterministica de 6 ciclos;
+- throughput constante e repetitivo;
+- checkpoints idempotentes ao longo da execucao;
+- padrao estatistico de saturacao e overflow com baixa dispersao.
+
+Por outro lado, a assinatura agregada de saida nao se manteve bit a bit
+identica entre repeticoes. No contexto deste ensaio, essa divergencia foi
+tratada como uma metrica auxiliar de observacao agregada, e nao como falha do
+processamento, porque nao foi acompanhada por perdas, duplicacoes,
+reordenacao, variacao de latencia, variacao de throughput ou instabilidade nos
+checkpoints.
+
+Conclusao para o Capitulo 7
+---------------------------
+
+O teste HW024 permite afirmar que a arquitetura DPDnano-Lite, na configuracao
+congelada de 60 MHz adotada para os ensaios de hardware, apresentou
+reprodutibilidade estatistica satisfatoria em FPGA real. O sistema mostrou-se
+temporalmente deterministico, funcionalmente consistente e robusto frente a
+campanhas repetidas de grande volume de dados, totalizando 10.000.000 de
+amostras processadas sem falhas de fluxo. Assim, o HW024 encerra a bateria de
+testes de hardware como uma validacao de estabilidade operacional prolongada da
+solucao proposta.

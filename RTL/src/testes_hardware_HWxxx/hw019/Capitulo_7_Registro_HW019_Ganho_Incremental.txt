@@ -1,0 +1,95 @@
+HW019 - Registro tecnico para o Capitulo 7
+==========================================
+
+Objetivo experimental
+---------------------
+
+O HW019 foi estruturado para adquirir novamente, em FPGA real, a curva base do
+caso compressivo estudado no HW018 e, a partir dela, calcular o ganho
+incremental:
+
+`dOUT / dIN`
+
+Esse procedimento permite localizar com maior rigor o ponto em que a derivada
+da curva se anula, isto e, a transicao entre crescimento e decrescimento da
+saida.
+
+Configuracao ensaiada
+---------------------
+
+- mesmos coeficientes reais do caso base compressivo:
+  `coef1 = 0x7333` aproximadamente `+0,90`
+  `coef3 = 0xA667` aproximadamente `-0,70`
+- clock interno do DPD: `60 MHz`
+- aquisicao real na FPGA via UART
+- geracao de dois CSVs locais:
+  - curva base AM/AM
+  - ganho incremental derivado
+
+Evidencias observadas
+---------------------
+
+A curva base medida no HW019 repetiu o comportamento global do HW018:
+
+- ganho inicial proximo de `0,90`
+- `P1dB` na regiao de aproximadamente `12353`
+- crescimento da saida ate um pico
+- regiao descendente apos o maximo
+
+No CSV de ganho incremental observou-se:
+
+- ganho incremental inicial em torno de `0,898`
+- reducao gradual do ganho incremental com o aumento da entrada
+- cruzamento por zero por volta de `21529`
+- pico de saida da curva base em torno de `21412`
+- regiao com ganho incremental negativo apos o pico
+
+Interpretacao cientifica
+------------------------
+
+O principal valor do HW019 e mostrar que a compressao observada no HW018 nao e
+apenas uma perda gradual de ganho, mas uma evolucao estruturada da derivada da
+curva:
+
+1. Enquanto `dOUT/dIN > 0`, a saida ainda cresce com a entrada.
+
+2. Quando `dOUT/dIN = 0`, a curva atinge um maximo local.
+
+3. Quando `dOUT/dIN < 0`, a curva entra em regiao descendente, caracterizando
+   perda de monotonicidade.
+
+No experimento, a proximidade entre:
+
+- cruzamento por zero `~ 21529`
+- pico de saida `~ 21412`
+
+constitui uma evidencia numerica forte de consistencia entre:
+
+- a curva AM/AM medida
+- a derivada numerica estimada
+
+Relevancia para o Capitulo 7
+----------------------------
+
+O HW019 reforca a interpretacao do HW018 de duas maneiras:
+
+- confirma que o pico da curva nao foi um artefato visual do grafico;
+- mostra matematicamente a passagem para uma regiao nao monotonicamente
+  crescente.
+
+Isso torna o HW019 especialmente util para sustentar uma discussao mais
+rigorosa sobre limitantes de uso do DPDnano-Lite. A partir dele, pode-se
+afirmar que a fronteira operacional nao depende apenas de saturacao ou
+overflow, mas tambem da preservacao de:
+
+- ganho incremental positivo
+- monotonicidade da curva AM/AM
+
+Conclusao sugerida
+------------------
+
+O HW019 demonstra que o caso compressivo `coef1 = +0,90`, `coef3 = -0,70`
+evolui de uma regiao de ganho positivo para um ponto de derivada nula e, em
+seguida, para uma regiao de ganho incremental negativo. Esse resultado fornece
+uma base quantitativa importante para afirmar que a nao monotonicidade e um
+limitante estrutural do uso do DPDnano-Lite em certos regimes de coeficientes.

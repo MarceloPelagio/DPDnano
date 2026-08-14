@@ -1,0 +1,245 @@
+HW023 - Registro tecnico para o Capitulo 7
+==========================================
+
+Objetivo experimental
+---------------------
+
+O teste HW023 foi concebido para submeter o DPDnano-Lite a um regime severo de
+operacao prolongada, com o objetivo de avaliar a robustez temporal e a
+integridade funcional da arquitetura sob carga continua. Diferentemente dos
+ensaios anteriores, que se concentraram em curvas de transferencia, janelas
+operacionais ou caracterizacao temporal de curta extensao, o HW023 foi
+estruturado como um teste de stress dinamico de longa duracao, envolvendo um
+grande volume de amostras, atualizacao periodica de coeficientes e ocorrencia
+deliberada de sinais em alta amplitude.
+
+Em termos práticos, o teste foi planejado para responder se o nucleo permanece
+coerente quando exposto simultaneamente a:
+
+- fluxo continuo de dados;
+- variacao dinamica de perfis de coeficientes;
+- amostras pseudoaleatorias de entrada;
+- eventos recorrentes de saturacao e overflow;
+- execucao prolongada com `1.000.000` de amostras.
+
+Configuracao do ensaio
+----------------------
+
+O HW023 foi executado em FPGA real com a configuracao congelada adotada para a
+fase final dos ensaios de hardware:
+
+- nucleo DPD congelado: `rtl_v3_1`
+- PLL global habilitado
+- clock interno do DPD: `60 MHz`
+- comunicacao e supervisao via UART
+- fluxo continuo de processamento
+- `1.000.000` de amostras
+
+As entradas I/Q foram geradas por sequencias pseudoaleatorias, contendo uma
+parcela aproximada de `10%` de amostras em alta amplitude. Alem disso, o teste
+alternou cinco perfis dinâmicos de coeficientes, com atualizacao a cada `256`
+amostras:
+
+- Perfil 0: `coef1 = 0,68`, `coef3 = 0,38`
+- Perfil 1: `coef1 = 0,69`, `coef3 = 0,39`
+- Perfil 2: `coef1 = 0,70`, `coef3 = 0,40`
+- Perfil 3: `coef1 = 0,71`, `coef3 = 0,41`
+- Perfil 4: `coef1 = 0,72`, `coef3 = 0,42`
+
+Essa configuracao foi escolhida para provocar excitacao ampla da arquitetura,
+incluindo alternancia controlada entre perfis de ganho e curvatura, ao mesmo
+tempo em que se mantem um teste reproduzivel e quantitativamente rastreavel.
+
+Metodologia de medicao
+----------------------
+
+O ensaio registrou, ao final da execucao:
+
+- numero de amostras enviadas e recebidas;
+- latencia minima, maxima e media;
+- jitter;
+- numero de eventos de overflow;
+- numero de saturacoes positivas e negativas;
+- numero de atualizacoes de coeficientes;
+- quantidade de amostras de alta amplitude;
+- erros de fila, perdas, duplicacoes e reordenacao;
+- assinaturas acumuladas de entrada e de saida;
+- checkpoints temporais a cada `100.000` amostras.
+
+Foram gerados dois arquivos principais:
+
+- `hw023_dpd_stress_summary.csv`
+- `hw023_dpd_checkpoints.csv`
+
+Tambem foram produzidas figuras para estabilidade de latencia, throughput por
+bloco e checkpoints de integridade.
+
+Resultados consolidados
+-----------------------
+
+Os resultados do arquivo `hw023_dpd_stress_summary.csv` mostraram que o teste
+foi concluido integralmente, sem perda de integridade do fluxo. Os principais
+valores observados foram:
+
+- `samples_sent = 1000000`
+- `samples_received = 1000000`
+- `latency_min = 6`
+- `latency_max = 6`
+- `latency_average = 6.0`
+- `jitter = 0`
+- `fifo_errors = 0`
+- `losses = 0`
+- `duplicates = 0`
+- `reorder = 0`
+
+Esses resultados mostram que, mesmo sob carga severa e prolongada, a
+arquitetura preservou:
+
+- latencia fixa;
+- ausencia de jitter observavel;
+- ausencia de corrupcao do fluxo;
+- preservacao da ordem de processamento.
+
+Do ponto de vista funcional, observou-se ainda:
+
+- `overflow_events = 125945`
+- `saturation_positive = 59720`
+- `saturation_negative = 69952`
+- `high_amplitude_samples = 102045`
+
+Esses eventos eram esperados pela propria natureza do ensaio e nao configuram
+falha do teste. Pelo contrario, sua ocorrencia confirma que o nucleo foi de
+fato submetido a um regime agressivo de operacao, com excitacao suficiente para
+atingir as regioes de saturacao e overflow previstas.
+
+Analise das atualizacoes de coeficientes
+----------------------------------------
+
+O teste registrou:
+
+- `coefficient_updates = 3906`
+- `expected_coefficient_updates = 3906`
+
+Essa coincidencia exata e particularmente importante, pois demonstra que a
+logica de alternancia de perfis dinâmicos permaneceu coerente durante toda a
+execucao, sem perda de sincronismo ao longo do processamento de `1.000.000`
+de amostras.
+
+Em outras palavras, o ensaio nao apenas manteve o fluxo de dados intacto, mas
+tambem preservou corretamente o agendamento das mudancas de perfil ao longo do
+tempo.
+
+Analise temporal global
+-----------------------
+
+O arquivo de resumo indicou:
+
+- `total_cycles = 1000006`
+- `hardware_time_seconds = 0.016666766666666666`
+- `hardware_throughput_samples_per_second = 59999640.00215999`
+
+Isso corresponde a um throughput efetivo de aproximadamente:
+
+- `59,99964 MS/s`
+
+Esse valor e plenamente coerente com operacao continua a `60 MHz`, com uma
+latencia fixa de `6 ciclos`. O resultado mostra que o custo temporal do
+pipeline ficou amortizado no regime de longa duracao, permitindo aproveitamento
+praticamente unitario do clock em termos de vazao media.
+
+Analise dos checkpoints
+-----------------------
+
+O arquivo `hw023_dpd_checkpoints.csv` confirmou forte regularidade temporal ao
+longo de toda a execucao. Os checkpoints observados foram:
+
+- `100000` amostras em `100005` ciclos
+- `200000` amostras em `200005` ciclos
+- `300000` amostras em `300005` ciclos
+- `400000` amostras em `400005` ciclos
+- `500000` amostras em `500005` ciclos
+- `600000` amostras em `600005` ciclos
+- `700000` amostras em `700005` ciclos
+- `800000` amostras em `800005` ciclos
+- `900000` amostras em `900005` ciclos
+- `1000000` amostras em `1000005` ciclos
+
+Esse comportamento evidencia duas caracteristicas essenciais:
+
+1. Crescimento monotônico e linear dos ciclos acumulados.
+2. Throughput por bloco extremamente proximo de `1 amostra/ciclo`.
+
+Os valores de throughput por checkpoint ficaram todos muito proximos de
+`60 MS/s`, sem degradacao acumulativa perceptivel ao longo do teste.
+
+Interpretacao arquitetural
+--------------------------
+
+O HW023 fornece uma validacao importante da robustez estrutural do
+DPDnano-Lite. Mesmo em um ensaio propositalmente severo, com alternancia
+periodica de coeficientes e ocorrencia frequente de saturacao e overflow, o
+nucleo manteve comportamento temporal e funcional rigorosamente controlado.
+
+Os resultados sustentam as seguintes conclusoes:
+
+1. A latencia do pipeline permaneceu fixa em `6 ciclos` mesmo sob stress
+   prolongado.
+
+2. Nao foram observadas perdas de amostras, duplicacoes, reordenacao nem erros
+   de fila, o que indica integridade plena do caminho de dados.
+
+3. A atualizacao periódica de coeficientes ocorreu exatamente no numero
+   esperado de eventos, o que confirma estabilidade do mecanismo de mudanca de
+   perfil.
+
+4. Eventos de saturacao e overflow ocorreram em grande quantidade, como
+   previsto, sem comprometer a continuidade do processamento.
+
+5. O throughput medio permaneceu praticamente igual ao limite imposto pelo
+   clock de `60 MHz`, mostrando alta eficiencia temporal da arquitetura.
+
+Relevancia para o Capitulo 7
+----------------------------
+
+O HW023 tem papel importante no Capitulo 7 porque demonstra que a arquitetura
+nao apenas funciona corretamente em ensaios curtos e controlados, mas tambem
+suporta um regime de stress prolongado sem perda de integridade estrutural.
+
+Esse teste reforca a credibilidade experimental da proposta, especialmente em
+um contexto de FPGA com recursos limitados, onde testes de longa duracao sao
+importantes para evidenciar estabilidade, ausencia de travamentos e
+confiabilidade do fluxo de processamento.
+
+Enquanto o HW022 confirmou a determinacao temporal do pipeline em diferentes
+padroes de trafego, o HW023 mostrou que essa determinacao se preserva tambem
+em um regime continuo e prolongado, mesmo com alternancia dinamica de perfis e
+incidencia significativa de saturacao.
+
+Texto sugerido para reaproveitamento no Capitulo 7
+--------------------------------------------------
+
+O teste HW023 foi realizado para avaliar a robustez do DPDnano-Lite sob uma
+carga dinamica prolongada em FPGA real. O ensaio processou `1.000.000` de
+amostras I/Q pseudoaleatorias com o nucleo `rtl_v3_1` operando a `60 MHz`,
+incluindo aproximadamente `10%` de amostras em alta amplitude e alternancia
+periodica entre cinco perfis de coeficientes, atualizados a cada `256`
+amostras. Os resultados indicaram `1.000.000` de amostras enviadas e
+recebidas, latencia fixa de `6 ciclos`, `jitter = 0`, ausencia de perdas,
+duplicacoes, reordenacao e erros de fila. O throughput efetivo medido foi de
+aproximadamente `59,99964 MS/s`, valor coerente com operacao continua em
+`60 MHz`. Os checkpoints acumulados mostraram crescimento linear dos ciclos ao
+longo de todo o ensaio, sem degradacao temporal perceptivel. Embora tenham
+ocorrido eventos de saturacao e overflow, eles eram esperados pela natureza
+agressiva do teste e nao comprometeram a integridade do fluxo de dados. Dessa
+forma, o HW023 demonstrou que o DPDnano-Lite preserva comportamento temporal
+deterministico e integridade funcional mesmo sob stress dinamico de longa
+duracao.
+
+Conclusao
+---------
+
+O HW023 validou experimentalmente a robustez do DPDnano-Lite em regime severo
+de operacao, confirmando que a arquitetura pode sustentar processamento
+continuo de longa duracao com latencia fixa, alta vazao e integridade plena do
+fluxo de dados. Trata-se de um resultado forte em favor da consistencia
+estrutural da proposta implementada.

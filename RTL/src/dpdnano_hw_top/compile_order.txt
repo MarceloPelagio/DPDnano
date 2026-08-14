@@ -1,0 +1,25 @@
+1. reset_sync.v
+2. uart_rx.v
+3. uart_tx.v
+4. uart_fifo.v
+5. crc16_ccitt.v
+6. command_cdc.v
+7. status_cdc.v
+8. input_dual_clock_bsram.v
+9. output_dual_clock_bsram.v
+10. dpd_controller.v
+11. protocol_controller.v
+12. ..\gowin_pllvr\gowin_pllvr.v
+13. ..\rtl_v3_1\coeff_bank.v  (required by dpdnano_hw_top)
+14. ..\rtl_v3_1\complex_add.v
+15. ..\rtl_v3_1\complex_mult.v
+16. ..\rtl_v3_1\fixed_mult.v
+17. ..\rtl_v3_1\iq_delay.v
+18. ..\rtl_v3_1\mult_generic.v
+19. ..\rtl_v3_1\poly_kernel.v
+20. ..\rtl_v3_1\poly_branch.v
+21. ..\rtl_v3_1\rounding.v
+22. ..\rtl_v3_1\saturator.v
+23. ..\rtl_v3_1\saturator2.v
+24. ..\rtl_v3_1\dpd_core.v
+25. dpdnano_hw_top.v

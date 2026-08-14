@@ -1,0 +1,68 @@
+Registro de apoio para o Capitulo 7
+Teste HW014_dpd - Resposta Complexa e AM/PM
+Data de consolidacao: 10 de agosto de 2026
+
+Objetivo do teste
+
+O teste HW014_dpd foi definido para verificar a resposta complexa do DPDnano-Lite
+sob excitacao vetorial, com enfase na caracterizacao do comportamento AM/PM.
+Em vez de observar apenas magnitude de saida, este ensaio avalia a variacao de
+fase entre os vetores de entrada e saida para diferentes amplitudes e quadrantes.
+
+Configuracao congelada para o resultado valido
+
+- Nucleo utilizado: `rtl_v3_1` validado
+- Frequencia de operacao utilizada no ensaio consolidado: `60,000 MHz`
+- Coeficientes utilizados no controlador:
+  - `coef1 = 0x3333 + j0x199A`, aproximadamente `0,40 + j0,20`
+  - `coef3 = 0x0000 + j0x0000`
+- Vetores processados:
+  - `32` amplitudes
+  - `8` fases por amplitude
+  - total de `256` vetores
+
+Resumo do resultado consolidado
+
+- Vetores processados: `256`
+- Overflow visto: `NAO`
+- Desvio de fase minimo: `26,379928°`
+- Desvio de fase maximo: `26,695863°`
+- Variacao entre quadrantes: `0,315935°`
+- Limite adotado entre quadrantes: `0,500°`
+- Resultado final: `PASS - HW014_dpd - Multiplicacao Complexa validada`
+
+Interpretacao tecnica
+
+O resultado obtido foi consistente com o objetivo do ensaio. O sistema produziu
+um deslocamento angular aproximadamente constante, situado em torno de `26,5°`,
+com pequena dispersao entre os diferentes quadrantes analisados. Como a variacao
+maxima observada entre quadrantes foi de apenas `0,315935°`, isto e, abaixo do
+limite de aceitacao de `0,500°`, conclui-se que a resposta complexa permaneceu
+coerente ao longo do conjunto de vetores testados.
+
+A ausencia de overflow reforca que o ensaio foi realizado dentro de uma faixa
+funcionalmente segura para o nucleo `rtl_v3_1` na frequencia adotada. Assim, o
+teste nao apenas confirma a corretude da multiplicacao complexa implementada no
+caminho ativo do DPD, mas tambem mostra que a componente de fase foi processada
+de maneira previsivel e aproximadamente uniforme para diferentes combinacoes de
+amplitude e angulo de entrada.
+
+Conclusao para o Capitulo 7
+
+O teste HW014 valida experimentalmente a resposta complexa do DPDnano-Lite em
+60,000 MHz, demonstrando que a arquitetura preserva coerencia angular entre os
+quadrantes e produz um desvio de fase controlado, compativel com a configuracao
+complexa de coeficientes utilizada no experimento. Esse resultado complementa
+os testes anteriores de AM/AM e de saturacao, acrescentando evidencia de que o
+nucleo validado `rtl_v3_1` tambem se comporta adequadamente quando submetido a
+avaliacoes vetoriais no plano complexo.
+
+Sugestao de redacao reaproveitavel
+
+"No teste HW014, o DPDnano-Lite foi excitado com vetores complexos distribuidos
+em diferentes amplitudes e quadrantes, com o objetivo de avaliar a resposta
+AM/PM da arquitetura. Em 60,000 MHz, o sistema processou 256 vetores sem
+overflow, apresentando desvio de fase entre aproximadamente 26,38° e 26,70°.
+A variacao maxima observada entre quadrantes foi de 0,315935°, valor inferior
+ao limite de aceitacao de 0,500°, o que valida experimentalmente a coerencia
+da multiplicacao complexa implementada no nucleo rtl_v3_1."

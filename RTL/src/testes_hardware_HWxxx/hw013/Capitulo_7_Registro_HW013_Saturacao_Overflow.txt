@@ -1,0 +1,68 @@
+Registro de apoio para o Capitulo 7
+Teste HW013_dpd - Saturacao e Overflow
+Data de consolidacao: 10 de agosto de 2026
+
+Objetivo do teste
+
+O teste HW013_dpd foi definido para exercitar o DPDnano-Lite em uma regiao de nao linearidade forte, com o objetivo de observar, em hardware real, o inicio da saturacao da saida e a sinalizacao de overflow do nucleo. Em termos experimentais, este ensaio complementa o HW012, pois deixa de enfatizar a resposta AM/AM em regime monotonicamente crescente e passa a destacar o comportamento do sistema nas extremidades da faixa dinamica.
+
+Configuracao congelada para o teste valido
+
+- Nucleo utilizado: `rtl_v3_1` validado
+- Frequencia de operacao utilizada para o resultado consolidado: `60,000 MHz`
+- Coeficientes utilizados:
+  - `coef1 = 0x3333 + j0`, aproximadamente `0,40`
+  - `coef3 = 0x5333 + j0`, aproximadamente `0,65`
+- Arquivos principais do teste:
+  - `dpdnano_hw013_dpd.py`
+  - `plot_hw013_dpd.py`
+  - `hw013_dpd_saturation_overflow.csv`
+  - `hw013_dpd_saturation_overflow.png`
+
+Resumo do resultado valido em hardware
+
+Resumo reportado pelo script:
+
+- Pontos processados: `256`
+- Overflow visto: `SIM`
+- Amostras saturadas: `6`
+- Maior saida I observada: `32767`
+- Menor saida I observada: `-32768`
+- Resultado final: `PASS - saturacao e overflow validados`
+
+Interpretacao tecnica
+
+O comportamento observado em 60,000 MHz foi consistente com a proposta metodologica do teste. O CSV confirmou saturacao negativa nas primeiras amostras e saturacao positiva nas ultimas amostras, de forma simetrica e coerente com a faixa numerica da representacao Q1.15. Em particular:
+
+- Extremo negativo:
+  - `-32767 -> -32768`
+  - `-32510 -> -32768`
+  - `-32253 -> -32768`
+- Extremo positivo:
+  - `32253 -> 32767`
+  - `32510 -> 32767`
+  - `32767 -> 32767`
+
+Entre os extremos, a curva permaneceu suave, sem descontinuidades locais relevantes no ensaio consolidado de 60,000 MHz. Isso confirma que o teste nao apenas detectou saturacao, mas o fez de maneira estruturalmente coerente com o comportamento esperado para o ramo polinomial agressivo utilizado neste experimento.
+
+Observacao importante sobre ensaio em frequencia mais alta
+
+Foi observado, em ensaios realizados acima de 60,000 MHz, um pequeno pico anomalo na regiao negativa da curva, proximo de `input_i = -16576`, no qual a saida deslocava-se localmente para aproximadamente `-7340`, destoando da tendencia dos pontos vizinhos. Esse comportamento reapareceu de maneira deterministica na mesma faixa quando o teste foi executado em frequencia mais elevada, indicando que nao se tratava de erro de plotagem nem de ruido aleatorio de leitura.
+
+Entretanto, ao reduzir a frequencia para 60,000 MHz, o desvio desapareceu. No ensaio consolidado, a mesma faixa apresentou a sequencia:
+
+- `-16833 -> -9621`
+- `-16576 -> -9388`
+- `-16319 -> -9159`
+
+o que restabeleceu a suavidade da curva. Assim, o pico observado em frequencias mais altas foi interpretado como efeito de margem temporal insuficiente, e nao como caracteristica intrinseca do comportamento funcional que se desejava documentar no HW013.
+
+Conclusao para o Capitulo 7
+
+O teste HW013 confirma experimentalmente que o DPDnano-Lite, quando operado com o nucleo `rtl_v3_1` validado em 60,000 MHz, apresenta saturacao e overflow de maneira coerente com o esperado nas extremidades da faixa dinamica. O resultado reforca a consistencia do mecanismo de saturacao final da arquitetura, bem como a capacidade do sistema de sinalizar overflow quando a excitacao ultrapassa a regiao de operacao linear.
+
+Para fins de documentacao no Capitulo 7, recomenda-se utilizar a curva PNG gerada a 60,000 MHz como figura oficial do ensaio, descartando-se as curvas obtidas em frequencias mais altas nas quais surgiram artefatos locais de temporizacao.
+
+Sugestao de redacao reaproveitavel
+
+"No teste HW013, o DPDnano-Lite foi submetido a uma configuracao mais agressiva de excitacao, com o objetivo de provocar saturacao nas extremidades da faixa dinamica e verificar a correta sinalizacao de overflow pelo nucleo. Os resultados obtidos em 60,000 MHz mostraram comportamento coerente com a representacao em ponto fixo Q1.15, com saturacao simetrica nos extremos positivo e negativo, alem de indicacao explicita de overflow. A curva experimental permaneceu suave na regiao central e apresentou apenas a limitacao esperada nas extremidades, validando o mecanismo de saturacao final da arquitetura em hardware real."

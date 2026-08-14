@@ -1,0 +1,2 @@
+runs,samples_per_run,total_samples,pass_count,fail_count,success_rate_percent,latency_mean_cycles,latency_stddev_cycles,throughput_mean_msps,throughput_min_msps,throughput_max_msps,throughput_stddev_msps,overflow_mean,overflow_stddev,saturation_mean,saturation_stddev,input_signatures_identical,output_signatures_identical
+10,1000000,10000000,10,0,100.0,6.0,0.0,59.999400005999945,59.999400005999945,59.999400005999945,0.0,44249,183.38920360806412,46271.5,183.30098199409625,1,0

@@ -1,0 +1,16 @@
+-d C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\impl\gwsynthesis\fpga_DPDnano_lite_v3_2.vg
+-p GW1NSR-4C-QFN48P-7
+-pn GW1NSR-LV4CQN48PC7/I6
+-cst C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpdnano_hw024_dpd.cst
+-cfg C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\impl\pnr\device.cfg
+-sdc C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpdnano_hw024_dpd.sdc
+-bit
+-tr
+-ph
+-timing
+-cst_error
+-place_option 0
+-route_option 0
+-clock_route_order 0
+-correct_hold 1
+-route_maxfan 23

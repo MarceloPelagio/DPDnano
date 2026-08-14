@@ -1,0 +1,75 @@
+Registro de apoio para o Capitulo 7
+Teste HW015_dpd - AM/PM dependente da amplitude
+Data de consolidacao: 10 de agosto de 2026
+
+Objetivo do teste
+
+O teste HW015_dpd foi definido para verificar, em hardware real, um caso no qual
+o desvio de fase entre entrada e saida nao permanece aproximadamente constante,
+mas cresce com a amplitude do sinal aplicado. Em termos metodologicos, este
+ensaio complementa o HW014, que havia validado a coerencia da resposta complexa
+com deslocamento angular quase uniforme entre quadrantes.
+
+Configuracao congelada para o resultado valido
+
+- Nucleo utilizado: `rtl_v3_1` validado
+- Frequencia de operacao utilizada no ensaio consolidado: `60,000 MHz`
+- Coeficientes utilizados no controlador:
+  - `coef1 = 0x3333 + j0x0000`, aproximadamente `0,40 + j0,00`
+  - `coef3 = 0x0000 + j0x2CCD`, aproximadamente `0,00 + j0,35`
+- Vetores processados:
+  - `256` pontos ao longo da varredura de amplitude
+
+Resumo do resultado consolidado
+
+- Pontos processados: `256`
+- Overflow visto: `NAO`
+- Desvio de fase minimo: `0,000000°`
+- Desvio de fase maximo: `36,256943°`
+- Falhas de monotonicidade (> 0,5°): `0`
+- Resultado final: `PASS - AM/PM dependente da amplitude validada`
+
+Interpretacao tecnica
+
+O CSV confirmou comportamento coerente com a proposta do ensaio. Em baixas
+amplitudes, o desvio de fase permaneceu nulo ou muito proximo de zero. A medida
+que a amplitude de entrada aumentou, o desvio angular passou a crescer de forma
+gradual e monotonicamente consistente, sem overflow e sem descontinuidades acima
+do limite de tolerancia adotado pelo script.
+
+Trechos representativos observados no CSV:
+
+- Inicio da curva:
+  - `117 -> DELTA = 0,0000°`
+  - `234 -> DELTA = 0,0000°`
+  - `352 -> DELTA = 0,0000°`
+- Faixa intermediaria:
+  - `1172 -> DELTA = 0,1222°`
+  - `1523 -> DELTA = 0,0941°`
+  - `1641 -> DELTA = 0,0873°`
+- Extremidade superior:
+  - `29414 -> DELTA = 35,1860°`
+  - `29531 -> DELTA = 35,4021°`
+  - `29648 -> DELTA = 35,6153°`
+  - `29766 -> DELTA = 35,8320°`
+  - `29883 -> DELTA = 36,0459°`
+  - `30000 -> DELTA = 36,2569°`
+
+Conclusao para o Capitulo 7
+
+O teste HW015 valida experimentalmente um caso de AM/PM dependente da amplitude
+no DPDnano-Lite, mostrando que o nucleo `rtl_v3_1`, quando operado em 60,000
+MHz, consegue produzir um desvio de fase crescente com a amplitude sem perder
+coerencia funcional. O resultado reforca que o nucleo consolidado nao apenas
+preserva resposta AM/AM e saturacao coerente, como tambem responde de maneira
+previsivel a configuracoes que introduzem rotacao angular progressiva no plano
+complexo.
+
+Sugestao de redacao reaproveitavel
+
+"No teste HW015, o DPDnano-Lite foi configurado para produzir um comportamento
+AM/PM dependente da amplitude. Em 60,000 MHz, o sistema processou 256 pontos sem
+overflow e apresentou desvio de fase variando de 0° ate 36,256943°, sem falhas
+de monotonicidade acima da tolerancia de 0,5°. O resultado confirma que o nucleo
+rtl_v3_1 validado consegue reproduzir, em hardware real, uma rotacao angular
+progressivamente crescente com a amplitude do sinal de entrada."

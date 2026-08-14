@@ -1,0 +1,53 @@
+Tabela comparativa proposta para o Capitulo 7
+Ensaio HW012_dpd vr02 - variacao de frequencia de clock, coeficientes do modelo polinomial e campanha de refinamento do rtl_v3_2
+
+Nota de configuracao do rtl_v3_2 otimizado testado em 10 de agosto de 2026
+
+- O modulo `poly_branch.v` utilizado nos ensaios do rtl_v3_2 correspondeu a uma versao com pipeline interno de 2 estagios.
+- O ramo linear tambem foi alterado em relacao ao nucleo congelado anterior: o modulo `complex_mult.v` passou a operar com pipeline interno de 2 estagios, e o alinhamento adicional implementado em `dpd_core.v` utilizou 3 registradores extras (`lin_*_d`, `lin_*_d2` e `lin_*_d3`) para casar temporalmente o ramo linear com o ramo cubico otimizado.
+- Assim, o rtl_v3_2 ensaiado nao correspondeu apenas a uma mudanca isolada em `poly_branch`, mas a um conjunto de refinamentos temporais envolvendo `complex_mult`, `poly_kernel`, `rounding` e o alinhamento interno da arquitetura.
+
+Tabela 7.X - Comparacao entre os testes executados no HW012_dpd vr02
+
+| Caso | RTL avaliado | Clock interno do DPD | Coeficiente linear (coef1) | Coeficiente cubico (coef3) | Ganho final | Saida final (Q1.15) | Overflow | Saturacoes espurias | Falhas de monotonicidade | Resultado | Comentario experimental |
+|------|--------------|----------------------|----------------------------|----------------------------|-------------|---------------------|----------|---------------------|---------------------------|-----------|--------------------------|
+| A | rtl_v3_1 validado | 60,000 MHz | 0,40 | 0,65 | 0,944800 | 28344 | NAO | 0 | 0 | PASS | Condicao robusta para o primeiro conjunto de coeficientes |
+| B | rtl_v3_1 validado | 60,000 MHz | 0,30 | 0,70 | 0,886733 | 26602 | NAO | 0 | 0 | PASS | Resposta AM/AM mais conservadora, mas totalmente estavel |
+| C | rtl_v3_1 validado | 63,000 MHz | 0,30 | 0,70 | 0,886733 | 26602 | NAO | 0 | 0 | PASS | Operacao funcionalmente consistente acima de 60 MHz |
+| D | rtl_v3_1 validado | 64,125 MHz | 0,30 | 0,70 | 0,886733 | 26602 | NAO | 0 | 0 | PASS | Maior frequencia validada experimentalmente no hardware testado |
+| E | rtl_v3_1 validado | 64,800 MHz | 0,40 | 0,65 | 0,944800 | 28344 | SIM | 1 | 4 | FAIL | Primeira configuracao acima da faixa valida, com falhas funcionais observadas |
+| F | rtl_v3_2 otimizado | 68,000 MHz | 0,30 | 0,70 | 0,886733 | 26602 | SIM | 2 | 3 | FAIL | Nao atingiu robustez suficiente em hardware real |
+| G | rtl_v3_2 otimizado | 70,200 MHz | 0,30 | 0,70 | 0,886733 | 26602 | SIM | 3 | 3 | FAIL | Melhor que os casos mais altos, mas ainda com overflow e espurios |
+| H | rtl_v3_2 otimizado | 74,250 MHz | 0,30 | 0,70 | 0,886733 | 26602 | SIM | 10 | 25 | FAIL | Leve reducao das falhas em relacao a 75 MHz, mas ainda sem estabilidade |
+| I | rtl_v3_2 otimizado | 75,000 MHz | 0,30 | 0,70 | 0,886733 | 26602 | SIM | 10 | 29 | FAIL | A frequencia de 75 MHz ainda nao foi validada funcionalmente |
+| J | rtl_v3_2 otimizado | 100,200 MHz | 0,30 | 0,70 | 0,886733 | 26602 | SIM | 2 | 47 | FAIL | Houve melhoria teorica de temporizacao, mas o teste real permaneceu inconsistente |
+
+Tabela 7.Y - Evolucao do limite temporal observado durante a campanha de refinamento do rtl_v3_2
+
+| Etapa | Intervencao principal | Actual Fmax obtido | Comentario |
+|-------|------------------------|--------------------|------------|
+| 1 | Primeiras pipelizacoes em complex_mult, poly_branch, rounding e alinhamento interno do dpd_core | aproximadamente 66,6 MHz | Melhor ponto inicial obtido apos a primeira rodada de refinamento |
+| 2 | Tentativas adicionais concentradas em saturator e novas quebras no rounding | entre aproximadamente 62,855 MHz e 65,925 MHz | Nao produziram ganho consistente e foram descartadas |
+| 3 | Reestruturacao do poly_kernel em 3 estagios reais, com novo alinhamento da rama linear | 75,545 MHz | Melhor patamar teorico de temporizacao obtido durante os testes |
+
+Texto de apoio para insercao no capitulo
+
+Os resultados obtidos no ensaio HW012_dpd vr02 evidenciam que o comportamento experimental do sistema depende simultaneamente da frequencia efetiva de operacao, do conjunto de coeficientes adotado no modelo polinomial e da organizacao temporal do RTL sintetizado. Considerando inicialmente o nucleo funcionalmente validado rtl_v3_1, observou-se comportamento integralmente estavel em 60,000 MHz com os coeficientes coef1 = 0,40 e coef3 = 0,65, bem como em 60,000 MHz, 63,000 MHz e 64,125 MHz com os coeficientes coef1 = 0,30 e coef3 = 0,70. Em todas essas condicoes, o sistema apresentou ausencia de overflow, ausencia de saturacoes espurias, leituras estaveis e monotonicidade preservada ao longo de toda a varredura de amplitude.
+
+O resultado mais importante dessa serie foi a validacao experimental da frequencia de 64,125 MHz com o conjunto coef1 = 0,30 e coef3 = 0,70, que passou a representar o maior ponto de operacao robusta efetivamente comprovado no hardware testado. Na configuracao imediatamente superior disponivel durante os ensaios, correspondente a 64,800 MHz, o nucleo voltou a apresentar falhas funcionais, incluindo overflow, saturacao espuria e perda de monotonicidade. Assim, a campanha experimental permitiu delimitar com boa precisao a fronteira de operacao segura do HW012 entre 64,125 MHz e 64,800 MHz.
+
+Mantendo-se a frequencia de 60,000 MHz, tambem foi avaliado o impacto da alteracao dos coeficientes do modelo polinomial. O conjunto coef1 = 0,30 e coef3 = 0,70 preservou a estabilidade funcional, porem produziu uma resposta AM/AM mais conservadora, com menor ganho final e menor magnitude de saida maxima em comparacao ao caso coef1 = 0,40 e coef3 = 0,65. Isso mostra que a arquitetura permaneceu sensivel a parametrizacao do modelo, ainda que a robustez funcional tenha sido mantida dentro da faixa valida de frequencia.
+
+Com o objetivo de ampliar a frequencia de trabalho do sistema, foi conduzida uma campanha de refinamento estrutural sobre o rtl_v3_2. Essa campanha incluiu alteracoes em diferentes blocos do nucleo aritmetico, com destaque para a introducao de novos estagios de pipeline em `complex_mult`, `poly_kernel`, `rounding` e no alinhamento temporal interno do `dpd_core`. Nos ensaios finais dessa campanha, o `poly_branch` permaneceu configurado com pipeline interno de 2 estagios, enquanto o ramo linear passou a utilizar `complex_mult` em 2 estagios mais 3 registradores adicionais de alinhamento dentro do `dpd_core`. Tambem foram avaliadas tentativas adicionais em `poly_branch`, `saturator` e novas quebras no bloco de arredondamento, porem essas intervencoes nao produziram ganho consistente de desempenho e, em alguns casos, pioraram o comportamento funcional observado em hardware.
+
+O melhor resultado de temporizacao foi obtido apos a reestruturacao do `poly_kernel` em tres estagios reais, elevando o Actual Fmax para 75,545 MHz. Do ponto de vista teorico, esse resultado sinalizou que a direcao adotada era promissora para ampliar o limite de fechamento temporal do projeto. Entretanto, os ensaios executados diretamente na FPGA mostraram que essa melhoria nao se converteu em ganho real de frequencia operacional validada. Mesmo com o rtl_v3_2 otimizado, o hardware continuou apresentando overflow e espurios em 68,000 MHz, 70,200 MHz, 74,250 MHz, 75,000 MHz e 100,200 MHz. Em todas essas condicoes, a curva AM/AM ainda apresentava saturacoes indevidas e perda de monotonicidade, ainda que em menor intensidade nas frequencias mais baixas.
+
+Dessa forma, os resultados experimentais nao sinalizaram um aumento de desempenho suficientemente robusto para justificar a substituicao do nucleo atualmente validado. A versao rtl_v3_1, isto e, o nucleo congelado anteriormente aceito como referencia funcional, permaneceu como a implementacao efetivamente valida para o projeto DPDnano-Lite. Ja o rtl_v3_2 deve ser interpretado, no estado atual do trabalho, como uma linha exploratoria de refinamento arquitetural, relevante por demonstrar ganho teorico de temporizacao, mas ainda sem comprovacao experimental de operacao segura acima da faixa ja obtida com o nucleo validado.
+
+Adicionalmente, deve-se destacar que esse conjunto de refinamentos temporais implicou aumento de complexidade estrutural e, por consequencia, maior consumo de area logica no FPGA, uma vez que foram introduzidos novos registradores de pipeline, alinhamentos extras no ramo linear e reorganizacao de blocos aritmeticos internos. Mesmo com esse custo adicional de area, os ensaios executados em hardware real nao mostraram ganho funcional suficientemente relevante em relacao ao nucleo rtl_v3_1 validado. Tal resultado reforca a decisao de manter o rtl_v3_1 como versao principal do projeto, utilizando o rtl_v3_2 apenas como estudo exploratorio de melhoria temporal nao consolidada.
+
+Assim, a campanha de refinamento do rtl_v3_2 cumpriu um papel importante na investigacao dos limites da arquitetura, especialmente ao indicar que o principal potencial de ganho temporal estava concentrado no miolo aritmetico do ramo cubico. Todavia, o conjunto dos testes realizados em hardware real reforcou que a versao funcionalmente consolidada do trabalho continua sendo aquela baseada no nucleo congelado anteriormente, o que justifica sua manutencao como referencia principal para os capitulos finais do TCC.
+
+Observacao metodologica
+
+Os valores desta tabela foram obtidos a partir dos relatorios experimentais do teste HW012_dpd vr02 e dos relatorios de temporizacao gerados pelo Gowin, considerando o clock interno produzido pelo PLL a partir da referencia externa de 27 MHz da placa Tang Nano 4K.

@@ -1,0 +1,94 @@
+GowinSynthesis start
+Running parser ...
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\command_cdc_hw_dpd.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\input_dual_clock_bsram.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\input_memory_dualread_256x32.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\output_dual_clock_bsram.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\output_memory_dualport_256x32.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\protocol_controller_hw009_dpd.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\status_cdc_hw_dpd.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\uart_rx_27m_115200.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\uart_tx_27m_115200.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v":4)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v":4)
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_pkg.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v":5)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_bank.v":5)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\coeff_pkg.vh'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_add.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_add.v":3)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_add.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_add.v":3)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_mult.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_mult.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_mult.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_mult.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\dpd_core.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\dpd_core.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\dpd_core.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\dpd_core.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\fixed_mult.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\fixed_mult.v":3)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\fixed_mult.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\fixed_mult.v":3)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\iq_delay.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\iq_delay.v":3)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\iq_delay.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\iq_delay.v":3)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\mult_generic.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_branch.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_branch.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_branch.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_branch.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_kernel.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_kernel.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_kernel.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_kernel.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\rounding.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\rounding.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\rounding.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\rounding.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator2.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator2.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator2.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator2.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\gowin_pllvr\gowin_pllvr.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\checkpoint_cdc_hw024_dpd.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\command_cdc_hw024_dpd.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v'
+Analyzing included file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\config.vh'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v":2)
+Back to file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v":2)
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpdnano_hw024_dpd_top.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\protocol_controller_hw024_dpd.v'
+Analyzing Verilog file 'C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\status_cdc_hw024_dpd.v'
+Compiling module 'dpdnano_hw024_dpd_top'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpdnano_hw024_dpd_top.v":3)
+Compiling module 'Gowin_PLLVR'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\gowin_pllvr\gowin_pllvr.v":10)
+Compiling module 'uart_rx_27m_115200'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\uart_rx_27m_115200.v":2)
+Compiling module 'uart_tx_27m_115200'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\common\uart_tx_27m_115200.v":2)
+Compiling module 'protocol_controller_hw024_dpd'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\protocol_controller_hw024_dpd.v":3)
+Compiling module 'command_cdc_hw024_dpd'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\command_cdc_hw024_dpd.v":3)
+Compiling module 'status_cdc_hw024_dpd'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\status_cdc_hw024_dpd.v":3)
+Compiling module 'dpd_stress_engine_hw024'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v":4)
+Extracting RAM for identifier 'timestamp_fifo'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v":51)
+Extracting RAM for identifier 'sequence_fifo'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\testes_hardware_HWxxx\hw024\rtl\dpd_stress_engine_hw024.v":52)
+Compiling module 'dpd_core'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\dpd_core.v":4)
+Compiling module 'complex_mult'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\complex_mult.v":3)
+Compiling module 'poly_kernel'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_kernel.v":16)
+Compiling module 'poly_branch'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\poly_branch.v":4)
+Compiling module 'rounding'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\rounding.v":4)
+Compiling module 'saturator'("C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\src\rtl_v3_1\saturator.v":4)
+NOTE  (EX0101) : Current top module is "dpdnano_hw024_dpd_top"
+[5%] Running netlist conversion ...
+Running device independent optimization ...
+[10%] Optimizing Phase 0 completed
+[15%] Optimizing Phase 1 completed
+[25%] Optimizing Phase 2 completed
+Running inference ...
+[30%] Inferring Phase 0 completed
+[40%] Inferring Phase 1 completed
+[50%] Inferring Phase 2 completed
+[55%] Inferring Phase 3 completed
+Running technical mapping ...
+[60%] Tech-Mapping Phase 0 completed
+[65%] Tech-Mapping Phase 1 completed
+[75%] Tech-Mapping Phase 2 completed
+[80%] Tech-Mapping Phase 3 completed
+[90%] Tech-Mapping Phase 4 completed
+[95%] Generate netlist file "C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\impl\gwsynthesis\fpga_DPDnano_lite_v3_2.vg" completed
+[100%] Generate report file "C:\ProjetosGithub\TCC_CHIP_DIGITAL\TCC_FINAL\0-codigo_DPDnano\fpga_DPDnano_lite_v3_2\impl\gwsynthesis\fpga_DPDnano_lite_v3_2_syn.rpt.html" completed
+GowinSynthesis finish

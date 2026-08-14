@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="dpdnano_hw024_dpd_top" Register="513" Lut="522" T_Register="2726(513)" T_Alu="993(0)" T_Lut="3323(522)" T_MULT18X18="2(0)" T_MULTALU36X18="2(0)" T_MULTADDALU18X18="5(0)">
+ <SubModule name="u_gowin_pllvr"/>
+ <SubModule name="u_rx" Register="35" Lut="46" T_Register="35(35)" T_Lut="46(46)"/>
+ <SubModule name="u_tx" Register="24" Lut="33" T_Register="24(24)" T_Lut="33(33)"/>
+ <SubModule name="u_protocol" Register="197" Alu="8" Lut="695" T_Register="197(197)" T_Alu="8(8)" T_Lut="695(695)"/>
+ <SubModule name="u_command_cdc" Register="133" Lut="2" T_Register="133(133)" T_Lut="2(2)"/>
+ <SubModule name="u_status_cdc" Register="9" Lut="2" T_Register="9(9)" T_Lut="2(2)"/>
+ <SubModule name="u_engine" Register="1505" Alu="227" Lut="1668" T_Register="1815(1505)" T_Alu="985(227)" T_Lut="2023(1668)" T_MULT18X18="2(0)" T_MULTALU36X18="2(0)" T_MULTADDALU18X18="5(0)">
+  <SubModule name="u_dpd_core" Register="106" Alu="68" T_Register="310(106)" T_Alu="758(68)" T_Lut="355(0)" T_MULT18X18="2(0)" T_MULTALU36X18="2(0)" T_MULTADDALU18X18="5(0)">
+   <SubModule name="u_lin" Register="65" Alu="588" Lut="320" T_Register="65(65)" T_Alu="588(588)" T_Lut="320(320)"/>
+   <SubModule name="u_kernel" MULTALU36X18="2" MULTADDALU18X18="1" T_MULTALU36X18="2(2)" T_MULTADDALU18X18="1(1)"/>
+   <SubModule name="u_poly" Register="66" Alu="66" MULT18X18="2" MULTADDALU18X18="4" T_Register="66(66)" T_Alu="66(66)" T_MULT18X18="2(2)" T_MULTADDALU18X18="4(4)"/>
+   <SubModule name="u_round" Register="37" Alu="36" Lut="2" T_Register="37(37)" T_Alu="36(36)" T_Lut="2(2)"/>
+   <SubModule name="u_sat" Register="36" Lut="33" T_Register="36(36)" T_Lut="33(33)"/>
+  </SubModule>
+ </SubModule>
+</Module>

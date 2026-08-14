@@ -1,0 +1,255 @@
+Inventario final dos testes de hardware HW001 a HW024
+=====================================================
+
+Visao geral
+-----------
+
+Este documento consolida o inventario tecnico final da campanha de testes de
+hardware executada sobre a plataforma DPDnano-Lite em FPGA Tang Nano 4K. A
+bateria HW001 a HW024 foi organizada em pacotes independentes, com estrutura
+padronizada, README local, scripts host, arquivos de resultados e pasta `rtl`
+contendo apenas os arquivos particulares de cada ensaio, enquanto os blocos
+congelados de uso comum permaneceram referenciados a partir de `src/common`,
+`src/gowin_pllvr` e `src/rtl_v3_1`.
+
+A configuracao final adotada para a campanha foi:
+
+- nucleo DPD congelado: `rtl_v3_1`
+- clock interno do DPD: 60 MHz por PLL
+- UART host: 115200 bps
+- metodologia de testes baseada em execucao real em FPGA, com coleta de CSVs e
+  geracao de figuras PNG
+
+Organizacao funcional da bateria
+--------------------------------
+
+Para fins de interpretacao tecnica e redacao do Capitulo 7, os ensaios podem
+ser agrupados em quatro blocos.
+
+1. Ensaios de bring-up, comunicacao e infraestrutura
+----------------------------------------------------
+
+Testes abrangidos:
+
+- HW001
+- HW002
+- HW003
+- HW004
+- HW005
+- HW006
+- HW007
+- HW008
+- HW009
+- HW010
+- HW011
+
+Funcao tecnica do bloco:
+
+Este primeiro conjunto validou a infraestrutura minima necessaria para a
+campanha posterior. Em termos praticos, esses ensaios confirmaram:
+
+- comunicacao UART host-FPGA;
+- resposta a comandos e sincronismo basico do protocolo;
+- operacao dos LEDs de estado e indicadores de execucao;
+- leitura e escrita de dados auxiliares;
+- coerencia entre software host, top-levels de teste e bitstreams gravados na
+  FPGA;
+- operacao inicial do caminho de dados e da instrumentacao de apoio.
+
+Interpretacao:
+
+Os testes HW001 a HW011 cumprem papel de validacao de plataforma. Eles nao sao
+o foco central da analise nao linear do predistorcedor, mas sao fundamentais
+porque demonstram que o ambiente experimental foi estabilizado antes dos
+ensaios de caracterizacao. Em termos editoriais, esse bloco pode ser descrito
+de forma conjunta no Capitulo 7 como etapa de bring-up, integracao e
+verificacao funcional do sistema de teste em hardware.
+
+2. Ensaios de caracterizacao direta do nucleo DPD
+-------------------------------------------------
+
+Testes abrangidos:
+
+- HW012
+- HW013
+- HW014
+- HW015
+- HW016
+- HW017
+- HW018
+- HW019
+- HW020
+- HW021
+
+Funcao tecnica do bloco:
+
+Esse bloco concentrou os ensaios mais diretamente associados ao comportamento
+nao linear do DPDnano-Lite, com especial enfase em AM/AM, AM/PM, saturacao,
+overflow, compressao, ganho incremental e sensibilidade a coeficientes.
+
+Resumo por teste:
+
+- HW012: varredura AM/AM do nucleo DPD, utilizada para estudar a resposta em
+  funcao da frequencia de operacao e dos coeficientes. Esse teste foi central
+  para demonstrar que a versao `rtl_v3_1` permaneceu a referencia mais
+  confiavel, enquanto tentativas de aumento de frequencia e alteracoes em
+  `rtl_v3_2` nao produziram ganho pratico suficiente para justificar a troca do
+  nucleo congelado.
+
+- HW013: caracterizacao de saturacao e overflow em amplitudes elevadas. O
+  ensaio confirmou a presenca dos limites numericos do processamento em Q1.15 e
+  a transicao para regime de saturacao no dominio de saida.
+
+- HW014: validacao da multiplicacao complexa e da resposta AM/PM sob
+  coeficientes complexos. Esse teste confirmou a coerencia do desvio de fase
+  controlado pela arquitetura proposta.
+
+- HW015: AM/PM dependente da amplitude. O ensaio mostrou crescimento monotonicamente
+  controlado do desvio de fase em funcao da magnitude de entrada.
+
+- HW016: campanha multi-profile para quatro perfis AM/PM em uma unica execucao.
+  Esse teste demonstrou a capacidade do sistema de reproduzir perfis de fase
+  distintos com comportamento monotonicamente consistente.
+
+- HW017: saturacao e compressao em regime fortemente nao linear. O teste foi
+  importante para distinguir a regiao de transicao entre referencia linear,
+  expansao e saturacao, inclusive com deteccao do cruzamento da curva medida
+  com a reta `y = x`.
+
+- HW018: compressao e ponto de 1 dB. O ensaio estabeleceu uma referencia
+  objetiva para caracterizar o inicio da compressao relevante do sistema.
+
+- HW019: analise do ganho incremental. Esse teste foi particularmente util para
+  evidenciar perda de monotonicidade do ganho diferencial em configuracoes de
+  compressao mais severa, ajudando a explicar limites de aplicabilidade do
+  nucleo.
+
+- HW020: mapeamento da janela operacional no plano de coeficientes. O ensaio
+  organizou a resposta do sistema em regioes seguras, compressivas, expansivas,
+  saturadas, com overflow ou nao monotonicidade. Trata-se de um dos testes mais
+  importantes para o Capitulo 7, pois fornece uma visao global da regiao de
+  operacao aceitavel do DPDnano-Lite.
+
+- HW021: sensibilidade paramétrica. O teste refinou a interpretacao da
+  influencia de `coef1` e `coef3` sobre a curva de transferencia, mostrando
+  como pequenas variacoes parametricas afetam o comportamento AM/AM.
+
+Interpretacao:
+
+Esse bloco forma o nucleo argumentativo principal do Capitulo 7. Nele se
+concentram as evidencias experimentais de que a arquitetura DPDnano-Lite foi
+capaz de reproduzir comportamento nao linear controlado, com previsibilidade
+nas curvas de transferencia, nos mecanismos de saturacao, na resposta de fase e
+nos limites de monotonicidade. Ao mesmo tempo, esse conjunto de testes tambem
+explicita as restricoes de area e frequencia da implementacao.
+
+3. Ensaios temporais, dinamicos e de estabilidade sob fluxo continuo
+--------------------------------------------------------------------
+
+Testes abrangidos:
+
+- HW022
+- HW023
+- HW024
+
+Funcao tecnica do bloco:
+
+Esse conjunto final investigou o comportamento temporal do sistema e sua
+robustez em campanhas prolongadas e dinamicas.
+
+Resumo por teste:
+
+- HW022: caracterizacao temporal em cenarios de trafego distintos. O ensaio
+  confirmou latencia fixa de 6 ciclos, jitter nulo e integridade temporal do
+  caminho de processamento sob diferentes padroes de entrada.
+
+- HW023: stress dinamico com fluxo continuo, ate 1.000.000 de amostras por
+  execucao, cinco perfis dinamicos e atualizacao de coeficientes a cada 256
+  amostras. O teste confirmou throughput efetivo de aproximadamente 60 MS/s,
+  latencia fixa de 6 ciclos, checkpoints coerentes e ausencia de perdas,
+  duplicacoes ou reordenacao.
+
+- HW024: campanha de reprodutibilidade estatistica baseada em 10 execucoes de
+  1.000.000 de amostras cada, totalizando 10.000.000 de amostras processadas.
+  O ensaio validou estabilidade completa de latencia, throughput, checkpoints,
+  integridade de fluxo e padrao estatistico de overflow/saturacao. Embora a
+  assinatura agregada de saida variasse entre runs, a ausencia de impacto sobre
+  perdas, ordem, latencia ou throughput justificou o enquadramento do teste
+  como validacao de reprodutibilidade estatistica em hardware real.
+
+Interpretacao:
+
+Esse bloco fecha a campanha de testes com uma demonstracao de maturidade
+experimental. Enquanto HW022 comprova previsibilidade temporal, HW023 demonstra
+robustez sob dinamica de longa duracao, e HW024 estende essa validacao para o
+dominio estatistico entre repeticoes sucessivas.
+
+4. Conclusoes tecnicas do inventario
+------------------------------------
+
+Da analise consolidada de HW001 a HW024 emergem quatro conclusoes principais.
+
+1. A infraestrutura experimental foi efetivamente estabilizada.
+
+Os ensaios iniciais de bring-up mostraram que a plataforma de teste em FPGA, a
+comunicacao serial, os scripts host e os top-levels dedicados atingiram um
+estado de operacao confiavel, permitindo a execucao repetida dos testes
+subsequentes.
+
+2. O nucleo congelado `rtl_v3_1` permaneceu como referencia valida da
+arquitetura.
+
+As investigacoes de frequencia e de possiveis alteracoes arquiteturais
+posteriores mostraram que, em um primeiro momento, os esforcos de
+desenvolvimento estiveram fortemente concentrados em fazer o projeto operar em
+100 MHz. Entretanto, a elevacao da frequencia passou a introduzir
+inconsistencias experimentais nas curvas e metricas observadas em hardware,
+incluindo falhas associadas a overflow espurio, instabilidade em resultados
+agregados e degradacao da confiabilidade dos ensaios mais sensiveis.
+
+Ao longo da campanha, os testes mostraram que a operacao em 60 MHz foi o maior
+patamar de clock em que o DPDnano-Lite conseguiu manter comportamento estavel,
+sem falhas de fluxo e sem erros nas curvas finais dos ensaios de
+caracterizacao. Assim, a manutencao de `rtl_v3_1` como base valida do projeto e
+o congelamento da campanha em 60 MHz ficaram tecnicamente justificados, nao
+apenas por limitacoes de area e temporizacao da FPGA, mas sobretudo por ser
+essa a melhor frequencia de operacao validada experimentalmente sem perda de
+consistencia nos resultados.
+
+3. O DPDnano-Lite demonstrou comportamento funcional coerente com a proposta
+arquitetural.
+
+Os testes de AM/AM, AM/PM, saturacao, compressao, ganho incremental e janela
+operacional mostraram que a arquitetura proposta implementa de forma
+reprodutivel os efeitos previstos pelo modelo polinomial adotado, inclusive com
+controle sobre ganho linear, termo cubico, rotacao de fase e limites numericos
+do processamento em ponto fixo.
+
+4. O sistema apresentou robustez temporal e operacional em FPGA real.
+
+Os ensaios temporais e dinamicos confirmaram latencia fixa de 6 ciclos,
+throughput proximo a 60 MS/s, ausencia de perdas e coerencia em campanhas de
+longo comprimento, culminando no HW024 como validacao de reprodutibilidade
+estatistica em 10.000.000 de amostras.
+
+Uso sugerido no Capitulo 7
+--------------------------
+
+Uma estrutura textual coerente para o Capitulo 7 pode seguir o inventario em
+quatro movimentos:
+
+- abertura resumindo HW001 a HW011 como bloco de bring-up e integracao;
+- corpo central detalhando HW012 a HW021 como ensaios de caracterizacao
+  funcional e nao linear;
+- secao final com HW022 a HW024 como validacoes temporal, dinamica e
+  estatistica;
+- encerramento destacando que os resultados obtidos justificam tecnicamente a
+  adocao da arquitetura DPDnano-Lite e delimitam, com rigor experimental, sua
+  faixa de operacao confiavel em FPGA com recursos limitados.
+
+Status final do inventario
+--------------------------
+
+Com este documento, considera-se encerrada a organizacao tecnica da bateria de
+testes de hardware HW001 a HW024, em formato adequado para uso como base de
+redacao, consolidacao de resultados e documentacao final do projeto.

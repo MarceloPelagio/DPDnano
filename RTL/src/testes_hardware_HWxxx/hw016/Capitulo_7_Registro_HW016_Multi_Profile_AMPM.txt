@@ -1,0 +1,100 @@
+Registro de apoio para o Capitulo 7
+Teste HW016_dpd - Multi-Profile One Run
+Data de consolidacao: 10 de agosto de 2026
+
+Objetivo do teste
+
+O teste HW016_dpd foi definido para validar, em uma unica execucao de hardware,
+quatro perfis distintos de resposta AM/PM selecionaveis por comando. O ensaio
+permite comparar, sob a mesma infraestrutura de teste e no mesmo bitstream, um
+perfil linear e tres perfis com rotacao de fase crescente.
+
+Configuracao congelada para o resultado valido
+
+- Nucleo utilizado: `rtl_v3_1` validado
+- Frequencia de operacao utilizada no ensaio consolidado: `60,000 MHz`
+- Pontos por perfil: `256`
+- Amplitude maxima: `30000`
+- Tolerancia de monotonicidade angular adotada no script: `0,5°`
+
+Perfis avaliados
+
+- Perfil A:
+  - `coef3_im = 0x0000`
+  - comportamento esperado: aproximadamente linear
+- Perfil B:
+  - `coef3_im = 0x0CCD`
+  - comportamento esperado: AM/PM leve
+- Perfil C:
+  - `coef3_im = 0x199A`
+  - comportamento esperado: AM/PM media
+- Perfil D:
+  - `coef3_im = 0x2CCD`
+  - comportamento esperado: AM/PM forte
+
+Resumo do resultado consolidado
+
+- Perfil A:
+  - Desvio de fase minimo: `0,000000°`
+  - Desvio de fase maximo: `0,000000°`
+  - Falhas de monotonicidade (> 0,5°): `0`
+  - Overflow: `NAO`
+  - Resultado: `PASS`
+- Perfil B:
+  - Desvio de fase minimo: `0,000000°`
+  - Desvio de fase maximo: `11,836912°`
+  - Falhas de monotonicidade (> 0,5°): `0`
+  - Overflow: `NAO`
+  - Resultado: `PASS`
+- Perfil C:
+  - Desvio de fase minimo: `0,000000°`
+  - Desvio de fase maximo: `22,737745°`
+  - Falhas de monotonicidade (> 0,5°): `0`
+  - Overflow: `NAO`
+  - Resultado: `PASS`
+- Perfil D:
+  - Desvio de fase minimo: `0,000000°`
+  - Desvio de fase maximo: `36,256943°`
+  - Falhas de monotonicidade (> 0,5°): `0`
+  - Overflow: `NAO`
+  - Resultado: `PASS`
+
+Resultado final do ensaio
+
+- `RESULTADO: PASS - quatro perfis AM/PM validados em uma execucao`
+
+Interpretacao tecnica
+
+O HW016 apresentou um resultado particularmente consistente, pois reuniu em uma
+mesma execucao quatro respostas distintas, todas validadas sem overflow e sem
+falhas de monotonicidade angular acima da tolerancia adotada. O Perfil A serviu
+como referencia linear, exibindo desvio de fase nulo em toda a faixa de ensaio.
+Ja os perfis B, C e D mostraram crescimento progressivo do desvio angular maximo,
+com valores finais de aproximadamente `11,84°`, `22,74°` e `36,26°`,
+respectivamente.
+
+Esse comportamento evidencia coerencia interna entre os perfis, pois a resposta
+angular cresce conforme o aumento do coeficiente imaginario associado ao ramo
+cubico. Assim, o teste nao apenas valida cada perfil individualmente, mas tambem
+confirma a capacidade do sistema de alternar entre diferentes configuracoes de
+AM/PM de maneira previsivel e reprodutivel.
+
+Conclusao para o Capitulo 7
+
+O teste HW016 valida, em hardware real, a selecao multiperfil de resposta AM/PM
+com base no nucleo `rtl_v3_1`, mostrando que a arquitetura consegue executar, em
+uma unica sessao e sem recompilacao intermediaria, um perfil linear e tres perfis
+com intensidade crescente de rotacao de fase. O resultado fortalece a conclusao
+de que o nucleo funcionalmente consolidado do projeto preserva comportamento
+deterministico nao apenas em testes isolados, mas tambem em cenarios comparativos
+multiperfil.
+
+Sugestao de redacao reaproveitavel
+
+"No teste HW016, o DPDnano-Lite foi submetido a quatro perfis de operacao em uma
+unica execucao, compreendendo um perfil linear e tres perfis AM/PM com intensidade
+progressivamente crescente. Em 60,000 MHz, todos os perfis foram validados sem
+overflow e sem falhas de monotonicidade acima da tolerancia de 0,5°. Os desvios
+de fase maximos observados foram de 0°, 11,836912°, 22,737745° e 36,256943° para
+os perfis A, B, C e D, respectivamente, evidenciando a coerencia da selecao
+multiperfil implementada no nucleo rtl_v3_1."

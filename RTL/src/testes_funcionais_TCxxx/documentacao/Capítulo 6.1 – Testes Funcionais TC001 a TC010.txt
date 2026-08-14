@@ -1,0 +1,109 @@
+Capítulo 6.1 – Testes Funcionais TC001 a TC010
+
+6.3 Suíte funcional da arquitetura congelada
+
+Os testes funcionais TC001 a TC010 constituem a base de validação lógica do DPDnano-Lite congelado. Eles foram escritos para responder a uma questão fundamental: a arquitetura implementada em RTL realiza corretamente, no domínio temporal e numérico, o comportamento que lhe foi atribuído durante a etapa de projeto? Para que essa pergunta pudesse ser respondida com rigor, a suíte foi organizada de forma incremental, partindo de cenários elementares de inicialização e avançando em direção a casos progressivamente mais exigentes, incluindo operação não linear, saturação, monitoramento de overflow, estresse contínuo e benchmark de vazão.
+
+Do ponto de vista metodológico, a grande virtude dessa suíte é a rastreabilidade. Cada teste possui uma hipótese operacional simples e diretamente interpretável. Quando um caso passa, sabe-se precisamente qual propriedade funcional foi confirmada; quando falha, sabe-se em qual parte do contrato da arquitetura deve concentrar-se a investigação. Isso torna os TCxxx especialmente adequados para um capítulo de verificação funcional em um TCC, porque permite construir a argumentação experimental de forma cumulativa.
+
+6.3.1 TC001 – Sequência de reset
+
+O teste TC001 foi concebido para verificar o comportamento da arquitetura durante e imediatamente após a condição de reset. A motivação desse ensaio decorre do fato de que, em sistemas síncronos pipeline, o reset não exerce apenas a função de inicialização; ele define a condição de referência a partir da qual todo o comportamento subsequente será interpretado. Caso a arquitetura apresente saídas válidas indevidas, estados residuais ou propagação espúria de dados durante o reset, qualquer resultado posterior torna-se metodologicamente suspeito.
+
+No TC001, o sinal `rst` é mantido ativo por alguns ciclos de clock, enquanto `in_valid` permanece em zero e as entradas de dados são anuladas. Os coeficientes são fixados em uma configuração linear simples, mas nenhum vetor válido é efetivamente injetado no sistema. O que se espera observar é, portanto, a ausência de atividade de saída: `out_valid` deve permanecer inativo e não deve haver indícios de produção indevida de amostras.
+
+Esse teste responde ao “por que” mais básico da verificação: é impossível confiar nos resultados de uma arquitetura pipeline sem antes comprovar que o sistema parte de um estado conhecido. O “para quê” do TC001 é garantir que a linha de base temporal do DPDnano-Lite seja corretamente estabelecida. O “como” é propositalmente simples: a ausência de estímulo válido é usada como filtro para qualquer atividade residual que pudesse denunciar inicialização incorreta.
+
+O resultado esperado é a manutenção de `out_valid = 0` durante o período de observação após a liberação do reset. A passagem desse teste indica que os registradores críticos do pipeline não estão liberando lixo lógico, que o controle de validade não é indevidamente ativado e que a arquitetura respeita a condição de silêncio funcional quando nenhum dado foi aceito. Em termos científicos, TC001 não demonstra desempenho, mas demonstra confiabilidade de inicialização, sem a qual nenhuma outra medida seria interpretável.
+
+6.3.2 TC002 – Entrada nula
+
+O teste TC002 verifica a resposta do sistema quando a entrada válida aplicada à arquitetura é nula. A motivação desse ensaio é confirmar a preservação do ponto de equilíbrio do sistema. Em um predistorcedor digital corretamente implementado, a amostra nula deve permanecer nula ao longo de todo o caminho de processamento, desde que não haja offset, erro de arredondamento acumulado ou comportamento indevido introduzido pelas etapas internas.
+
+Nesse teste, os coeficientes lineares são configurados em uma condição nominal simples, enquanto a entrada complexa é explicitamente definida como zero. Após o enchimento do pipeline, aguarda-se a saída válida correspondente e compara-se o resultado obtido com o vetor de referência `[0, 0]`.
+
+O “por que” do TC002 está na necessidade de demonstrar que a arquitetura não cria energia artificial. O “para quê” é verificar que o datapath não introduz offset digital, vazamento numérico ou assimetria básica no tratamento de zeros. O “como” utiliza exatamente um vetor nulo com `in_valid` ativo, de forma que a arquitetura execute de fato o processamento completo sem que o teste se confunda com a condição de reset do TC001.
+
+Espera-se que a saída permaneça exatamente nula. Quando esse comportamento é confirmado, demonstra-se que a arquitetura preserva coerentemente a origem do espaço de sinais. Essa propriedade é importante não apenas do ponto de vista matemático, mas também de integração sistêmica: um transmissor que injeta componentes espúrias na ausência de estímulo comprometeria qualquer cadeia subsequente de processamento.
+
+6.3.3 TC003 – Ganho linear positivo
+
+O teste TC003 valida o caminho linear principal da arquitetura sob uma excitação de pequena amplitude e polaridade mista entre as componentes I e Q. A motivação desse ensaio é confirmar que o ramo linear implementado por `complex_mult` e integrado ao `dpd_core` preserva corretamente a relação entre entrada e saída quando a contribuição cúbica está desabilitada.
+
+Para isso, o coeficiente linear é fixado em valor unitário aproximado no formato da arquitetura, enquanto os coeficientes cúbicos são anulados. A entrada é composta por uma amostra complexa com parte real positiva e parte imaginária negativa. O teste espera que a saída replique esse vetor dentro de tolerância mínima compatível com a representação Q1.15.
+
+O “por que” do TC003 é simples: antes de validar a não linearidade compensatória, é indispensável demonstrar que a arquitetura se comporta corretamente no regime linear. O “para quê” consiste em comprovar que a contribuição de primeira ordem foi integrada corretamente e que o processamento complexo mantém coerência de sinal entre I e Q. O “como” utiliza uma comparação com tolerância de 1 LSB, o que já incorpora o fato de que o caminho real contém etapas de arredondamento e normalização.
+
+O resultado esperado é a reprodução quase exata da amostra de entrada. A aprovação do TC003 indica que o ramo linear opera corretamente, que a combinação entre coeficiente complexo e amostra complexa não introduz erro macroscópico e que a arquitetura já atende ao contrato mínimo de transmissão linear em pequena escala.
+
+6.3.4 TC004 – Ganho linear com sinal negativo
+
+O TC004 é complementar ao TC003, mas com polaridade invertida na entrada. Sua motivação é verificar se o caminho linear preserva corretamente a aritmética em complemento de dois, especialmente em sinais negativos. Esse teste é importante porque falhas de sinal costumam revelar problemas sutis de extensão de sinal, truncamento inadequado ou interpretação incorreta da largura de palavra.
+
+Os coeficientes permanecem em configuração linear simples, enquanto a entrada é escolhida com parte real negativa e parte imaginária positiva. O comportamento esperado é a reprodução fiel da amostra, novamente dentro de tolerância de 1 LSB.
+
+O “por que” desse teste reside no fato de que arquiteturas em ponto fixo devem ser validadas tanto em magnitude quanto em polaridade. O “para quê” é comprovar que o ramo linear não é apenas numericamente correto para sinais positivos, mas também simétrico quanto ao tratamento de sinais negativos. O “como” retoma a mesma estrutura do TC003, alterando apenas o quadrante do vetor de entrada.
+
+O resultado observado, quando compatível com o esperado, mostra que a aritmética assinada da arquitetura permanece correta em regime linear e que o comportamento do caminho principal não depende artificialmente do sinal do estímulo.
+
+6.3.5 TC005 – Ativação do ramo cúbico
+
+O TC005 é um dos testes conceitualmente mais importantes da suíte funcional, porque ele deixa o domínio puramente linear e exercita explicitamente o termo não linear da arquitetura congelada. A motivação desse ensaio é verificar se o ramo cúbico implementado por `poly_kernel` e `poly_branch` participa corretamente da formação da saída quando o caminho linear é desativado.
+
+No teste, os coeficientes lineares são anulados e o coeficiente cúbico real é configurado em valor máximo positivo. Aplica-se então uma entrada real de amplitude controlada. A saída esperada não é a própria entrada, mas um valor de referência congelado, extraído do comportamento validado da RTL v3.1. Isso é metodologicamente relevante: o teste não compara a arquitetura com uma idealização genérica, mas com um golden reference coerente com a implementação efetivamente congelada.
+
+O “por que” do TC005 está na necessidade de demonstrar que o DPDnano-Lite não é apenas um caminho linear com saturador, mas um sistema que efetivamente gera e pondera termos não lineares. O “para quê” é confirmar a integridade do ramo cúbico como contribuição funcional autônoma. O “como” consiste em isolar esse ramo, removendo a contribuição linear, e comparar a saída com um valor conhecido.
+
+Espera-se que a saída coincida com a referência congelada. Quando isso ocorre, tem-se uma evidência forte de que a geração de `|x|^2`, a formação de `x|x|^2`, a ponderação pelo coeficiente cúbico e a reescala do ramo foram integradas corretamente. Em termos científicos, esse teste é o primeiro a provar que a arquitetura implementa de fato a lógica polinomial que a fundamenta.
+
+6.3.6 TC006 – Saturação positiva
+
+O TC006 verifica o comportamento da arquitetura quando a saída tende a ultrapassar o limite superior da faixa dinâmica representável. A motivação desse teste está na necessidade de confirmar a ação coordenada entre `rounding` e `saturator`, sobretudo em um cenário extremo no qual linear e ramo cúbico contribuem simultaneamente para aumentar a amplitude da saída.
+
+Nesse ensaio, a entrada é colocada próxima ao máximo positivo e os coeficientes linear e cúbico são configurados em valores elevados. O objetivo não é observar uma resposta “natural” do sistema, mas deliberadamente forçá-lo à região de clip. O resultado esperado é que a saída real seja limitada ao maior valor representável em Q1.15, sem wrap-around e sem corrupção da componente imaginária.
+
+O “por que” do TC006 é garantir segurança numérica. O “para quê” é comprovar que excessos de amplitude não se transformam em inversões espúrias de sinal. O “como” utiliza uma configuração agressiva de entrada e coeficientes, precisamente para tornar inevitável a condição de saturação.
+
+Quando a saída é limitada corretamente em `0x7FFF`, demonstra-se que a política de saturação superior foi implementada com correção. Esse resultado é central para a robustez do DPDnano-Lite, pois mostra que a arquitetura permanece operacional mesmo quando submetida a estímulos além da faixa segura.
+
+6.3.7 TC007 – Saturação negativa
+
+O TC007 é o análogo do TC006 para a região inferior da faixa dinâmica. Sua motivação é verificar se a limitação inferior em complemento de dois é realizada com a mesma robustez observada no clip positivo. Em sistemas fixos assinados, o extremo negativo frequentemente exige atenção especial, pois sua representação assimétrica pode revelar defeitos que não aparecem no extremo positivo.
+
+O teste aplica uma entrada fortemente negativa, mantendo coeficientes elevados para estimular a extrapolação inferior. O resultado esperado é a saturação da componente real em `-0x8000`, preservando coerência com a política de limitação definida na arquitetura.
+
+O “por que” é demonstrar robustez bilateral da estratégia de saturação. O “para quê” é garantir que o sistema permaneça previsível em ambos os extremos da representação numérica. O “como” reproduz a estrutura do TC006, porém deslocando o cenário para o limite inferior.
+
+Quando aprovado, o TC007 mostra que a arquitetura trata de forma correta o pior caso negativo da aritmética assinada. Isso fortalece a confiança nos resultados obtidos nos testes seguintes, nos quais eventos de overflow e saturação podem surgir em contexto dinâmico mais complexo.
+
+6.3.8 TC008 – Flags de overflow
+
+Embora documentos auxiliares antigos tenham associado o TC008 a “IQ simultaneous”, o testbench efetivamente utilizado na versão congelada valida as flags de overflow. Esse ponto é importante para a fidelidade documental do Capítulo 6. O ensaio injeta simultaneamente entradas e coeficientes agressivos nas duas componentes I/Q, forçando a arquitetura a operar em uma condição propensa a saturação e verificando se os sinais `overflow`, `overflow_re` e `overflow_im` refletem corretamente o evento.
+
+O “por que” do TC008 está no fato de que, em arquiteturas fixas, a observabilidade do overflow é uma propriedade de verificação tão importante quanto a própria saturação da saída. O “para quê” é assegurar que o sistema não apenas limita a amplitude final, mas também informa de maneira rastreável que a limitação ocorreu. O “como” emprega uma configuração extrema de entrada e coeficientes complexos, seguida da checagem explícita das flags.
+
+O resultado esperado é a ativação coerente da flag global de overflow e das flags por componente de acordo com o padrão imposto pelo caso de teste. Esse ensaio acrescenta um nível de diagnóstica à validação da arquitetura, pois confirma que condições de extrapolação de faixa podem ser monitoradas de forma objetiva durante a simulação e em futuras variantes instrumentadas do sistema.
+
+6.3.9 TC009 – Estresse contínuo e medição de latência
+
+O TC009 constitui a ponte entre a validação funcional clássica e a avaliação dinâmica do pipeline. Sua versão principal, denominada Continuous Stress Regression, injeta 200 vetores pseudoaleatórios consecutivos e mede diretamente a latência observada entre a primeira aceitação de entrada e a primeira saída válida. Adicionalmente, contabiliza vetores transmitidos, vetores recebidos, eventos de overflow e possíveis anomalias como X/Z na saída.
+
+O “por que” desse teste é particularmente forte. Uma arquitetura pipeline pode passar em testes isolados e ainda assim falhar sob transmissão contínua, seja por desalinhamento interno, perda de amostras, bolhas indevidas ou comportamento temporal incorreto. O “para quê” do TC009 é demonstrar que a arquitetura sustenta fluxo contínuo sem perder correspondência entre entrada e saída. O “como” combina transmissão contínua, contadores explícitos, monitoramento de integridade de dados e medição da diferença entre ciclos do primeiro input e do primeiro output.
+
+O resultado esperado é latência fixa de cinco ciclos, taxa de entrega de 100% e ausência de perdas ou timeout. A aprovação desse teste tem forte significado científico: ela demonstra que a latência discutida arquiteturalmente nos capítulos anteriores não é apenas uma previsão teórica, mas uma propriedade empiricamente observada.
+
+Além da variante principal, o repositório preserva variantes de estresse mais severas, como `TC009_Torture`, `TC009_Nightmare` e `TC009_Apocalypse`. Para fins de redação do capítulo, a interpretação recomendada é tratá-las como subcasos de aprofundamento do TC009, e não como testes independentes da sequência principal. Essa decisão mantém a coerência numérica do capítulo e ao mesmo tempo reconhece que a investigação experimental da robustez foi além do caso mínimo de regressão contínua.
+
+6.3.10 TC010 – Benchmark de throughput
+
+O TC010 fecha a suíte funcional observando a arquitetura sob a ótica de desempenho de entrega sustentada. Seu foco não é a corretude de um vetor específico, mas a capacidade do pipeline de aceitar e produzir grande número de amostras em fluxo contínuo. No testbench congelado, um milhão de amostras é transmitido, e o critério essencial é a equivalência entre o número de vetores enviados e recebidos.
+
+O “por que” do TC010 é separar a noção de corretude da noção de capacidade operacional. Uma arquitetura pode estar logicamente correta e ainda assim apresentar gargalos sob carga prolongada. O “para quê” é demonstrar que o DPDnano-Lite mantém vazão efetiva compatível com sua filosofia pipeline. O “como” utiliza uma longa sequência determinística de vetores, contadores de transmissão e recepção e uma condição final de aprovação baseada na taxa de entrega.
+
+Espera-se entrega integral dos vetores transmitidos. Quando o teste passa, demonstra-se que a organização pipeline não apenas define uma latência estável, mas também sustenta vazão próxima de uma amostra por ciclo após o enchimento inicial. Isso é altamente relevante para aplicações em processamento digital em tempo real.
+
+6.3.11 Síntese crítica da suíte TCxxx
+
+Em conjunto, os testes TC001 a TC010 formam uma narrativa experimental coerente. Os primeiros casos asseguram inicialização e linearidade básica; os casos intermediários demonstram ativação da não linearidade e robustez sob saturação; os casos mais avançados comprovam observabilidade de overflow, latência determinística e capacidade de transmissão contínua em larga escala. A passagem dessa suíte não significa que toda propriedade concebível da arquitetura tenha sido exaurida, mas significa que o contrato funcional da versão congelada foi coberto de forma abrangente e rastreável.
+
+Para o Capítulo 6, a recomendação metodológica é utilizar essa suíte como o eixo principal da validação funcional. Os testes TMQ, apresentados nos arquivos complementares seguintes, devem ser interpretados como expansão analítica dessa base, e não como substitutos dos TCxxx.

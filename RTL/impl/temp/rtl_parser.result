@@ -1,0 +1,232 @@
+[
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/command_cdc_hw_dpd.v",
+        "InstLine": 2,
+        "InstName": "command_cdc_hw_dpd",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/command_cdc_hw_dpd.v",
+        "ModuleLine": 2,
+        "ModuleName": "command_cdc_hw_dpd"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/input_dual_clock_bsram.v",
+        "InstLine": 2,
+        "InstName": "input_dual_clock_bsram",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/input_dual_clock_bsram.v",
+        "ModuleLine": 2,
+        "ModuleName": "input_dual_clock_bsram"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/input_memory_dualread_256x32.v",
+        "InstLine": 2,
+        "InstName": "input_memory_dualread_256x32",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/input_memory_dualread_256x32.v",
+        "ModuleLine": 2,
+        "ModuleName": "input_memory_dualread_256x32"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/output_dual_clock_bsram.v",
+        "InstLine": 2,
+        "InstName": "output_dual_clock_bsram",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/output_dual_clock_bsram.v",
+        "ModuleLine": 2,
+        "ModuleName": "output_dual_clock_bsram"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/output_memory_dualport_256x32.v",
+        "InstLine": 2,
+        "InstName": "output_memory_dualport_256x32",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/output_memory_dualport_256x32.v",
+        "ModuleLine": 2,
+        "ModuleName": "output_memory_dualport_256x32"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/protocol_controller_hw009_dpd.v",
+        "InstLine": 2,
+        "InstName": "protocol_controller_hw009_dpd",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/protocol_controller_hw009_dpd.v",
+        "ModuleLine": 2,
+        "ModuleName": "protocol_controller_hw009_dpd"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/status_cdc_hw_dpd.v",
+        "InstLine": 2,
+        "InstName": "status_cdc_hw_dpd",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/status_cdc_hw_dpd.v",
+        "ModuleLine": 2,
+        "ModuleName": "status_cdc_hw_dpd"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/coeff_bank.v",
+        "InstLine": 13,
+        "InstName": "coeff_bank",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/coeff_bank.v",
+        "ModuleLine": 13,
+        "ModuleName": "coeff_bank"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/complex_add.v",
+        "InstLine": 5,
+        "InstName": "complex_add",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/complex_add.v",
+        "ModuleLine": 5,
+        "ModuleName": "complex_add"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/fixed_mult.v",
+        "InstLine": 5,
+        "InstName": "fixed_mult",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/fixed_mult.v",
+        "ModuleLine": 5,
+        "ModuleName": "fixed_mult"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/iq_delay.v",
+        "InstLine": 5,
+        "InstName": "iq_delay",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/iq_delay.v",
+        "ModuleLine": 5,
+        "ModuleName": "iq_delay"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/mult_generic.v",
+        "InstLine": 12,
+        "InstName": "mult_generic",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/mult_generic.v",
+        "ModuleLine": 12,
+        "ModuleName": "mult_generic"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/saturator2.v",
+        "InstLine": 4,
+        "InstName": "saturator2",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/saturator2.v",
+        "ModuleLine": 4,
+        "ModuleName": "saturator2"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/checkpoint_cdc_hw024_dpd.v",
+        "InstLine": 3,
+        "InstName": "checkpoint_cdc_hw024_dpd",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/checkpoint_cdc_hw024_dpd.v",
+        "ModuleLine": 3,
+        "ModuleName": "checkpoint_cdc_hw024_dpd"
+    },
+    {
+        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+        "InstLine": 3,
+        "InstName": "dpdnano_hw024_dpd_top",
+        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+        "ModuleLine": 3,
+        "ModuleName": "dpdnano_hw024_dpd_top",
+        "SubInsts": [
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 83,
+                "InstName": "u_gowin_pllvr",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/gowin_pllvr/gowin_pllvr.v",
+                "ModuleLine": 10,
+                "ModuleName": "Gowin_PLLVR"
+            },
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 89,
+                "InstName": "u_rx",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/uart_rx_27m_115200.v",
+                "ModuleLine": 2,
+                "ModuleName": "uart_rx_27m_115200"
+            },
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 99,
+                "InstName": "u_tx",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/common/uart_tx_27m_115200.v",
+                "ModuleLine": 2,
+                "ModuleName": "uart_tx_27m_115200"
+            },
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 108,
+                "InstName": "u_protocol",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/protocol_controller_hw024_dpd.v",
+                "ModuleLine": 3,
+                "ModuleName": "protocol_controller_hw024_dpd"
+            },
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 146,
+                "InstName": "u_command_cdc",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/command_cdc_hw024_dpd.v",
+                "ModuleLine": 3,
+                "ModuleName": "command_cdc_hw024_dpd"
+            },
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 157,
+                "InstName": "u_status_cdc",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/status_cdc_hw024_dpd.v",
+                "ModuleLine": 3,
+                "ModuleName": "status_cdc_hw024_dpd"
+            },
+            {
+                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpdnano_hw024_dpd_top.v",
+                "InstLine": 170,
+                "InstName": "u_engine",
+                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpd_stress_engine_hw024.v",
+                "ModuleLine": 4,
+                "ModuleName": "dpd_stress_engine_hw024",
+                "SubInsts": [
+                    {
+                        "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/testes_hardware_HWxxx/hw024/rtl/dpd_stress_engine_hw024.v",
+                        "InstLine": 114,
+                        "InstName": "u_dpd_core",
+                        "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+                        "ModuleLine": 4,
+                        "ModuleName": "dpd_core",
+                        "SubInsts": [
+                            {
+                                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+                                "InstLine": 33,
+                                "InstName": "u_lin",
+                                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/complex_mult.v",
+                                "ModuleLine": 3,
+                                "ModuleName": "complex_mult"
+                            },
+                            {
+                                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+                                "InstLine": 44,
+                                "InstName": "u_kernel",
+                                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/poly_kernel.v",
+                                "ModuleLine": 16,
+                                "ModuleName": "poly_kernel"
+                            },
+                            {
+                                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+                                "InstLine": 73,
+                                "InstName": "u_poly",
+                                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/poly_branch.v",
+                                "ModuleLine": 4,
+                                "ModuleName": "poly_branch"
+                            },
+                            {
+                                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+                                "InstLine": 109,
+                                "InstName": "u_round",
+                                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/rounding.v",
+                                "ModuleLine": 4,
+                                "ModuleName": "rounding"
+                            },
+                            {
+                                "InstFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/dpd_core.v",
+                                "InstLine": 124,
+                                "InstName": "u_sat",
+                                "ModuleFile": "C:/ProjetosGithub/TCC_CHIP_DIGITAL/TCC_FINAL/0-codigo_DPDnano/fpga_DPDnano_lite_v3_2/src/rtl_v3_1/saturator.v",
+                                "ModuleLine": 4,
+                                "ModuleName": "saturator"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,74 @@
+Padrao congelado para os testes de hardware HWxxx
+=================================================
+
+Este documento registra a forma padronizada adotada a partir da reorganizacao
+dos testes HW017 em diante.
+
+Estrutura de cada teste
+-----------------------
+
+Cada teste deve ficar em:
+
+`src/testes_hardware_HWxxx/hwNNN`
+
+Na raiz da pasta do teste devem ficar:
+
+- script principal Python
+- script de plot
+- arquivos CSV gerados
+- figuras PNG geradas
+- README.txt
+
+Na subpasta:
+
+`rtl/`
+
+devem ficar apenas:
+
+- top-level especifico do teste
+- controlador RTL especifico do teste
+- arquivo `.cst`
+- arquivo `.sdc`
+- outros arquivos realmente particulares do teste, se existirem
+
+Dependencias globais congeladas
+-------------------------------
+
+Todos os testes devem reutilizar:
+
+- `src/rtl_v3_1/*.v`
+- `src/rtl_v3_1/config.vh`
+- `src/common/*.v`
+- `src/gowin_pllvr/gowin_pllvr.v`
+
+Padrao de clock congelado
+-------------------------
+
+- clock externo da placa: `27 MHz`
+- UART e protocolo host: dominio de `27 MHz`
+- clock interno do DPD: `60 MHz`
+- gerado por `Gowin_PLLVR`
+- travessia entre dominios por:
+  `command_cdc_hw_dpd.v`
+  `status_cdc_hw_dpd.v`
+  `input_dual_clock_bsram.v`
+  `output_dual_clock_bsram.v`
+
+Regra de organizacao
+--------------------
+
+Nao duplicar dentro da pasta do teste:
+
+- arquivos do nucleo `rtl_v3_1`
+- arquivos globais de `src/common`
+- arquivo global do PLL
+
+Esses arquivos devem ser adicionados ao projeto Gowin como dependencias globais.
+
+Objetivo da padronizacao
+------------------------
+
+- facilitar reproducao por terceiros
+- reduzir arquivos espalhados e duplicados
+- evitar conflitos de modulos repetidos no Gowin
+- manter coerencia com os testes revalidados para o GitHub final

@@ -1,0 +1,67 @@
+Inventario de anotacoes para o Capitulo 7
+=========================================
+
+Estado atual das anotacoes detalhadas
+-------------------------------------
+
+Ja possuem registros especificos:
+
+- HW012
+  `Capitulo_7_Tabela_Comparativa_HW012_Frequencia_e_Coeficientes.txt`
+- HW013
+  `Capitulo_7_Registro_HW013_Saturacao_Overflow.txt`
+- HW014
+  `Capitulo_7_Registro_HW014_AMPM_Complexo.txt`
+- HW015
+  `Capitulo_7_Registro_HW015_AMPM_Dependente_Amplitude.txt`
+- HW016
+  `Capitulo_7_Registro_HW016_Multi_Profile_AMPM.txt`
+- HW018
+  `Capitulo_7_Registro_HW018_Compressao_P1dB.txt`
+- HW019
+  `Capitulo_7_Registro_HW019_Ganho_Incremental.txt`
+- HW020
+  `Capitulo_7_Registro_HW020_Janela_Operacional.txt`
+
+Leitura sugerida sobre os testes sem registro individual
+--------------------------------------------------------
+
+HW001 a HW011:
+
+- esses testes tendem a funcionar melhor como bloco de validacao de
+  infraestrutura e bring-up do hardware
+- em geral, eles servem para demonstrar:
+  - comunicacao UART
+  - escrita e leitura de memoria
+  - operacao basica do caminho de dados
+  - coerencia entre FPGA e scripts host
+- salvo se surgir necessidade de discutir algum detalhe muito especifico,
+  esses testes podem ser resumidos em uma secao conjunta no capitulo 7,
+  sem exigir um arquivo tecnico individual para cada um
+
+HW017:
+
+- o HW017 e relevante e provavelmente merece referencia textual no capitulo 7,
+  pois trata de saturacao, overflow e transicao para forte nao linearidade
+- como ele ja teve refinamento de interpretacao durante o desenvolvimento
+  recente, vale considerar um registro proprio futuramente, se quisermos
+  aprofundar sua distincao entre:
+  - cruzamento com `y = x`
+  - saturacao
+  - ausencia de compressao classica de 1 dB
+
+Recomendacao editorial
+----------------------
+
+Uma estrutura coerente para o capitulo 7 pode ser:
+
+1. bloco inicial resumindo HW001 a HW011 como validacoes funcionais de
+   infraestrutura e integracao;
+
+2. bloco central detalhado com HW012 a HW020, por tratarem diretamente do
+   comportamento nao linear, compressao, saturacao, AM/PM, ganho incremental e
+   janela operacional;
+
+3. eventual complemento posterior para HW017, caso se deseje separar com mais
+   destaque a discussao de saturacao/overflow antes da analise incremental e da
+   janela operacional.

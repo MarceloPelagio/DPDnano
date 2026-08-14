@@ -1,0 +1,213 @@
+HW022 - Registro tecnico para o Capitulo 7
+==========================================
+
+Objetivo experimental
+---------------------
+
+O teste HW022 foi concebido para caracterizar o comportamento temporal do
+DPDnano-Lite em FPGA real, com foco na latencia do pipeline e na sua
+determinacao sob diferentes padroes de trafego. Enquanto os testes anteriores
+se concentraram principalmente em aspectos funcionais e nas caracteristicas
+estaticas AM/AM e AM/PM, o HW022 foi estruturado para responder a uma questao
+complementar e igualmente importante: se o nucleo preserva ordem, regularidade
+e previsibilidade temporal quando submetido a diferentes ritmos de injecao de
+amostras.
+
+Do ponto de vista de arquitetura, esse ensaio e relevante porque um nucleo de
+predistorcao digital para FPGA precisa nao apenas produzir a saida correta,
+mas tambem faze-lo com latencia bem definida, ausencia de reordenacao e
+comportamento estavel mesmo diante de trafego continuo, espaçado, pseudoaleatorio
+ou em rajadas.
+
+Configuracao do ensaio
+----------------------
+
+O teste foi executado em FPGA real com a configuracao congelada adotada para a
+fase final dos ensaios de hardware:
+
+- nucleo DPD congelado: `rtl_v3_1`
+- PLL global habilitado
+- clock interno do DPD: `60 MHz`
+- comunicacao e supervisao via UART
+- seis cenarios de trafego avaliados
+
+Os cenarios ensaiados foram:
+
+- `continuous`
+- `gap2`
+- `gap4`
+- `gap8`
+- `random`
+- `burst`
+
+Nos cenarios `continuous`, `gap2`, `gap4` e `gap8`, o objetivo foi avaliar o
+efeito do espacamento sistematico entre amostras. No caso `random`, foi
+utilizada uma sequencia deterministica pseudoaleatoria para introduzir gaps
+variaveis entre injecoes. No caso `burst`, o objetivo foi observar o
+comportamento temporal sob rajadas de 16 amostras seguidas de pausa de 50
+ciclos.
+
+Metodologia de medicao
+----------------------
+
+O teste mediu diretamente, para cada cenario:
+
+- latencia minima
+- latencia maxima
+- latencia media
+- jitter
+- quantidade de amostras enviadas
+- quantidade de amostras recebidas
+- perdas
+- duplicacoes
+- reordenacao
+- throughput efetivo
+
+Tambem foi gerada uma timeline reconstruida em software para representar,
+amostra a amostra, o deslocamento temporal entre o instante de entrada e o
+instante de saida.
+
+Resultados consolidados
+-----------------------
+
+Os resultados obtidos no arquivo `hw022_dpd_temporal_summary.csv` mostraram
+comportamento altamente consistente em todos os seis cenarios.
+
+Para todos os casos avaliados, observou-se:
+
+- `latency_min = 6`
+- `latency_max = 6`
+- `latency_average = 6.0`
+- `jitter = 0`
+- `losses = 0`
+- `duplicates = 0`
+- `reorder = 0`
+- `overflow = 0`
+- `passed = 1`
+
+Esses dados demonstram que, na configuracao ensaiada, o pipeline do
+DPDnano-Lite apresentou latencia fixa de `6 ciclos`, sem qualquer evidencia de
+instabilidade temporal, mesmo quando o padrao de alimentacao de amostras foi
+alterado.
+
+Analise de throughput por cenario
+---------------------------------
+
+Embora a latencia interna do pipeline tenha permanecido constante, o throughput
+efetivo variou de acordo com o padrao de injecao de amostras, como esperado.
+Os valores medidos foram:
+
+- `continuous` -> `0.4324 amostra/ciclo`
+- `gap2` -> `0.4252 amostra/ciclo`
+- `gap4` -> `0.2485 amostra/ciclo`
+- `gap8` -> `0.1251 amostra/ciclo`
+- `random` -> `0.1682 amostra/ciclo`
+- `burst` -> `0.1214 amostra/ciclo`
+
+A ordenacao desses resultados e coerente com a natureza dos cenarios:
+
+- `continuous` apresentou o melhor aproveitamento temporal
+- `gap2` permaneceu proximo do caso continuo
+- `gap4` e `gap8` sofreram reducao progressiva devido ao espacamento crescente
+- `random` ocupou uma faixa intermediaria, refletindo a variabilidade dos gaps
+- `burst` apresentou menor throughput medio em razao das pausas longas entre
+  rajadas
+
+Esse comportamento reforca que a variacao observada nao decorre de falha
+interna do nucleo, mas sim do proprio padrao de trafego imposto ao ensaio.
+
+Analise da timeline
+-------------------
+
+O arquivo `hw022_dpd_timeline.csv` confirmou que o deslocamento temporal entre
+entrada e saida permaneceu constante e igual a `6 ciclos` em todos os cenarios
+avaliados.
+
+Exemplos observados:
+
+- no cenario `continuous`, a amostra de indice `0` entrou no ciclo `0` e saiu
+  no ciclo `6`, a amostra `1` entrou no ciclo `1` e saiu no ciclo `7`, e assim
+  sucessivamente
+
+- no cenario `gap2`, a amostra `0` entrou no ciclo `0` e saiu no ciclo `6`,
+  enquanto a amostra `1` entrou no ciclo `2` e saiu no ciclo `8`, preservando
+  o mesmo deslocamento temporal
+
+- comportamento analogo foi observado em `gap4`, `gap8`, `random` e `burst`
+
+Nao foram observados sinais de:
+
+- compressao temporal inesperada
+- duplicacao de respostas
+- troca de ordem entre amostras
+- latencia variavel de acordo com o cenario
+
+Essa observacao e particularmente importante porque indica que o pipeline do
+nucleo se comporta como uma estrutura deterministica, sem dependencia do
+historico recente de trafego dentro da faixa ensaiada.
+
+Interpretacao arquitetural
+--------------------------
+
+O principal resultado do HW022 e a confirmacao experimental de que o
+DPDnano-Lite, na versao `rtl_v3_1` operando a `60 MHz`, apresenta pipeline
+temporal estavel e previsivel. Em termos práticos, isso significa que:
+
+1. A latencia interna pode ser tratada como fixa para os cenarios testados.
+
+2. O nucleo preserva a ordem de processamento das amostras.
+
+3. A variacao de ritmo na injecao de entradas nao introduz jitter observavel.
+
+4. O comportamento temporal nao apresenta degradacao mensuravel por rajadas ou
+   espacamentos variaveis, desde que o regime de operacao permaneça dentro do
+   que foi ensaiado.
+
+Esse ponto fortalece a interpretacao de que a arquitetura, alem de correta do
+ponto de vista funcional, tambem e bem comportada sob a perspectiva de
+integracao temporal em um sistema digital maior.
+
+Relevancia para o Capitulo 7
+----------------------------
+
+O HW022 tem importancia especial no Capitulo 7 porque estabelece uma ponte
+entre o desempenho funcional do predistorcedor e sua viabilidade de integracao
+em sistemas de processamento em fluxo. Em um contexto de FPGA com recursos
+limitados, nao basta demonstrar apenas a forma da curva AM/AM ou AM/PM; e
+necessario tambem mostrar que o caminho de dados possui atraso previsivel e
+que esse atraso nao sofre perturbacoes sob diferentes regimes de alimentacao.
+
+Nesse sentido, o HW022 complementa os ensaios anteriores da seguinte forma:
+
+- HW012 a HW021 mostraram a corretude funcional e o comportamento nao linear
+  da arquitetura
+- HW022 mostrou que essa arquitetura tambem possui resposta temporal
+  deterministica
+
+Texto sugerido para reaproveitamento no Capitulo 7
+--------------------------------------------------
+
+O teste HW022 foi realizado para caracterizar o comportamento temporal do
+DPDnano-Lite em FPGA real, com enfase na latencia do pipeline e na preservacao
+da ordem de processamento sob diferentes padroes de trafego. Foram avaliados
+seis cenarios (`continuous`, `gap2`, `gap4`, `gap8`, `random` e `burst`) com
+o nucleo `rtl_v3_1` operando a `60 MHz`. Em todos os casos, mediu-se
+latencia minima, maxima e media iguais a `6 ciclos`, com `jitter = 0`, sem
+perdas, sem duplicacoes, sem reordenacao e sem overflow. A reconstrução da
+timeline confirmou que o deslocamento entre entrada e saida permaneceu
+constante em todos os cenarios, evidenciando comportamento deterministico do
+pipeline. O throughput variou conforme o padrao de injecao das amostras, como
+esperado, mas essa variacao decorreu exclusivamente do trafego imposto ao
+ensaio, e nao de instabilidade interna do nucleo. Assim, o HW022 demonstrou
+que o DPDnano-Lite apresenta latencia fixa e resposta temporal previsivel,
+caracteristica essencial para sua integracao em sistemas digitais de
+processamento em fluxo.
+
+Conclusao
+---------
+
+O HW022 validou experimentalmente que o DPDnano-Lite possui pipeline temporal
+deterministico na configuracao `rtl_v3_1 + PLL 60 MHz`. A latencia fixa de
+`6 ciclos`, somada a ausencia de jitter, perdas, duplicacoes e reordenacao,
+confirma que a arquitetura nao apenas produz resultados corretos, mas tambem o
+faz com comportamento temporal previsivel e cientificamente consistente.

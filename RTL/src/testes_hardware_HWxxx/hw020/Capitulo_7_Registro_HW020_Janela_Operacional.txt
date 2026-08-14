@@ -1,0 +1,187 @@
+HW020 - Registro tecnico para o Capitulo 7
+==========================================
+
+Objetivo experimental
+---------------------
+
+O HW020 foi concebido para mapear a janela operacional do DPDnano-Lite em uma
+grade bidimensional de coeficientes reais do modelo polinomial de 1a e 3a
+ordens, mantendo as partes imaginarias nulas. O ensaio permite observar, de
+forma sistematica, como variacoes conjuntas de `coef1` e `coef3` deslocam o
+comportamento do nucleo entre os regimes:
+
+- seguro
+- compressivo
+- expansivo
+- saturado
+- overflow
+
+Configuracao ensaiada
+---------------------
+
+- `coef1 = {0,40; 0,55; 0,70; 0,85; 1,00}`
+- `coef3 = {-0,70; -0,35; 0,00; +0,35; +0,70}`
+- total de combinacoes: `25`
+- pontos por curva: `128`
+- amplitude maxima de entrada: `30000`
+- clock interno do DPD: `60 MHz`
+- execucao com FPGA real via UART
+
+Leitura global dos resultados
+-----------------------------
+
+Os resultados indicam uma transicao regular entre os regimes esperados do
+modelo:
+
+1. Para `coef3 = 0,00`, o comportamento permaneceu essencialmente linear,
+   com saida final proporcional a `coef1`, sem saturacao e sem overflow.
+
+2. Para `coef3 > 0`, observou-se aumento progressivo do ganho em grandes
+   amplitudes, caracterizando regime expansivo. Nas combinacoes mais fortes,
+   especialmente com `coef1` elevado, a expansao empurrou a saida rapidamente
+   para saturacao e, em varios casos, overflow.
+
+3. Para `coef3 < 0`, observou-se compressao AM/AM progressiva. Em niveis
+   moderados, a compressao permaneceu utilizavel e foi corretamente classificada
+   como `COMPRESSIVO`. Em niveis mais severos, contudo, a curva deixou de ser
+   apenas comprimida e passou a apresentar perda de monotonicidade.
+
+Evidencias numericas relevantes
+-------------------------------
+
+Casos lineares de referencia:
+
+- `coef1 = 0,40`, `coef3 = 0,00`
+  saida final `12000`, ganho final `0,40`, status `SEGURO`
+
+- `coef1 = 0,55`, `coef3 = 0,00`
+  saida final `16500`, ganho final `0,55`, status `SEGURO`
+
+- `coef1 = 0,85`, `coef3 = 0,00`
+  saida final `25500`, ganho final `0,85`, status `SEGURO`
+
+- `coef1 = 1,00`, `coef3 = 0,00`
+  saida final `29999`, ganho final `0,99997`, status `SEGURO`
+
+Casos expansivos:
+
+- `coef1 = 0,40`, `coef3 = +0,35`
+  saida final `20801`, ganho final `0,69337`, status `EXPANSIVO`
+
+- `coef1 = 0,40`, `coef3 = +0,70`
+  saida final `29602`, ganho final `0,98673`, status `EXPANSIVO`
+
+- `coef1 = 0,70`, `coef3 = +0,35`
+  saida final `29802`, ganho final `0,99340`, status `EXPANSIVO`
+
+Casos com saturacao/overflow por expansao:
+
+- `coef1 = 0,55`, `coef3 = +0,70`
+  saturacao em `29528`, pico `32767`, status `OVERFLOW`
+
+- `coef1 = 0,70`, `coef3 = +0,70`
+  saturacao em `27638`, pico `32767`, status `OVERFLOW`
+
+- `coef1 = 0,85`, `coef3 = +0,35`
+  saturacao em `29291`, pico `32767`, status `OVERFLOW`
+
+- `coef1 = 1,00`, `coef3 = +0,35`
+  saturacao em `26693`, pico `32767`, status `OVERFLOW`
+
+- `coef1 = 1,00`, `coef3 = +0,70`
+  saturacao em `24094`, pico `32767`, status `OVERFLOW`
+
+Casos compressivos:
+
+- `coef1 = 0,40`, `coef3 = -0,35`
+  `P1dB = 11811`, pico em `20079`, saida final `3199`, status `COMPRESSIVO`
+
+- `coef1 = 0,55`, `coef3 = -0,35`
+  `P1dB = 13701`, pico em `23622`, saida final `7698`, status `COMPRESSIVO`
+
+- `coef1 = 0,85`, `coef3 = -0,35`
+  `P1dB = 17008`, pico em `29528`, saida final `16699`, status `COMPRESSIVO`
+
+- `coef1 = 1,00`, `coef3 = -0,35`
+  `P1dB = 18425`, pico em `30000`, saida final `21198`, status `COMPRESSIVO`
+
+Nao monotonicidade como limitante
+---------------------------------
+
+O aspecto mais importante do HW020, para fins de projeto e validacao da
+arquitetura, nao e apenas a identificacao de saturacao ou overflow. O achado
+mais critico e a evidencia de que coeficientes cubicos negativos muito fortes
+podem induzir comportamento nao monotonicamente crescente na caracteristica
+AM/AM.
+
+Em termos fisicos e funcionais, isso significa que:
+
+- a saida cresce ate um determinado ponto;
+- atinge um maximo local;
+- e passa a diminuir mesmo com o aumento adicional da entrada.
+
+Esse fenomeno apareceu claramente em combinacoes como:
+
+- `coef1 = 0,40`, `coef3 = -0,70`
+  `P1dB = 8504`, pico em `14173`, pico de saida `3813`,
+  saida final `-5603`, ganho final `-0,18677`
+
+- `coef1 = 0,55`, `coef3 = -0,70`
+  `P1dB = 9685`, pico em `16772`, pico de saida `6149`,
+  saida final `-1103`, ganho final `-0,03677`
+
+Mesmo nos casos em que o status automatico permaneceu como `COMPRESSIVO`,
+observa-se que a curva ja se aproxima de uma fronteira de perda de monotonicidade.
+
+Interpretacao cientifica
+------------------------
+
+A nao monotonicidade e um limitante mais severo do que a simples compressao.
+Enquanto a compressao ainda preserva a ordem entre entradas e saidas, a perda
+de monotonicidade implica que o mapeamento AM/AM deixa de ser injetivo no
+intervalo de interesse. Em outras palavras, amplitudes de entrada maiores podem
+produzir amplitudes de saida menores.
+
+Para um predistorcedor digital, isso compromete diretamente a interpretabilidade
+e a previsibilidade do ajuste de coeficientes. Mesmo que o hardware continue
+operando sem overflow, a utilidade pratica da combinacao de coeficientes pode se
+tornar inviavel, pois o comportamento deixa de ser fisicamente coerente com uma
+curva de ganho progressiva.
+
+Assim, o HW020 sugere a seguinte conclusao importante:
+
+- a fronteira operacional do DPDnano-Lite nao deve ser definida apenas por
+  saturacao numerica ou overflow;
+- deve incluir tambem a preservacao da monotonicidade da curva AM/AM.
+
+Consequencias para o projeto
+----------------------------
+
+Os resultados sustentam que a escolha de coeficientes deve respeitar pelo menos
+tres restricoes simultaneas:
+
+1. evitar overflow interno;
+2. evitar saturacao prematura;
+3. evitar perda de monotonicidade em grandes amplitudes.
+
+Dentro da grade ensaiada, os casos com `coef3 = -0,35` mostraram compressao
+controlada e fisicamente mais utilizavel do que `coef3 = -0,70`, especialmente
+para `coef1` entre `0,55` e `1,00`.
+
+Ja os casos com `coef3 = +0,70` mostraram expansao intensa, levando a saturacao
+ou overflow em grande parte da grade, sobretudo para `coef1 >= 0,55`.
+
+Conclusao sugerida para o Capitulo 7
+------------------------------------
+
+O HW020 demonstra que o DPDnano-Lite apresenta uma janela operacional bem
+definida no espaco de coeficientes, dentro da qual o comportamento pode ser
+considerado seguro, compressivo controlado ou expansivo controlado. Fora dessa
+janela, surgem dois limitantes criticos:
+
+- saturacao/overflow, quando a expansao e excessiva;
+- nao monotonicidade, quando a compressao cubica negativa e excessiva.
+
+Entre esses dois, a nao monotonicidade deve ser enfatizada como limitante
+estrutural importante, pois ela pode invalidar o uso pratico do modelo mesmo
+antes que ocorra overflow.

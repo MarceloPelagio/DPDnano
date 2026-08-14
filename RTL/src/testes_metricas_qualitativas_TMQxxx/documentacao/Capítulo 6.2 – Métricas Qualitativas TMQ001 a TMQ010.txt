@@ -1,0 +1,89 @@
+Capítulo 6.2 – Métricas Qualitativas TMQ001 a TMQ010
+
+6.4 Caracterização qualitativa da arquitetura
+
+Enquanto a suíte TCxxx demonstra a corretude funcional mínima da arquitetura congelada, a suíte TMQ001 a TMQ010 amplia substancialmente o alcance da análise experimental. Esses testes foram concebidos para examinar propriedades de natureza qualitativa e quantitativa que não aparecem de forma explícita em verificações clássicas PASS/FAIL. Em vez de perguntar apenas se a arquitetura funciona, esses ensaios investigam como ela funciona ao longo da faixa dinâmica, qual o comportamento do ganho, quão grande é o erro numérico introduzido pelo ponto fixo, quão estável é sua temporização, quão repetível é a resposta sob estresse e quão simétrica é a transformação complexa implementada.
+
+6.4.1 TMQ001 – Caracterização da faixa dinâmica
+
+O TMQ001 tem como finalidade mapear a resposta global da arquitetura ao longo de ampla faixa de amplitudes de entrada. O “por que” desse teste está no fato de que um predistorcedor digital não deve ser analisado apenas em poucos pontos discretos de operação, mas em uma faixa suficientemente extensa para revelar tanto o comportamento em baixa amplitude quanto a aproximação dos limites superiores do sistema.
+
+O ensaio utiliza 131072 amostras, com coeficientes reais `coef1 = 0,5` e `coef3 = 0,125`, e mede simultaneamente latência, taxa de entrega e incidência de overflow. O resultado obtido foi particularmente importante: taxa de entrega de 100%, latência observada de 5 ciclos e zero eventos de overflow ao longo de toda a campanha. Isso mostra que, para essa configuração nominal, a arquitetura opera integralmente dentro de uma região segura de faixa dinâmica.
+
+Do ponto de vista científico, esse teste revela que o DPDnano-Lite possui comportamento estável e previsível em ampla excursão de amplitudes quando excitado em regime moderado. Ele também serve como base para comparar testes posteriores de linearidade, resposta polinomial e limites operacionais.
+
+6.4.2 TMQ002 – Linearidade de ganho
+
+O TMQ002 foi formulado para avaliar especificamente o comportamento do ganho quando o ramo cúbico é desabilitado. Com `coef1 = 0,5` e `coef3 = 0`, o ensaio examina 512 níveis de amplitude, repetidos 8 vezes cada, totalizando 4096 amostras. O propósito é verificar se a arquitetura responde como um bloco essencialmente linear, com erro desprezível ao longo da faixa testada.
+
+O “por que” desse teste está em separar, metodologicamente, o comportamento linear do comportamento não linear. O “para quê” é comprovar que a contribuição de primeira ordem não apresenta distorções espúrias. O “como” consiste em varrer sistematicamente a amplitude de entrada e comparar o ganho observado com o ganho teórico esperado.
+
+Os resultados indicaram 512 saídas estáveis, 512 pontos aprovados quanto ao ganho, zero falhas, erro absoluto máximo nulo e nenhuma ocorrência de overflow. Isso demonstra que a arquitetura reproduz de forma extremamente fiel o regime linear imposto pelo teste. Tal evidência é importante porque mostra que a base linear do predistorcedor não introduz anomalias por si só; eventuais comportamentos não lineares observados em outros testes podem, portanto, ser atribuídos deliberadamente ao ramo cúbico ou a condições de saturação.
+
+6.4.3 TMQ003 – Resposta polinomial
+
+O TMQ003 investiga a manifestação explícita do termo polinomial quando o coeficiente cúbico é habilitado em intensidade significativa. Com `coef1 = 0,5` e `coef3 = 0,25`, o teste percorre 512 níveis de amplitude, novamente com 8 repetições por nível. O objetivo é observar a superposição entre a contribuição linear e a contribuição cúbica e medir como essa combinação se traduz na amplitude de saída.
+
+O “por que” do TMQ003 é fundamental para um trabalho sobre DPD: não basta provar que o ramo cúbico existe em um ponto isolado, como no TC005; é necessário demonstrar como sua contribuição cresce ao longo da faixa de operação. O “para quê” é caracterizar a resposta não linear dominante da arquitetura congelada. O “como” utiliza a varredura de amplitude e contabiliza as magnitudes máximas das parcelas linear, polinomial e total.
+
+Os resultados mostraram `max_linear_abs = 12288`, `max_poly_abs = 3456` e `max_output_abs = 15744`, sem qualquer overflow. Isso revela que, nas condições de teste, o termo cúbico acrescenta parcela observável e relevante à resposta total, porém ainda dentro de uma região segura da faixa dinâmica. Em termos científicos, o TMQ003 quantifica a intensidade relativa do ramo não linear e confirma que ele não é meramente nominal, mas efetivamente capaz de modificar o sinal de saída de modo mensurável.
+
+6.4.4 TMQ004 – Erro de quantização
+
+O TMQ004 foi concebido para medir o impacto da quantização no comportamento da arquitetura. Seu “por que” decorre do fato de que a implementação em ponto fixo é uma decisão central do DPDnano-Lite; portanto, é necessário avaliar explicitamente quanto erro ela introduz em relação a uma referência idealizada. O “para quê” é quantificar o erro médio, o erro quadrático acumulado e o erro máximo em unidades de LSB.
+
+O teste utiliza 2048 níveis com 4 repetições cada, totalizando 8192 amostras. Os coeficientes foram escolhidos em valores fracionários representativos (`coef1 ≈ 0,37`, `coef3 ≈ 0,11`), precisamente para expor efeitos de arredondamento. O resumo do ensaio mostrou erro máximo absoluto de aproximadamente 0,499 LSB, concentração dominante do histograma no bin central e ausência completa de overflow.
+
+Esse resultado é muito expressivo do ponto de vista científico. Um erro máximo abaixo de 0,5 LSB indica que a política de arredondamento e reescala da arquitetura é compatível com o comportamento esperado de um sistema fixo bem projetado. O teste, portanto, não apenas confirma a existência de erro de quantização, mas demonstra que ele se mantém dentro de patamar compatível com uma implementação numérica disciplinada.
+
+6.4.5 TMQ005 – Precisão numérica complexa
+
+O TMQ005 aprofunda a análise do TMQ004, agora considerando coeficientes complexos e métricas de erro separadas para as componentes real, imaginária e magnitude. O “por que” desse teste é que uma arquitetura de DPD complexa não pode ser julgada apenas por erros em um eixo escalar; é necessário quantificar seu comportamento bidimensional.
+
+O teste foi realizado com 3072 níveis e 4 repetições por nível, totalizando 12288 amostras. Os coeficientes complexos escolhidos ativam simultaneamente contribuições real e imaginária no ramo linear e no cúbico. Os resultados mostraram erro máximo de aproximadamente 1,5 LSB por componente, erro máximo em magnitude de cerca de 1,57 LSB e erro RMS percentual em magnitude inferior a 0,007%.
+
+Isso revela que, mesmo sob interação complexa entre coeficientes reais e imaginários, a arquitetura preserva alta fidelidade numérica. Em termos de engenharia eletrônica, esse resultado é particularmente importante porque mostra que a simplificação da arquitetura para FPGA compacta não implicou degradação numérica incompatível com o uso prático do sistema.
+
+6.4.6 TMQ006 – Caracterização temporal do pipeline
+
+O TMQ006 mede quantitativamente a latência e a vazão do pipeline. Embora a latência de 5 ciclos já apareça nos testes funcionais, aqui ela é tratada como métrica sistematicamente caracterizada, e não apenas como condição de aprovação pontual. O “por que” do teste é transformar uma propriedade arquitetural prevista em uma grandeza estatisticamente observada.
+
+O ensaio utilizou 16384 amostras com coeficientes complexos moderados. Os resultados confirmaram `latency_min = 5`, `latency_max = 5`, `latency_avg = 5`, além de espaçamento unitário entre amostras na entrada e na saída. A vazão observada foi de aproximadamente `0,99939` vetores por ciclo, o que, na prática, corresponde à operação contínua com uma amostra entregue a cada ciclo após o enchimento do pipeline.
+
+Esse resultado é de grande valor para o Capítulo 6 porque conecta diretamente a estrutura pipeline discutida no Capítulo 4 à evidência experimental. A previsibilidade temporal deixa de ser apenas argumento arquitetural e passa a ser propriedade efetivamente medida.
+
+6.4.7 TMQ007 – Estabilidade
+
+O TMQ007 foi concebido para investigar a estabilidade operacional do sistema sob longa sequência de amostras. O “por que” desse ensaio está em reconhecer que arquiteturas síncronas podem exibir falhas raras, glitches, travamentos ou repetições indevidas apenas após grande número de ciclos. O “para quê” é verificar se o DPDnano-Lite preserva coerência lógica durante execução prolongada.
+
+Com 100000 amostras e coeficientes complexos moderados, o teste monitorou explicitamente `xz_errors`, `logical_nan_errors`, `glitch_errors`, `stall_errors`, `oscillation_flags` e o comprimento máximo de sequências idênticas na saída. Todos esses indicadores permaneceram nulos, e o maior comprimento de repetição de saída foi igual a 1.
+
+Esse resultado mostra que a arquitetura não apresenta indícios de oscilação interna, travamento, metastabilidade observável em simulação ou repetição artificial de amostras. Para um sistema pipeline em FPGA, isso constitui uma evidência forte de robustez temporal e operacional.
+
+6.4.8 TMQ008 – Caracterização estatística
+
+O TMQ008 desloca o foco da análise para estatísticas globais do sinal de saída. Seu “por que” é que um predistorcedor digital não deve ser analisado apenas vetorialmente, mas também como transformador estatístico de processos de entrada. O “para quê” é investigar média, variância, desvio padrão, amplitude mínima e máxima e distribuição aproximada das amostras de saída.
+
+Em 100000 amostras, o teste produziu médias próximas de zero, variâncias praticamente iguais entre as componentes real e imaginária e histogramas equilibrados. A semelhança entre estatísticas de I e Q é relevante porque sugere que a arquitetura preserva simetria global entre as componentes do processamento complexo.
+
+Do ponto de vista científico, esse ensaio é importante porque reforça a interpretação de que o DPDnano-Lite não introduz viés estatístico relevante nem assimetria macroscópica entre os canais I/Q em regime nominal.
+
+6.4.9 TMQ009 – Simetria
+
+O TMQ009 examina a resposta da arquitetura a pares de estímulos simétricos. O “por que” desse teste está na necessidade de verificar se a implementação em ponto fixo preserva, com erro controlado, relações de simetria esperadas do modelo matemático. O “para quê” é quantificar o afastamento dessa simetria em LSB e em unidades reais.
+
+Com 8192 pares de amostras, os resultados mostraram erro máximo absoluto de simetria de apenas 1 LSB por componente, equivalente a cerca de `3,05e-5` em valor real. Isso indica que a arquitetura preserva a simetria esperada com erro mínimo, compatível com os limites da quantização.
+
+Em termos de análise qualitativa, o TMQ009 é particularmente valioso porque demonstra que o DPDnano-Lite não apresenta assimetria estrutural significativa escondida pelo simples resultado PASS/FAIL.
+
+6.4.10 TMQ010 – Repetibilidade sob saturação e estresse
+
+O TMQ010 avalia repetibilidade da resposta em regime severo, incluindo saturação. O “por que” desse teste é verificar se a arquitetura, quando submetida repetidamente ao mesmo padrão exigente, produz sempre exatamente a mesma sequência de saída. O “para quê” é demonstrar determinismo forte, mesmo quando o sistema opera próximo ou além da faixa linear.
+
+O ensaio executou 1000 repetições de uma sequência de 1024 amostras, totalizando 1024000 vetores. Os resultados foram particularmente robustos: `mismatch_count = 0`, repetibilidade de 100%, embora com 409000 saídas saturadas e taxa de overflow próxima de 40%.
+
+Essa combinação é cientificamente muito significativa. Ela mostra que saturação frequente não implica comportamento errático. Ao contrário, mesmo em regime severo, a arquitetura permaneceu completamente determinística. Isso fornece forte argumento a favor da previsibilidade do DPDnano-Lite.
+
+6.4.11 Síntese crítica da suíte TMQ001–TMQ010
+
+Em conjunto, os testes TMQ001 a TMQ010 demonstram que a arquitetura congelada do DPDnano-Lite não é apenas funcionalmente correta, mas também numericamente disciplinada, temporalmente estável, estatisticamente coerente e deterministicamente repetível. Esses resultados fornecem base sólida para afirmar que a proposta não se limita a um protótipo lógico, mas alcança um nível de verificabilidade compatível com um estudo experimental sério em FPGA.

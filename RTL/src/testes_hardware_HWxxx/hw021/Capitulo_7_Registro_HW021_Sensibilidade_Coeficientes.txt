@@ -1,0 +1,235 @@
+HW021 - Registro tecnico para o Capitulo 7
+==========================================
+
+Objetivo experimental
+---------------------
+
+O teste HW021 foi estruturado para avaliar a sensibilidade local do
+DPDnano-Lite a pequenas perturbacoes em torno de um ponto nominal de
+operacao. Diferentemente do HW020, que investigou uma janela ampla de
+coeficientes e permitiu identificar fronteiras de saturacao,
+nao-monotonicidade e perda de previsibilidade, o HW021 concentrou-se em uma
+regiao reduzida do espaco parametrico com o objetivo de verificar se o nucleo
+mantem resposta suave, ordenada e fisicamente coerente quando os coeficientes
+sofrem variacoes finas.
+
+Do ponto de vista metodologico, esse ensaio e relevante porque um sistema de
+predistorcao digital nao precisa apenas funcionar em pontos isolados: ele
+precisa responder de maneira gradual a pequenos reajustes de coeficientes, de
+modo a permitir calibracao, refinamento iterativo e eventual busca local por
+melhores condicoes de linearizacao.
+
+Definicao das familias ensaiadas
+--------------------------------
+
+Foram definidas duas familias de ensaio, ambas centradas no ponto nominal
+`coef1 = +0,70` e `coef3 = +0,20`:
+
+1. Familia de variacao de `coef1`
+   - `coef3` mantido fixo em `+0,20`
+   - `coef1 = 0,68; 0,69; 0,70; 0,71; 0,72`
+
+2. Familia de variacao de `coef3`
+   - `coef1` mantido fixo em `+0,70`
+   - `coef3 = 0,18; 0,19; 0,20; 0,21; 0,22`
+
+Essa separacao foi adotada para permitir a observacao isolada do papel de cada
+coeficiente:
+
+- `coef1` associado principalmente ao ganho de pequena amplitude
+- `coef3` associado ao ajuste da curvatura em amplitudes mais elevadas
+
+Configuracao experimental
+-------------------------
+
+O teste foi executado em FPGA real, mantendo o mesmo padrao consolidado para a
+fase final dos ensaios de hardware:
+
+- clock interno do DPD ajustado para `60 MHz`
+- comunicacao UART de configuracao e leitura
+- 128 pontos por curva
+- amplitude maxima de entrada igual a `30000`
+- total de `10` curvas adquiridas
+
+Os resultados foram armazenados nos arquivos:
+
+- `hw021_dpd_sensitivity_summary.csv`
+- `hw021_dpd_sensitivity_curves.csv`
+
+Tambem foram geradas quatro figuras de apoio:
+
+- `hw021_dpd_coef1_amam.png`
+- `hw021_dpd_coef1_delta.png`
+- `hw021_dpd_coef3_amam.png`
+- `hw021_dpd_coef3_delta.png`
+
+Resultados gerais observados
+----------------------------
+
+Todos os dez casos ensaiados apresentaram comportamento estavel e coerente,
+sem manifestacao de overflow, sem reversoes de tendencia e sem saltos abruptos
+entre amostras consecutivas. Em termos práticos, observou-se:
+
+- `overflow = NAO` em todos os perfis
+- crescimento monotonicamente crescente da saida
+- ausencia de descontinuidades
+- ordenacao consistente entre curvas vizinhas
+
+Esse resultado e importante porque confirma que, dentro de uma regiao de
+operacao moderada, o nucleo preserva regularidade numerica e previsibilidade.
+
+Analise da familia com variacao em `coef1`
+------------------------------------------
+
+Mantendo-se `coef3 = +0,20`, os valores medidos para a saida final e para o
+pico de saida foram:
+
+- `coef1 = 0,68` -> `peak_output = 25429`, `final_output = 25429`
+- `coef1 = 0,69` -> `peak_output = 25730`, `final_output = 25730`
+- `coef1 = 0,70` -> `peak_output = 26030`, `final_output = 26030`
+- `coef1 = 0,71` -> `peak_output = 26329`, `final_output = 26329`
+- `coef1 = 0,72` -> `peak_output = 26629`, `final_output = 26629`
+
+O ganho de pequeno sinal acompanhou essa tendencia de forma igualmente
+ordenada:
+
+- `0,67993`
+- `0,69009`
+- `0,70025`
+- `0,71041`
+- `0,72058`
+
+Interpretacao tecnica:
+
+- o aumento de `coef1` deslocou a caracteristica AM/AM para cima de forma
+  praticamente regular
+- a resposta nas baixas amplitudes foi a mais sensivel a esse parametro, como
+  esperado para o termo linear
+- nao houve cruzamento indevido entre curvas consecutivas
+
+Esse conjunto de evidencias mostra que o termo linear manteve um controle
+localmente bem condicionado sobre o ganho global da estrutura.
+
+Analise da familia com variacao em `coef3`
+------------------------------------------
+
+Mantendo-se `coef1 = +0,70`, os resultados de saida final e pico foram:
+
+- `coef3 = 0,18` -> `peak_output = 25526`, `final_output = 25526`
+- `coef3 = 0,19` -> `peak_output = 25778`, `final_output = 25778`
+- `coef3 = 0,20` -> `peak_output = 26030`, `final_output = 26030`
+- `coef3 = 0,21` -> `peak_output = 26281`, `final_output = 26281`
+- `coef3 = 0,22` -> `peak_output = 26532`, `final_output = 26532`
+
+Ao contrario do observado para `coef1`, o ganho de pequeno sinal permaneceu
+praticamente invariavel:
+
+- `0,70025` em todos os casos
+
+Interpretacao tecnica:
+
+- pequenas variacoes no termo cubico nao alteraram de modo relevante a regiao
+  de pequena amplitude
+- a diferenca entre curvas tornou-se mais visivel nas maiores amplitudes, onde
+  a contribuicao cubica se torna dominante
+- a elevacao progressiva de `coef3` aumentou a saida maxima de forma suave
+
+Esses resultados sao consistentes com a interpretacao teorica adotada para a
+arquitetura:
+
+- `coef1` governa principalmente a inclinacao inicial da curva
+- `coef3` atua sobretudo na curvatura e no crescimento em amplitudes altas
+
+Analise por delta em relacao ao caso nominal
+--------------------------------------------
+
+O ensaio tambem calculou, amostra a amostra, o desvio da saida em relacao ao
+caso nominal `coef1 = 0,70` e `coef3 = 0,20`.
+
+Essa analise permitiu observar com maior precisao a resolucao local da
+arquitetura. Entre os exemplos mais representativos:
+
+- na familia `coef1`, o caso `coef1 = 0,68` apresentou deltas negativos que
+  cresceram progressivamente com a amplitude, iniciando em poucos LSB e
+  chegando a dezenas de LSB nos pontos finais
+
+- na familia `coef3`, o caso `coef3 = 0,22` apresentou deltas positivos que
+  se ampliaram com a entrada, atingindo aproximadamente `+502 LSB` no ultimo
+  ponto da curva
+
+O aspecto mais importante dessa leitura diferencial foi a continuidade do
+comportamento:
+
+- os deltas cresceram de forma suave
+- nao surgiram inversoes inesperadas
+- nao foram observados degraus artificiais
+- as curvas de erro permaneceram ordenadas
+
+Em termos experimentais, isso mostra que a implementacao possui granularidade
+suficiente para distinguir pequenas alteracoes de coeficientes sem introduzir
+instabilidades numericas perceptiveis.
+
+Relevancia para a avaliacao da arquitetura
+------------------------------------------
+
+O HW021 ocupa um papel importante na argumentacao do Capitulo 7 porque
+demonstra que o DPDnano-Lite nao apenas responde corretamente a mudancas
+grosseiras de configuracao, mas tambem apresenta comportamento localmente
+regular quando submetido a ajustes finos.
+
+Essa observacao fortalece tres conclusoes praticas:
+
+1. Pequenas alteracoes de coeficientes podem ser empregadas para calibracao sem
+   provocar mudancas abruptas na resposta AM/AM.
+
+2. O nucleo apresenta previsibilidade local no espaco parametrico, o que e
+   desejavel para procedimentos iterativos de sintonia.
+
+3. A arquitetura preserva continuidade suficiente para suportar refinamento de
+   coeficientes em torno de um ponto operacional valido.
+
+Complementaridade com o HW020
+-----------------------------
+
+O HW021 complementa diretamente o HW020:
+
+- o HW020 delimitou a janela operacional ampla e evidenciou regioes de risco,
+  sobretudo por saturacao, overflow e nao-monotonicidade
+
+- o HW021 mostrou que, dentro de uma regiao segura dessa janela, o
+  comportamento do nucleo e suave, ordenado e bem condicionado
+
+Assim, enquanto o HW020 responde "onde a arquitetura pode operar", o HW021
+responde "quao refinavelmente a arquitetura pode ser ajustada dentro dessa
+regiao".
+
+Texto sugerido para reaproveitamento no Capitulo 7
+--------------------------------------------------
+
+O teste HW021 foi realizado para investigar a sensibilidade local do
+DPDnano-Lite a pequenas perturbacoes dos coeficientes polinomiais em torno de
+um ponto nominal de operacao. Foram avaliadas duas familias de curvas: a
+primeira variando `coef1` entre `0,68` e `0,72` com `coef3 = +0,20`, e a
+segunda variando `coef3` entre `0,18` e `0,22` com `coef1 = +0,70`. Em todos
+os casos, a implementacao em FPGA operando a `60 MHz` apresentou resposta
+monotonicamente crescente, sem overflow e sem descontinuidades visiveis. A
+variacao de `coef1` alterou principalmente o ganho de pequena amplitude,
+enquanto a variacao de `coef3` preservou esse ganho inicial e modificou de
+forma gradual a curvatura da resposta nas amplitudes mais elevadas. A analise
+por delta em relacao ao caso nominal mostrou desvios suaves e ordenados,
+confirmando que a arquitetura possui resolucao suficiente para suportar ajuste
+fino de coeficientes com comportamento previsivel. Esse resultado complementa
+o HW020 ao indicar que, dentro de uma regiao operacional segura, o
+DPDnano-Lite apresenta boa condicionabilidade local para procedimentos de
+calibracao e refinamento paramétrico.
+
+Conclusao
+---------
+
+O HW021 confirmou experimentalmente que, ao redor do ponto nominal
+`coef1 = +0,70` e `coef3 = +0,20`, o DPDnano-Lite apresenta sensibilidade
+local previsivel, suave e cientificamente coerente. As curvas permanecem
+ordenadas, sem overflow, sem degraus espurios e com separacao funcional clara
+entre os efeitos do termo linear e do termo cubico. Trata-se, portanto, de um
+resultado favoravel para o uso da arquitetura em cenarios de ajuste fino e
+calibracao incremental.
