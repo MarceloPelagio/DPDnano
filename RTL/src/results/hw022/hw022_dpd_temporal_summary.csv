@@ -1,7 +1,0 @@
-scenario,scenario_id,sample_count,latency_min,latency_max,latency_average,jitter,samples_sent,samples_received,losses,duplicates,reorder,total_cycles,throughput_samples_per_cycle,overflow,passed
-continuous,0,256,6,6,6.0,0,256,256,0,0,0,592,0.43243243243243246,0,1
-gap2,1,128,6,6,6.0,0,128,128,0,0,0,301,0.42524916943521596,0,1
-gap4,2,128,6,6,6.0,0,128,128,0,0,0,515,0.24854368932038834,0,1
-gap8,3,128,6,6,6.0,0,128,128,0,0,0,1023,0.12512218963831867,0,1
-random,4,128,6,6,6.0,0,128,128,0,0,0,761,0.16819973718791065,0,1
-burst,5,128,6,6,6.0,0,128,128,0,0,0,1054,0.12144212523719165,0,1
